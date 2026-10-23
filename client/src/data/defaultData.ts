@@ -421,7 +421,8 @@ export const initialTimetableEntries: TimetableEntry[] = [
     durationMinutes: 60,
     slotType: 'lecture',
     subjectId: 'S5-AI01',
-    faculty: 'prof . Sanjay Sahu (VF)',
+    faculty: 'Dr. Dipanjan Biswas',
+    facultyId: 'fac-dipanjan',
     classroom: 'Classroom 37',
     notes: 'Foundations of Agentic Systems'
   },
@@ -434,7 +435,8 @@ export const initialTimetableEntries: TimetableEntry[] = [
     durationMinutes: 60,
     slotType: 'lecture',
     subjectId: 'S5-AI01',
-    faculty: 'prof . Sanjay sahu',
+    faculty: 'Dr. Dipanjan Biswas',
+    facultyId: 'fac-dipanjan',
     classroom: 'Classroom 37',
     notes: 'Prompt Engineering & Reasoning Models'
   },

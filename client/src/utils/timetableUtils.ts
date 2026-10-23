@@ -1,11 +1,42 @@
 import type { TimetableEntry, TimetableConflict } from '../types'
 import { canonicalSubjectId, isSameSubject } from './subjectUtils'
+import { resolveFacultyName, resolveFacultyId } from '../data/facultyData'
+
+export interface TimeValidationResult {
+  isValid: boolean
+  error?: string
+  durationMinutes: number
+}
+
+/**
+ * Validates that end time is strictly greater than start time and calculates duration.
+ * Duration is always dynamically computed from times, never stored as an out-of-sync value.
+ */
+export function validateTimes(startTime?: string, endTime?: string): TimeValidationResult {
+  if (!startTime || !endTime) {
+    return { isValid: false, error: 'Both start time and end time are required.', durationMinutes: 60 }
+  }
+  const startMin = timeToMinutes(startTime)
+  const endMin = timeToMinutes(endTime)
+  if (endMin <= startMin) {
+    return { isValid: false, error: 'End time must be after start time.', durationMinutes: 0 }
+  }
+  const duration = endMin - startMin
+  if (duration < 15) {
+    return { isValid: false, error: 'Duration must be at least 15 minutes.', durationMinutes: duration }
+  }
+  if (duration > 480) {
+    return { isValid: false, error: 'Duration cannot exceed 8 hours.', durationMinutes: duration }
+  }
+  return { isValid: true, durationMinutes: duration }
+}
 
 /**
  * Normalizes any time string (12-hour, AM/PM, or ambiguous afternoon 2-digit) into standard 24-hour HH:MM format.
- * E.g. "02:00" in afternoon context -> "14:00", "2:00 PM" -> "14:00", "13:10" -> "13:10".
+ * E.g. "02:00" in afternoon context -> "14:00", "2:00 PM" -> "14:00", "10:00" in morning context -> "10:00".
+ * Prevents morning hours (7:00 - 11:59) from erroneously rolling over to PM (e.g. 10:00 AM turning into 22:00 PM).
  */
-export function normalizeTimeTo24H(timeStr: string, isAfternoonHint?: boolean): string {
+export function normalizeTimeTo24H(timeStr: string, startTimeRef?: string | boolean): string {
   if (!timeStr) return '10:00'
   const trimmed = timeStr.trim().toLowerCase()
 
@@ -21,14 +52,20 @@ export function normalizeTimeTo24H(timeStr: string, isAfternoonHint?: boolean): 
   if (isAM && h === 12) h = 0
 
   // Case 2: Plain numeric time like "02:00" or "2:00"
-  // In a university timetable setting, classes/breaks between 1 and 6 without AM are afternoon (13:00 - 18:00)
   if (!isAM && !isPM) {
-    if (isAfternoonHint && h < 12) {
-      h += 12
+    if (typeof startTimeRef === 'string' && startTimeRef) {
+      const startMin = timeToMinutes(startTimeRef)
+      const currentMin = h * 60 + m
+      // Only roll over by 12 hours if current time is strictly before start time
+      // AND adding 12 hours produces a daytime end time (<= 20:00) after start
+      if (currentMin <= startMin && currentMin + 12 * 60 > startMin && currentMin + 12 * 60 <= 20 * 60) {
+        h += 12
+      }
     } else if (h >= 1 && h <= 6) {
-      // 1:00 to 6:00 is definitely afternoon (13:00 to 18:00)
+      // 1:00 to 6:00 without AM is afternoon (13:00 to 18:00) in university schedule
       h += 12
     }
+    // 7:00 to 12:00 are morning/noon hours (07:00 to 12:00) and are never converted to PM
   }
 
   const normH = Math.min(23, Math.max(0, h))
@@ -178,11 +215,25 @@ export function sanitizeTimetableEntries(entries: TimetableEntry[]): TimetableEn
     // Canonicalize subject ID if present
     const canonSubId = entry.subjectId ? canonicalSubjectId(entry.subjectId) : undefined
 
-    // Sanitize faculty for DSA III (confirmed Sanjay Sahu (VF))
+    // Sanitize faculty strictly from single source of truth (FACULTY_ROSTER)
     let faculty = entry.faculty
-    if (canonSubId && isSameSubject(canonSubId, 'S5-CS01')) {
-      if (!faculty || faculty.includes('Kunal Suri') || faculty.toLowerCase().includes('kunal')) {
-        faculty = 'Sanjay Sahu (VF)'
+    let facultyId = (entry as any).facultyId
+    if (canonSubId) {
+      if (isSameSubject(canonSubId, 'S5-AI01')) {
+        // Enforce Dr. Dipanjan for S5-AI01 (never Sanjay Sahu)
+        if (!faculty || faculty.toLowerCase().includes('sahu') || faculty.toLowerCase().includes('sanjay')) {
+          faculty = 'Dr. Dipanjan'
+        }
+        facultyId = 'fac-dipanjan'
+      } else if (isSameSubject(canonSubId, 'S5-CS01')) {
+        // Enforce Sanjay Sahu (VF) for S5-CS01 (never Kunal Suri)
+        if (!faculty || faculty.includes('Kunal Suri') || faculty.toLowerCase().includes('kunal')) {
+          faculty = 'Sanjay Sahu (VF)'
+        }
+        facultyId = 'fac-sanjay'
+      } else {
+        faculty = resolveFacultyName(facultyId, canonSubId, faculty)
+        facultyId = resolveFacultyId(canonSubId, faculty)
       }
     }
 
@@ -228,10 +279,11 @@ export function sanitizeTimetableEntries(entries: TimetableEntry[]): TimetableEn
       ...entry,
       subjectId: canonSubId,
       faculty,
+      facultyId,
       startTime: start24,
       endTime: end24,
       durationMinutes: duration
-    })
+    } as any)
   }
 
   return cleaned

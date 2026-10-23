@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { 
-  AlertTriangle, 
+import {
+  AlertTriangle,
   ArrowRight,
   Edit2
 } from 'lucide-react'
@@ -11,15 +11,15 @@ interface AttendancePageProps {
   onNavigateToLectures?: (subjectId?: string) => void
 }
 
-export const AttendancePage: React.FC<AttendancePageProps> = ({ 
-  onOpenQuickLecture: _onOpenQuickLecture, 
-  onNavigateToLectures 
+export const AttendancePage: React.FC<AttendancePageProps> = ({
+  onOpenQuickLecture: _onOpenQuickLecture,
+  onNavigateToLectures
 }) => {
-  const { 
-    subjects, 
-    settings, 
-    getAllSubjectAttendanceStats, 
-    lectures, 
+  const {
+    subjects,
+    settings,
+    getAllSubjectAttendanceStats,
+    lectures,
     updateAttendance,
     getSubjectAttendanceStats
   } = useApp()
@@ -38,8 +38,8 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
   const totalAbsent = allStats.reduce((acc, s) => acc + s.absent, 0)
   const totalWarnings = allStats.filter(s => s.isWarning).length
 
-  const overallPercent = totalHeld > 0 
-    ? Math.round((totalAttended / totalHeld) * 1000) / 10 
+  const overallPercent = totalHeld > 0
+    ? Math.round((totalAttended / totalHeld) * 1000) / 10
     : null
 
   const handleStartManualEdit = (subjectId: string) => {
@@ -163,13 +163,12 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
             return (
               <div
                 key={subject.id}
-                className={`p-5 rounded-xl bg-[#111827] border transition-all flex flex-col justify-between ${
-                  stats.isWarning 
-                    ? 'border-rose-500/50 bg-[#16121a]' 
+                className={`p-5 rounded-xl bg-[#111827] border transition-all flex flex-col justify-between ${stats.isWarning
+                    ? 'border-rose-500/50 bg-[#16121a]'
                     : stats.isApproaching
-                    ? 'border-amber-500/40 bg-[#161413]'
-                    : 'border-[#1e293d] hover:border-slate-700'
-                }`}
+                      ? 'border-amber-500/40 bg-[#161413]'
+                      : 'border-[#1e293d] hover:border-slate-700'
+                  }`}
               >
                 <div className="space-y-3">
                   {/* Card Header: Subject Code & Name */}
@@ -194,13 +193,12 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
                     {/* Percentage Display Pill */}
                     <div className="text-right shrink-0">
                       {stats.percentage !== null ? (
-                        <div className={`px-3 py-1.5 rounded-lg border font-mono font-bold text-sm ${
-                          stats.isWarning
+                        <div className={`px-3 py-1.5 rounded-lg border font-mono font-bold text-sm ${stats.isWarning
                             ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
                             : stats.isApproaching
-                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                            : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                        }`}>
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                              : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                          }`}>
                           {stats.percentage}%
                         </div>
                       ) : (
@@ -221,16 +219,15 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
                     </div>
                     <div className="w-full h-2 bg-[#090d16] rounded-full overflow-hidden relative border border-[#1a2538]">
                       {/* 75% target marker */}
-                      <div 
-                        className="absolute top-0 bottom-0 w-0.5 bg-slate-500 z-10" 
+                      <div
+                        className="absolute top-0 bottom-0 w-0.5 bg-slate-500 z-10"
                         style={{ left: `${threshold}%` }}
                         title={`${threshold}% Requirement Marker`}
                       />
                       {stats.percentage !== null && (
-                        <div 
-                          className={`h-full rounded-full transition-all duration-300 ${
-                            stats.isWarning ? 'bg-rose-500' : stats.isApproaching ? 'bg-amber-500' : 'bg-emerald-500'
-                          }`}
+                        <div
+                          className={`h-full rounded-full transition-all duration-300 ${stats.isWarning ? 'bg-rose-500' : stats.isApproaching ? 'bg-amber-500' : 'bg-emerald-500'
+                            }`}
                           style={{ width: `${Math.min(100, stats.percentage)}%` }}
                         />
                       )}

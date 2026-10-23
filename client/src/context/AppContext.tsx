@@ -44,15 +44,18 @@ import { loadFromStorage, saveToStorage } from '../utils/storage'
 import { calculateSubjectAttendance } from '../utils/attendanceCalculator'
 import { 
   detectTimetableConflicts, 
-  calculateDurationFromTimes, 
   sanitizeTimetableEntries, 
-  normalizeTimeTo24H 
+  normalizeTimeTo24H,
+  timeToMinutes,
+  minutesToTime,
+  validateTimes
 } from '../utils/timetableUtils'
 import { 
   canonicalSubjectId, 
   isSameSubject, 
   getDefaultFacultyForSubject 
 } from '../utils/subjectUtils'
+import { resolveFacultyName, resolveFacultyId } from '../data/facultyData'
 
 export type AppTheme = 'warm-sunset' | 'cyber-violet' | 'deep-sapphire' | 'emerald-matrix'
 
@@ -180,19 +183,76 @@ function harmonizeLectureRecords(rawLectures: Lecture[]): Lecture[] {
     return initialLectures
   }
 
-  // 1. Canonicalize subject IDs and sanitize faculty if legacy Kunal Suri was used for DSA III
-  const migrated: Lecture[] = rawLectures.map(l => {
+  // 1. Filter out misleading "Independent Study / Unassigned Slot" entries from lectures.
+  // Independent study / unassigned slots are NOT course lectures and must never count toward attendance.
+  const nonMisleading = rawLectures.filter(l => {
+    const titleLower = (l.title || '').toLowerCase()
+    const notesLower = (l.notes || '').toLowerCase()
+    if (
+      titleLower.includes('independent study') ||
+      titleLower.includes('unassigned slot') ||
+      titleLower.includes('unassigned') ||
+      notesLower.includes('independent study') ||
+      notesLower.includes('unassigned slot')
+    ) {
+      return false
+    }
+    return true
+  })
+
+  // 2. Canonicalize subject IDs, sanitize faculty from single source of truth, and fix time bug
+  const migrated: Lecture[] = nonMisleading.map(l => {
     const canonId = canonicalSubjectId(l.subjectId)
+    
+    // Resolve faculty from single source of truth
     let faculty = l.faculty
-    if (isSameSubject(canonId, 'S5-CS01')) {
+    let facultyId = l.facultyId
+    if (isSameSubject(canonId, 'S5-AI01')) {
+      faculty = 'Dr. Dipanjan Biswas'
+      facultyId = 'fac-dipanjan'
+    } else if (isSameSubject(canonId, 'S5-CS01')) {
       if (!faculty || faculty.includes('Kunal Suri') || faculty.toLowerCase().includes('kunal')) {
         faculty = 'Sanjay Sahu (VF)'
       }
+      facultyId = 'fac-sanjay'
+    } else {
+      faculty = resolveFacultyName(facultyId, canonId, faculty)
+      facultyId = resolveFacultyId(canonId, faculty)
     }
+
+    // Time Sanitization & Fix 10:00 PM rollover bug
+    let startTime = l.startTime ? normalizeTimeTo24H(l.startTime) : undefined
+    let endTime = l.endTime ? normalizeTimeTo24H(l.endTime, startTime) : undefined
+    let durationMinutes = l.durationMinutes || 60
+
+    if (startTime) {
+      let startMin = timeToMinutes(startTime)
+      let endMin = endTime ? timeToMinutes(endTime) : startMin + durationMinutes
+
+      // Detect the 10:00 PM (22:00) bug on morning classes (e.g. 09:00 to 22:00 for a 60-min session)
+      if (endMin - startMin > 4 * 60 && durationMinutes <= 120) {
+        endMin = startMin + durationMinutes
+        endTime = minutesToTime(endMin)
+      }
+
+      // Enforce end > start
+      if (endMin <= startMin) {
+        endMin = startMin + 60
+        endTime = minutesToTime(endMin)
+      }
+
+      // Duration is dynamically computed from times, never stored separately out of sync
+      durationMinutes = endMin - startMin
+    }
+
     return {
       ...l,
       subjectId: canonId,
-      faculty
+      faculty,
+      facultyId,
+      startTime,
+      endTime,
+      durationMinutes
     }
   })
 
@@ -375,10 +435,34 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const addLecture = (data: Omit<Lecture, 'id' | 'createdAt' | 'updatedAt'>): string => {
     const id = `lec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
     const now = new Date().toISOString()
+    const canonSubId = canonicalSubjectId(data.subjectId)
+    const faculty = resolveFacultyName(data.facultyId, canonSubId, data.faculty)
+    const facultyId = data.facultyId || resolveFacultyId(canonSubId, faculty)
+
+    const startTime = data.startTime ? normalizeTimeTo24H(data.startTime) : undefined
+    let endTime = data.endTime ? normalizeTimeTo24H(data.endTime, startTime) : undefined
+    let durationMinutes = data.durationMinutes || 60
+
+    if (startTime && endTime) {
+      const validation = validateTimes(startTime, endTime)
+      if (validation.isValid) {
+        durationMinutes = validation.durationMinutes
+      } else {
+        const startMin = timeToMinutes(startTime)
+        endTime = minutesToTime(startMin + durationMinutes)
+      }
+    } else if (startTime && !endTime) {
+      endTime = minutesToTime(timeToMinutes(startTime) + durationMinutes)
+    }
+
     const newLec: Lecture = {
       ...data,
-      startTime: data.startTime ? normalizeTimeTo24H(data.startTime) : undefined,
-      endTime: data.endTime ? normalizeTimeTo24H(data.endTime, true) : undefined,
+      subjectId: canonSubId,
+      faculty,
+      facultyId,
+      startTime,
+      endTime,
+      durationMinutes,
       id,
       createdAt: now,
       updatedAt: now,
@@ -390,15 +474,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const addMultipleLectures = (lecturesData: Array<Omit<Lecture, 'id' | 'createdAt' | 'updatedAt'>>) => {
     const now = new Date().toISOString()
-    const created: Lecture[] = lecturesData.map((data, idx) => ({
-      ...data,
-      startTime: data.startTime ? normalizeTimeTo24H(data.startTime) : undefined,
-      endTime: data.endTime ? normalizeTimeTo24H(data.endTime, true) : undefined,
-      id: `lec-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 7)}`,
-      createdAt: now,
-      updatedAt: now,
-      isEdited: false
-    }))
+    const created: Lecture[] = lecturesData.map((data, idx) => {
+      const canonSubId = canonicalSubjectId(data.subjectId)
+      const faculty = resolveFacultyName(data.facultyId, canonSubId, data.faculty)
+      const facultyId = data.facultyId || resolveFacultyId(canonSubId, faculty)
+
+      const startTime = data.startTime ? normalizeTimeTo24H(data.startTime) : undefined
+      let endTime = data.endTime ? normalizeTimeTo24H(data.endTime, startTime) : undefined
+      let durationMinutes = data.durationMinutes || 60
+
+      if (startTime && endTime) {
+        const validation = validateTimes(startTime, endTime)
+        if (validation.isValid) {
+          durationMinutes = validation.durationMinutes
+        } else {
+          const startMin = timeToMinutes(startTime)
+          endTime = minutesToTime(startMin + durationMinutes)
+        }
+      } else if (startTime && !endTime) {
+        endTime = minutesToTime(timeToMinutes(startTime) + durationMinutes)
+      }
+
+      return {
+        ...data,
+        subjectId: canonSubId,
+        faculty,
+        facultyId,
+        startTime,
+        endTime,
+        durationMinutes,
+        id: `lec-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 7)}`,
+        createdAt: now,
+        updatedAt: now,
+        isEdited: false
+      }
+    })
     setLectures(prev => [...created, ...prev])
   }
 
@@ -406,11 +516,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const now = new Date().toISOString()
     setLectures(prev => prev.map(l => {
       if (l.id === id) {
+        const merged = { ...l, ...updates }
+        const canonSubId = canonicalSubjectId(merged.subjectId)
+        const faculty = resolveFacultyName(merged.facultyId, canonSubId, merged.faculty)
+        const facultyId = merged.facultyId || resolveFacultyId(canonSubId, faculty)
+
+        let startTime = merged.startTime ? normalizeTimeTo24H(merged.startTime) : undefined
+        let endTime = merged.endTime ? normalizeTimeTo24H(merged.endTime, startTime) : undefined
+        let durationMinutes = merged.durationMinutes || 60
+
+        if (startTime && endTime) {
+          const validation = validateTimes(startTime, endTime)
+          if (validation.isValid) {
+            durationMinutes = validation.durationMinutes
+          } else {
+            const startMin = timeToMinutes(startTime)
+            endTime = minutesToTime(startMin + durationMinutes)
+          }
+        } else if (startTime && !endTime) {
+          endTime = minutesToTime(timeToMinutes(startTime) + durationMinutes)
+        }
+
         return {
-          ...l,
-          ...updates,
+          ...merged,
+          subjectId: canonSubId,
+          faculty,
+          facultyId,
+          startTime,
+          endTime,
+          durationMinutes,
           updatedAt: now,
-          isEdited: true // Audit-friendly flag that record was modified
+          isEdited: true
         }
       }
       return l
@@ -689,7 +825,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const logTimetableAsLecture = (timetableId: string, status: AttendanceStatus = 'attended'): string => {
     const entry = timetableEntries.find(e => e.id === timetableId)
     if (!entry) return ''
-    if (entry.slotType !== 'lecture') return '' // Breaks/free periods never count toward attendance
+    if (entry.slotType !== 'lecture') return '' // Breaks/free periods/independent study never count toward attendance
+    const notesLower = (entry.notes || '').toLowerCase()
+    if (notesLower.includes('independent study') || notesLower.includes('unassigned')) return ''
 
     const todayStr = new Date().toISOString().split('T')[0]
     const lectureDate = entry.specificDate || todayStr
@@ -708,14 +846,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return existing.id
     }
 
-    const dur = entry.durationMinutes || (entry.startTime && entry.endTime ? calculateDurationFromTimes(entry.startTime, entry.endTime) : 60)
     const canonSubId = canonicalSubjectId(entry.subjectId) || 'S5-CS01'
+    const faculty = resolveFacultyName(entry.facultyId, canonSubId, entry.faculty)
+    const facultyId = entry.facultyId || resolveFacultyId(canonSubId, faculty)
+    const dur = entry.startTime && entry.endTime 
+      ? Math.max(15, timeToMinutes(entry.endTime) - timeToMinutes(entry.startTime))
+      : (entry.durationMinutes || 60)
 
     return addLecture({
       date: lectureDate,
       subjectId: canonSubId,
       title: expectedTitle,
-      faculty: entry.faculty || sub?.faculty || getDefaultFacultyForSubject(canonSubId),
+      faculty,
+      facultyId,
       startTime: entry.startTime,
       endTime: entry.endTime,
       durationMinutes: dur,

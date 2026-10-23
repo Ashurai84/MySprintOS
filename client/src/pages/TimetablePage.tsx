@@ -26,13 +26,16 @@ import {
   ALL_WEEK_DAYS,
   getEntriesForDate,
   detectTimetableConflicts,
-  getDayOfWeekFromDate
+  getDayOfWeekFromDate,
+  validateTimes,
+  timeToMinutes
 } from '../utils/timetableUtils'
 import { 
   canonicalSubjectId, 
   isSameSubject, 
   getDefaultFacultyForSubject 
 } from '../utils/subjectUtils'
+import { resolveFacultyName, resolveFacultyId } from '../data/facultyData'
 
 interface TimetablePageProps {
   onOpenQuickLecture?: (subjectId?: string) => void
@@ -193,8 +196,19 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
   const handleSaveEntry = (e: React.FormEvent) => {
     e.preventDefault()
     const normStart = normalizeTimeTo24H(formStartTime)
-    const normEnd = normalizeTimeTo24H(formEndTime, true)
-    const dur = Number(formDurationMinutes) || calculateDurationFromTimes(normStart, normEnd)
+    const normEnd = normalizeTimeTo24H(formEndTime, normStart)
+    const timeValidation = validateTimes(normStart, normEnd)
+    if (!timeValidation.isValid) {
+      alert(timeValidation.error || 'End time must be after start time.')
+      return
+    }
+    const dur = Math.max(15, timeToMinutes(normEnd) - timeToMinutes(normStart))
+
+    const canonSubId = formSlotType === 'lecture' ? canonicalSubjectId(formSubjectId) : undefined
+    const faculty = formSlotType === 'lecture'
+      ? resolveFacultyName(undefined, canonSubId, formFaculty)
+      : undefined
+    const facultyId = formSlotType === 'lecture' ? resolveFacultyId(canonSubId, faculty) : undefined
 
     const payload = {
       dayOfWeek: formIsRecurring ? formDayOfWeek : new Date(formSpecificDate).getDay(),
@@ -203,8 +217,9 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
       endTime: normEnd,
       durationMinutes: dur,
       slotType: formSlotType,
-      subjectId: formSlotType === 'lecture' ? canonicalSubjectId(formSubjectId) : undefined,
-      faculty: formSlotType === 'lecture' ? formFaculty.trim() || undefined : undefined,
+      subjectId: canonSubId,
+      faculty,
+      facultyId,
       classroom: formClassroom.trim() || undefined,
       notes: formNotes.trim() || undefined
     }
@@ -365,7 +380,7 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
           </span>
         </div>
 
-        {/* Quick jump presets to verified screenshot dates and Today in Asia/Kolkata */}
+        {/* Quick jump presets to genuinely different recent dates and Today in Asia/Kolkata */}
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-[11px] text-slate-500">Quick Jump:</span>
           <button
@@ -378,26 +393,25 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
           >
             Today (IST)
           </button>
-          <button
-            onClick={() => setSelectedDate('2026-10-22')}
-            className={`text-[11px] px-2.5 py-1 rounded font-mono transition-colors ${
-              selectedDate === '2026-10-22'
-                ? 'bg-blue-600 text-white font-bold shadow-xs'
-                : 'bg-[#141f36] text-slate-400 hover:text-white border border-[#213254]'
-            }`}
-          >
-            Thu 22 Oct (Historical)
-          </button>
-          <button
-            onClick={() => setSelectedDate('2026-10-23')}
-            className={`text-[11px] px-2.5 py-1 rounded font-mono transition-colors ${
-              selectedDate === '2026-10-23'
-                ? 'bg-blue-600 text-white font-bold shadow-xs'
-                : 'bg-[#141f36] text-slate-400 hover:text-white border border-[#213254]'
-            }`}
-          >
-            Fri 23 Oct (Historical)
-          </button>
+          {[
+            { date: '2026-10-21', label: 'Wed 21 Oct' },
+            { date: '2026-10-22', label: 'Thu 22 Oct' },
+            { date: '2026-10-23', label: 'Fri 23 Oct' }
+          ]
+            .filter(item => item.date !== kolkataToday)
+            .map(item => (
+              <button
+                key={item.date}
+                onClick={() => setSelectedDate(item.date)}
+                className={`text-[11px] px-2.5 py-1 rounded font-mono transition-colors ${
+                  selectedDate === item.date
+                    ? 'bg-blue-600 text-white font-bold shadow-xs'
+                    : 'bg-[#141f36] text-slate-400 hover:text-white border border-[#213254]'
+                }`}
+              >
+                {item.label} (Historical)
+              </button>
+            ))}
         </div>
       </div>
 
@@ -503,10 +517,10 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
 
                       {/* Faculty & Notes */}
                       <div className="flex items-center gap-3 text-xs text-slate-400 mt-1 flex-wrap">
-                        {slot.faculty && (
+                        {resolveFacultyName(slot.facultyId, slot.subjectId, slot.faculty) && (
                           <span className="flex items-center gap-1 text-slate-300">
                             <User className="w-3 h-3 text-blue-400" />
-                            Faculty: <strong className="text-white">{slot.faculty}</strong>
+                            Faculty: <strong className="text-white">{resolveFacultyName(slot.facultyId, slot.subjectId, slot.faculty)}</strong>
                           </span>
                         )}
                         {slot.notes && (
@@ -642,9 +656,9 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
                                 </span>
                               )}
                             </div>
-                            {entry.faculty && (
+                            {resolveFacultyName(entry.facultyId, entry.subjectId, entry.faculty) && (
                               <p className="text-[10px] text-slate-400 truncate mt-0.5">
-                                {entry.faculty}
+                                {resolveFacultyName(entry.facultyId, entry.subjectId, entry.faculty)}
                               </p>
                             )}
                             {entry.classroom && (

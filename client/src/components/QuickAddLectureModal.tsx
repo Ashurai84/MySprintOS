@@ -20,7 +20,9 @@ import {
   calculateDurationFromTimes, 
   calculateEndTimeFromDuration,
   normalizeTimeTo24H,
-  formatTimeTo12H
+  formatTimeTo12H,
+  validateTimes,
+  timeToMinutes
 } from '../utils/timetableUtils'
 import { 
   canonicalSubjectId, 
@@ -211,7 +213,16 @@ export const QuickAddLectureModal: React.FC<QuickAddLectureModalProps> = ({
     if (!title.trim()) return
 
     const normStart = startTime ? normalizeTimeTo24H(startTime) : undefined
-    const normEnd = endTime ? normalizeTimeTo24H(endTime, true) : undefined
+    const normEnd = endTime ? normalizeTimeTo24H(endTime, normStart) : undefined
+
+    // End time must be strictly after start time
+    if (normStart && normEnd) {
+      const timeValidation = validateTimes(normStart, normEnd)
+      if (!timeValidation.isValid) {
+        setDuplicateWarning(timeValidation.error || 'End time must be after start time.')
+        return
+      }
+    }
 
     // Duplicate lecture guard for new lecture creation
     if (!editingLecture && !allowDuplicate) {
@@ -236,6 +247,10 @@ export const QuickAddLectureModal: React.FC<QuickAddLectureModalProps> = ({
         .map(c => c.trim())
         .filter(Boolean)
 
+      const calculatedDuration = (normStart && normEnd)
+        ? Math.max(15, timeToMinutes(normEnd) - timeToMinutes(normStart))
+        : (Number(durationMinutes) || 60)
+
       const payload = {
         date,
         subjectId: canonicalSubjectId(subjectId),
@@ -244,7 +259,7 @@ export const QuickAddLectureModal: React.FC<QuickAddLectureModalProps> = ({
         classroom: classroom.trim() || undefined,
         startTime: normStart,
         endTime: normEnd,
-        durationMinutes: Number(durationMinutes) || (normStart && normEnd ? calculateDurationFromTimes(normStart, normEnd) : 60),
+        durationMinutes: calculatedDuration,
         status,
         notes: notes.trim() || undefined,
         whatILearned: whatILearned.trim() || undefined,

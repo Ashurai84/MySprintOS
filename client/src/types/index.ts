@@ -174,6 +174,7 @@ export interface Lecture {
   subjectId: string
   title: string // lecture title / topic
   faculty?: string
+  facultyId?: string
   startTime?: string // "09:00"
   endTime?: string // "10:00"
   durationMinutes: number // scheduled duration in minutes (e.g. 60)
@@ -268,7 +269,7 @@ export interface RevisionSession {
 // SPRINTOS 2.1 TIMETABLE & FACULTY MANAGEMENT INTERFACES
 // -------------------------------------------------------------
 
-export type TimetableSlotType = 'lecture' | 'lunch_break' | 'short_break' | 'free_period' | 'unassigned'
+export type TimetableSlotType = 'lecture' | 'lunch_break' | 'short_break' | 'free_period' | 'unassigned' | 'independent_study'
 
 export interface TimetableEntry {
   id: string
@@ -280,6 +281,7 @@ export interface TimetableEntry {
   slotType: TimetableSlotType
   subjectId?: string
   faculty?: string
+  facultyId?: string
   classroom?: string // e.g. "Classroom 37"
   isHoliday?: boolean
   isRescheduled?: boolean

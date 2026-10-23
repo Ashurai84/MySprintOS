@@ -22,9 +22,15 @@ export function calculateSubjectAttendance(
   minAttendancePercent: number = 75
 ): SubjectAttendanceStats {
   const subjectLectures = lectures.filter(l => {
-    // Strictly exclude any breaks or free periods from attendance
+    // Strictly exclude any breaks, free periods, independent study or unassigned slots from attendance
     const titleLower = (l.title || '').toLowerCase()
-    if (titleLower.includes('lunch break') || titleLower.includes('short break') || titleLower.includes('free period')) {
+    if (
+      titleLower.includes('lunch break') ||
+      titleLower.includes('short break') ||
+      titleLower.includes('free period') ||
+      titleLower.includes('independent study') ||
+      titleLower.includes('unassigned')
+    ) {
       return false
     }
     return isSameSubject(l.subjectId, subjectId)
