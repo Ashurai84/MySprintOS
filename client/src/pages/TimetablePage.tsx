@@ -36,6 +36,8 @@ import {
   getDefaultFacultyForSubject 
 } from '../utils/subjectUtils'
 import { resolveFacultyName, resolveFacultyId } from '../data/facultyData'
+import { Button } from '../components/ui/button'
+import { Badge } from '../components/ui/badge'
 
 interface TimetablePageProps {
   onOpenQuickLecture?: (subjectId?: string) => void
@@ -270,29 +272,30 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1e293d] pb-5">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-              <CalendarClock className="w-6 h-6 text-blue-400" />
+            <h1 className="text-lg sm:text-xl font-semibold text-foreground tracking-tight flex items-center gap-2">
+              <CalendarClock className="w-5 h-5 text-primary" />
               University Timetable & Faculty
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 font-mono">
-              12-Hour AM/PM Time
-            </span>
+            <Badge variant="outline" className="text-[10px] font-mono text-primary border-primary/30">
+              12-Hour Format
+            </Badge>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Official timetable blocks, faculty assignments, classroom locations & schedule conflict warnings in 12-hour format
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Official timetable blocks, verified faculty assignments & schedule conflict detection
           </p>
         </div>
 
         {/* View Mode & Actions */}
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center bg-[#0e1626] p-1 rounded-lg border border-[#1e293d] text-xs">
+          <div className="flex items-center bg-secondary/50 p-1 rounded-md border border-border text-xs">
             <button
               onClick={() => setViewMode('day')}
               className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
-                viewMode === 'day' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                viewMode === 'day' ? 'bg-primary text-primary-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               Day Schedule
@@ -300,26 +303,28 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
             <button
               onClick={() => setViewMode('week')}
               className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
-                viewMode === 'week' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                viewMode === 'week' ? 'bg-primary text-primary-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               Weekly Matrix
             </button>
           </div>
 
-          <button
-            onClick={() => handleOpenAddModal('lecture')}
-            className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+          <Button
+            variant="default"
+            size="sm"
+            onPress={() => handleOpenAddModal('lecture')}
+            className="text-xs h-8 px-3 cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Add Block</span>
-          </button>
+            <Plus className="w-3.5 h-3.5 mr-1" />
+            Add Block
+          </Button>
         </div>
       </div>
 
       {/* Quick Status Message */}
       {quickLogMessage && (
-        <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
+        <div className="p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
           <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
           <span>{quickLogMessage}</span>
         </div>
@@ -327,21 +332,23 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
 
       {/* Conflict Warning Banner */}
       {activeConflicts.length > 0 && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs space-y-2">
+        <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs space-y-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 font-bold text-amber-200">
+            <div className="flex items-center gap-2 font-semibold text-amber-200">
               <AlertTriangle className="w-4 h-4 text-amber-400" />
               <span>Timetable Conflicts Detected for {viewMode === 'day' ? selectedDate : 'Weekly Schedule'} ({activeConflicts.length})</span>
             </div>
-            <button
-              onClick={handleAutoResolveConflicts}
-              className="px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 font-semibold transition-colors flex items-center gap-1 text-[11px]"
+            <Button
+              variant="outline"
+              size="sm"
+              onPress={handleAutoResolveConflicts}
+              className="text-[11px] h-7 px-2.5 font-medium border-amber-500/40 text-amber-200 hover:bg-amber-500/20 cursor-pointer"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Auto-Resolve Conflicts & Align 24h</span>
-            </button>
+              <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-amber-400" />
+              Auto-Resolve & Align 24h
+            </Button>
           </div>
-          <ul className="list-disc pl-5 space-y-0.5 text-amber-300/90 text-[11px]">
+          <ul className="list-disc pl-5 space-y-0.5 text-amber-300/80 text-[11px]">
             {activeConflicts.map((c, idx) => (
               <li key={idx}>{c.message}</li>
             ))}
@@ -350,49 +357,51 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
       )}
 
       {/* Date Navigation Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-xl bg-[#0e1626] border border-[#1e293d]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-lg bg-card border border-border">
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => handleShiftDate(-1)}
-            className="p-1.5 rounded-lg bg-[#141f36] hover:bg-[#1b2b4a] text-slate-300 transition-colors"
+          <Button
+            variant="outline"
+            size="sm"
+            onPress={() => handleShiftDate(-1)}
+            className="h-8 w-8 p-0 cursor-pointer"
             title="Previous Day"
           >
             <ChevronLeft className="w-4 h-4" />
-          </button>
+          </Button>
           
           <input
             type="date"
             value={selectedDate}
             onChange={e => setSelectedDate(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-[#080d1a] border border-[#213254] text-xs font-mono text-white focus-ring"
+            className="px-2.5 py-1.5 rounded-md bg-secondary/40 border border-border text-xs font-mono text-foreground focus-ring"
           />
 
-          <button
-            onClick={() => handleShiftDate(1)}
-            className="p-1.5 rounded-lg bg-[#141f36] hover:bg-[#1b2b4a] text-slate-300 transition-colors"
+          <Button
+            variant="outline"
+            size="sm"
+            onPress={() => handleShiftDate(1)}
+            className="h-8 w-8 p-0 cursor-pointer"
             title="Next Day"
           >
             <ChevronRight className="w-4 h-4" />
-          </button>
+          </Button>
 
-          <span className="text-xs font-semibold text-slate-300 hidden md:inline ml-2">
+          <span className="text-xs font-medium text-muted-foreground hidden md:inline ml-2">
             {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
         </div>
 
-        {/* Quick jump presets to genuinely different recent dates and Today in Asia/Kolkata */}
+        {/* Quick jump presets */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] text-slate-500">Quick Jump:</span>
-          <button
-            onClick={() => setSelectedDate(kolkataToday)}
-            className={`text-[11px] px-2.5 py-1 rounded font-mono transition-colors ${
-              selectedDate === kolkataToday
-                ? 'bg-blue-600 text-white font-bold shadow-xs'
-                : 'bg-[#141f36] text-slate-400 hover:text-white border border-[#213254]'
-            }`}
+          <span className="text-[11px] text-muted-foreground">Quick Jump:</span>
+          <Button
+            variant={selectedDate === kolkataToday ? 'default' : 'outline'}
+            size="sm"
+            onPress={() => setSelectedDate(kolkataToday)}
+            className="text-[11px] font-mono h-7 px-2.5 cursor-pointer"
           >
             Today (IST)
-          </button>
+          </Button>
           {[
             { date: '2026-10-21', label: 'Wed 21 Oct' },
             { date: '2026-10-22', label: 'Thu 22 Oct' },
@@ -400,17 +409,15 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
           ]
             .filter(item => item.date !== kolkataToday)
             .map(item => (
-              <button
+              <Button
                 key={item.date}
-                onClick={() => setSelectedDate(item.date)}
-                className={`text-[11px] px-2.5 py-1 rounded font-mono transition-colors ${
-                  selectedDate === item.date
-                    ? 'bg-blue-600 text-white font-bold shadow-xs'
-                    : 'bg-[#141f36] text-slate-400 hover:text-white border border-[#213254]'
-                }`}
+                variant={selectedDate === item.date ? 'default' : 'outline'}
+                size="sm"
+                onPress={() => setSelectedDate(item.date)}
+                className="text-[11px] font-mono h-7 px-2.5 cursor-pointer"
               >
-                {item.label} (Historical)
-              </button>
+                {item.label}
+              </Button>
             ))}
         </div>
       </div>
@@ -419,27 +426,31 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
       {viewMode === 'day' && (
         <div className="space-y-3">
           {daySlots.length === 0 ? (
-            <div className="p-12 text-center rounded-2xl bg-[#0b0f19] border border-dashed border-[#1e293d] space-y-3">
-              <CalendarClock className="w-10 h-10 text-slate-600 mx-auto" />
-              <h3 className="text-base font-bold text-white">No Timetable Blocks Scheduled</h3>
-              <p className="text-xs text-slate-400 max-w-md mx-auto">
-                No lectures or timetable blocks scheduled for {selectedDate}. You can add a date-specific lecture or set up a recurring weekly schedule for {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })}.
+            <div className="p-10 text-center rounded-lg bg-card border border-dashed border-border space-y-3">
+              <CalendarClock className="w-8 h-8 text-muted-foreground mx-auto" />
+              <h3 className="text-sm font-semibold text-foreground">No Timetable Blocks Scheduled</h3>
+              <p className="text-xs text-muted-foreground max-w-md mx-auto">
+                No lectures or timetable blocks scheduled for {selectedDate}. You can add a date-specific lecture or configure a weekly schedule.
               </p>
-              <div className="flex items-center justify-center gap-2 pt-2 flex-wrap">
-                <button
-                  onClick={() => handleOpenAddModal('lecture')}
-                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold inline-flex items-center gap-1.5 shadow-xs transition-colors"
+              <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onPress={() => handleOpenAddModal('lecture')}
+                  className="text-xs h-8 px-3 cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Add One-Off Lecture</span>
-                </button>
-                <button
-                  onClick={() => handleOpenAddModalForDay(currentDayOfWeek)}
-                  className="px-4 py-2 rounded-lg bg-[#141f36] hover:bg-[#1e2c4c] text-blue-300 border border-blue-500/30 text-xs font-semibold inline-flex items-center gap-1.5 shadow-xs transition-colors"
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Add One-Off Lecture
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onPress={() => handleOpenAddModalForDay(currentDayOfWeek)}
+                  className="text-xs h-8 px-3 cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Recurring Schedule</span>
-                </button>
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Add Recurring Schedule
+                </Button>
               </div>
             </div>
           ) : (
@@ -452,21 +463,21 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
               return (
                 <div
                   key={slot.id}
-                  className={`p-4 rounded-xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                  className={`p-3.5 rounded-lg border transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 ${
                     isBreak
-                      ? 'bg-amber-950/20 border-amber-500/30'
+                      ? 'bg-amber-950/15 border-amber-500/25'
                       : isFree
-                      ? 'bg-slate-900/40 border-slate-700/50'
-                      : 'bg-[#0e1626] border-[#1e293d] hover:border-[#2b3c5e]'
+                      ? 'bg-secondary/30 border-border'
+                      : 'bg-card border-border hover:border-primary/30'
                   }`}
                 >
                   {/* Left Column: Timing & Slot Type Indicator */}
                   <div className="flex items-start sm:items-center gap-3">
-                    <div className="text-center shrink-0 w-32 sm:w-36 bg-[#090e1a] p-2 rounded-lg border border-[#1b273d]">
-                      <span className="block font-mono text-xs sm:text-sm font-bold text-blue-400">
+                    <div className="text-center shrink-0 w-32 sm:w-36 bg-secondary/40 p-2 rounded-md border border-border">
+                      <span className="block font-mono text-xs sm:text-sm font-semibold text-primary">
                         {formatTimeRangeTo12H(slot.startTime, slot.endTime)}
                       </span>
-                      <span className="block text-[10px] text-slate-400 font-mono mt-0.5">
+                      <span className="block text-[10px] text-muted-foreground font-mono mt-0.5">
                         {formatDuration(slot.durationMinutes)}
                       </span>
                     </div>
@@ -474,57 +485,57 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
                         {slot.slotType === 'lecture' && sub && (
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30 font-mono">
+                          <Badge variant="outline" className="text-[11px] font-mono text-primary border-primary/30">
                             {sub.code}
-                          </span>
+                          </Badge>
                         )}
                         {slot.slotType === 'lunch_break' && (
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                          <Badge variant="secondary" className="text-[11px] text-amber-300 border-amber-500/30 flex items-center gap-1">
                             <Coffee className="w-3 h-3" /> Lunch Break
-                          </span>
+                          </Badge>
                         )}
                         {slot.slotType === 'short_break' && (
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          <Badge variant="secondary" className="text-[11px] text-amber-300 border-amber-500/30">
                             Short Break
-                          </span>
+                          </Badge>
                         )}
                         {slot.slotType === 'unassigned' && (
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                          <Badge variant="outline" className="text-[11px] text-muted-foreground border-border">
                             Unassigned Slot
-                          </span>
+                          </Badge>
                         )}
                         {slot.slotType === 'free_period' && (
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                          <Badge variant="secondary" className="text-[11px]">
                             Free Period
-                          </span>
+                          </Badge>
                         )}
                         {slot.classroom && (
-                          <span className="text-[11px] text-slate-400 flex items-center gap-1 bg-[#131d33] px-2 py-0.5 rounded border border-[#21304d]">
-                            <MapPin className="w-3 h-3 text-rose-400" />
+                          <span className="text-[11px] text-muted-foreground flex items-center gap-1 bg-secondary/40 px-2 py-0.5 rounded border border-border">
+                            <MapPin className="w-3 h-3 text-destructive" />
                             {slot.classroom}
                           </span>
                         )}
                         {slot.isHoliday && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                          <Badge variant="destructive" className="text-[10px]">
                             Holiday Exception
-                          </span>
+                          </Badge>
                         )}
                       </div>
 
-                      <h3 className="text-sm font-bold text-white mt-1">
+                      <h3 className="text-sm font-semibold text-foreground mt-1">
                         {slot.slotType === 'lecture' ? sub?.name || 'Academic Lecture' : slot.slotType === 'lunch_break' ? 'University Lunch Break' : 'Open Slot'}
                       </h3>
 
                       {/* Faculty & Notes */}
-                      <div className="flex items-center gap-3 text-xs text-slate-400 mt-1 flex-wrap">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
                         {resolveFacultyName(slot.facultyId, slot.subjectId, slot.faculty) && (
-                          <span className="flex items-center gap-1 text-slate-300">
-                            <User className="w-3 h-3 text-blue-400" />
-                            Faculty: <strong className="text-white">{resolveFacultyName(slot.facultyId, slot.subjectId, slot.faculty)}</strong>
+                          <span className="flex items-center gap-1 text-muted-foreground">
+                            <User className="w-3 h-3" />
+                            Faculty: <strong className="text-foreground font-medium">{resolveFacultyName(slot.facultyId, slot.subjectId, slot.faculty)}</strong>
                           </span>
                         )}
                         {slot.notes && (
-                          <span className="text-slate-400 italic">
+                          <span className="text-muted-foreground italic">
                             "{slot.notes}"
                           </span>
                         )}
@@ -536,45 +547,53 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
                   <div className="flex items-center gap-2 self-end md:self-center shrink-0">
                     {slot.slotType === 'lecture' && (
                       alreadyLogged ? (
-                        <span className="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                        <Badge variant="outline" className="text-xs px-2.5 py-1 text-emerald-400 border-emerald-500/30 flex items-center gap-1 font-medium">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           Logged
-                        </span>
+                        </Badge>
                       ) : (
                         <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => handleQuickLog(slot, 'attended')}
-                            className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-xs transition-colors flex items-center gap-1"
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onPress={() => handleQuickLog(slot, 'attended')}
+                            className="h-7 text-xs px-2.5 cursor-pointer font-medium"
                             title="Log as Attended Lecture"
                           >
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>Log Attended</span>
-                          </button>
-                          <button
-                            onClick={() => handleQuickLog(slot, 'absent')}
-                            className="px-2.5 py-1 rounded-lg bg-[#141f36] hover:bg-rose-900/40 text-slate-400 hover:text-rose-300 text-xs font-medium border border-[#213254] transition-colors"
+                            <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                            Log Attended
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onPress={() => handleQuickLog(slot, 'absent')}
+                            className="h-7 text-xs px-2 cursor-pointer text-muted-foreground hover:text-destructive"
                             title="Log as Absent Lecture"
                           >
-                            <span>Absent</span>
-                          </button>
+                            Absent
+                          </Button>
                         </div>
                       )
                     )}
 
-                    <button
-                      onClick={() => handleOpenEditModal(slot)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#18243c] transition-colors"
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onPress={() => handleOpenEditModal(slot)}
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground cursor-pointer"
                       title="Edit Block"
                     >
                       <Edit3 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setEntryToDelete(slot)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-[#18243c] transition-colors"
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onPress={() => setEntryToDelete(slot)}
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive cursor-pointer"
                       title="Delete Block"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )
@@ -585,116 +604,130 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
 
       {/* WEEKLY MATRIX VIEW (All 7 Weekdays) */}
       {viewMode === 'week' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-          {ALL_WEEK_DAYS.map(day => {
-            const dayEntries = timetableEntries
-              .filter(e => e.dayOfWeek === day.dayNum)
-              .sort((a, b) => a.startTime.localeCompare(b.startTime))
+        <div className="space-y-3">
+          {/* Legend */}
+          <div className="flex items-center gap-4 text-xs text-muted-foreground px-1">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary inline-block" />
+              Regular Weekly Schedule
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
+              Date-Specific Override
+            </span>
+          </div>
 
-            return (
-              <div key={day.dayNum} className="p-3 rounded-xl bg-[#0e1626] border border-[#1e293d] space-y-3 flex flex-col justify-between">
-                <div>
-                  <div className="border-b border-[#1b273d] pb-2 flex items-center justify-between">
-                    <div>
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                        {day.name}
-                      </h4>
-                      <span className="text-[10px] text-slate-500 font-mono">
-                        {dayEntries.length} {dayEntries.length === 1 ? 'slot' : 'slots'}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleOpenAddModalForDay(day.dayNum)}
-                      className="p-1 rounded hover:bg-blue-600/20 text-slate-400 hover:text-blue-300 transition-colors"
-                      title={`Add schedule block for ${day.name}`}
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+            {ALL_WEEK_DAYS.map(day => {
+              const dayEntries = timetableEntries
+                .filter(e => e.dayOfWeek === day.dayNum)
+                .sort((a, b) => a.startTime.localeCompare(b.startTime))
 
-                  {dayEntries.length === 0 ? (
-                    <div className="p-4 text-center rounded-lg bg-[#080d1a]/50 border border-dashed border-[#1b2844] space-y-2 mt-3">
-                      <p className="text-[11px] text-slate-400">No scheduled blocks</p>
-                      <button
-                        onClick={() => handleOpenAddModalForDay(day.dayNum)}
-                        className="px-2 py-1 rounded bg-[#141f36] hover:bg-blue-600/30 text-blue-300 border border-blue-500/20 text-[10px] font-semibold inline-flex items-center gap-1 transition-colors"
+              return (
+                <div key={day.dayNum} className="p-3 rounded-lg bg-card border border-border space-y-2 flex flex-col justify-between">
+                  <div>
+                    <div className="border-b border-border pb-2 flex items-center justify-between">
+                      <div>
+                        <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                          {day.name}
+                        </h4>
+                        <span className="text-[10px] text-muted-foreground font-mono">
+                          {dayEntries.length} {dayEntries.length === 1 ? 'slot' : 'slots'}
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onPress={() => handleOpenAddModalForDay(day.dayNum)}
+                        className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground cursor-pointer"
+                        title={`Add schedule block for ${day.name}`}
                       >
-                        <Plus className="w-3 h-3" />
-                        <span>Add Schedule</span>
-                      </button>
+                        <Plus className="w-3.5 h-3.5" />
+                      </Button>
                     </div>
-                  ) : (
-                    <div className="space-y-2 mt-2">
-                      {dayEntries.map(entry => {
-                        const sub = subjects.find(s => isSameSubject(s.id, entry.subjectId))
-                        const isBreak = entry.slotType === 'lunch_break' || entry.slotType === 'short_break'
-                        return (
-                          <div 
-                            key={entry.id}
-                            onClick={() => handleOpenEditModal(entry)}
-                            className={`p-2 rounded-lg border text-xs cursor-pointer hover:border-blue-500 transition-all ${
-                              isBreak
-                                ? 'bg-amber-950/20 border-amber-500/20 text-amber-300'
-                                : 'bg-[#080d1a] border-[#1b2844] text-white'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                              <span>{formatTimeRangeTo12H(entry.startTime, entry.endTime)}</span>
-                              <span>{entry.durationMinutes}m</span>
-                            </div>
-                            <div className="flex items-center justify-between gap-1 mt-0.5">
-                              <p className="font-bold text-xs truncate">
-                                {entry.slotType === 'lecture' ? sub?.code || entry.subjectId : entry.slotType.replace('_', ' ').toUpperCase()}
-                              </p>
-                              {entry.specificDate ? (
-                                <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-300/80 font-mono shrink-0">
-                                  {entry.specificDate.slice(5)}
-                                </span>
-                              ) : (
-                                <span className="text-[9px] px-1 py-0.2 rounded bg-blue-500/10 text-blue-300/80 font-mono shrink-0">
-                                  Weekly
-                                </span>
+
+                    {dayEntries.length === 0 ? (
+                      <div className="p-4 text-center rounded-md bg-secondary/20 border border-dashed border-border space-y-2 mt-2">
+                        <p className="text-[11px] text-muted-foreground">No scheduled blocks</p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onPress={() => handleOpenAddModalForDay(day.dayNum)}
+                          className="text-[10px] h-6 px-2 cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3 mr-1" />
+                          Add Schedule
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 mt-2">
+                        {dayEntries.map(entry => {
+                          const sub = subjects.find(s => isSameSubject(s.id, entry.subjectId))
+                          const isBreak = entry.slotType === 'lunch_break' || entry.slotType === 'short_break'
+                          return (
+                            <div 
+                              key={entry.id}
+                              onClick={() => handleOpenEditModal(entry)}
+                              className={`p-2 rounded-md border text-xs cursor-pointer transition-all hover:border-primary/40 ${
+                                isBreak
+                                  ? 'bg-amber-950/15 border-amber-500/20 text-amber-200'
+                                  : 'bg-secondary/30 border-border text-foreground'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between text-[10px] font-mono text-muted-foreground">
+                                <span>{formatTimeRangeTo12H(entry.startTime, entry.endTime)}</span>
+                                <span>{entry.durationMinutes}m</span>
+                              </div>
+                              <div className="flex items-center justify-between gap-1 mt-1">
+                                <p className="font-semibold text-xs leading-snug break-words">
+                                  {entry.slotType === 'lecture' ? sub?.code || entry.subjectId : entry.slotType.replace('_', ' ').toUpperCase()}
+                                </p>
+                                {entry.specificDate && (
+                                  <Badge variant="outline" className="text-[9px] px-1 py-0 border-amber-500/30 text-amber-300 font-mono shrink-0">
+                                    {entry.specificDate.slice(5)}
+                                  </Badge>
+                                )}
+                              </div>
+                              {resolveFacultyName(entry.facultyId, entry.subjectId, entry.faculty) && (
+                                <p className="text-[10px] text-muted-foreground truncate mt-0.5">
+                                  {resolveFacultyName(entry.facultyId, entry.subjectId, entry.faculty)}
+                                </p>
+                              )}
+                              {entry.classroom && (
+                                <p className="text-[9px] text-muted-foreground/80 truncate mt-0.5 font-mono">
+                                  📍 {entry.classroom}
+                                </p>
                               )}
                             </div>
-                            {resolveFacultyName(entry.facultyId, entry.subjectId, entry.faculty) && (
-                              <p className="text-[10px] text-slate-400 truncate mt-0.5">
-                                {resolveFacultyName(entry.facultyId, entry.subjectId, entry.faculty)}
-                              </p>
-                            )}
-                            {entry.classroom && (
-                              <p className="text-[9px] text-slate-500 truncate mt-0.5 font-mono">
-                                📍 {entry.classroom}
-                              </p>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       )}
 
       {/* Add / Edit Timetable Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-background/80 backdrop-blur-sm">
           <div 
-            className="w-full max-w-lg bg-[#0f172a] border border-[#1e293d] rounded-2xl shadow-2xl overflow-hidden my-6"
+            className="w-full max-w-lg bg-card border border-border rounded-xl shadow-2xl overflow-hidden my-6"
             onClick={e => e.stopPropagation()}
           >
-            <div className="px-6 py-4 border-b border-[#1e293d] flex items-center justify-between bg-[#111c33]">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-secondary/30">
               <div className="flex items-center gap-2">
-                <CalendarClock className="w-5 h-5 text-blue-400" />
-                <h3 className="text-base font-bold text-white">
+                <CalendarClock className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold text-foreground">
                   {editingEntry ? 'Edit Timetable Block' : 'Add Timetable Block'}
                 </h3>
               </div>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg"
+                className="text-muted-foreground hover:text-foreground p-1 rounded-md"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -924,20 +957,24 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
               </div>
 
               {/* Submit Buttons */}
-              <div className="pt-3 border-t border-[#1e293d] flex items-center justify-end gap-2">
-                <button
+              <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
+                <Button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-slate-400 hover:text-white bg-[#141f36] hover:bg-[#1b2b4a] transition-colors"
+                  variant="outline"
+                  size="sm"
+                  onPress={() => setIsModalOpen(false)}
+                  className="cursor-pointer"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-xs transition-colors"
+                  variant="default"
+                  size="sm"
+                  className="cursor-pointer font-medium"
                 >
                   {editingEntry ? 'Update Block' : 'Save Block'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -946,31 +983,31 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
 
       {/* Delete Timetable Entry Confirmation Modal */}
       {entryToDelete && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#111827] border border-rose-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-card border border-destructive/30 rounded-xl max-w-md w-full p-5 space-y-4 shadow-2xl animate-in zoom-in-95">
             <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 shrink-0">
-                <AlertTriangle className="w-6 h-6" />
+              <div className="p-2 rounded-md bg-destructive/10 border border-destructive/20 text-destructive shrink-0">
+                <AlertTriangle className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white tracking-tight">
+                <h3 className="text-base font-semibold text-foreground tracking-tight">
                   Confirm Timetable Block Deletion
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Are you sure you want to remove this block from the schedule?
                 </p>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#0b0f19] border border-[#1e293d] space-y-1.5 text-xs">
-              <div className="font-bold text-white">
+            <div className="p-3 rounded-md bg-secondary/30 border border-border space-y-1 text-xs">
+              <div className="font-semibold text-foreground">
                 {entryToDelete.slotType === 'lecture' 
                   ? `${subjects.find(s => isSameSubject(s.id, entryToDelete.subjectId))?.name || 'Academic Lecture'}` 
                   : entryToDelete.slotType === 'lunch_break' 
                   ? 'Lunch Break' 
                   : entryToDelete.notes || 'Timetable Slot'}
               </div>
-              <div className="text-slate-400 font-mono flex items-center gap-2 flex-wrap">
+              <div className="text-muted-foreground font-mono flex items-center gap-2 flex-wrap">
                 <span>{entryToDelete.specificDate || `Every ${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][entryToDelete.dayOfWeek]}`}</span>
                 <span>•</span>
                 <span>{formatTimeRangeTo12H(entryToDelete.startTime, entryToDelete.endTime)}</span>
@@ -991,8 +1028,8 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
 
             {/* Attendance & Logging Warning */}
             {entryToDelete.slotType === 'lecture' && isSlotLogged(entryToDelete) && (
-              <div className="p-3 rounded-lg bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs space-y-1">
-                <div className="font-bold text-amber-300 flex items-center gap-1.5">
+              <div className="p-3 rounded-md bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs space-y-1">
+                <div className="font-semibold text-amber-200 flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5" />
                   <span>Related Attendance Log Preserved</span>
                 </div>
@@ -1002,26 +1039,30 @@ export const TimetablePage: React.FC<TimetablePageProps> = ({ onOpenQuickLecture
               </div>
             )}
 
-            <div className="pt-2 border-t border-[#1e293d] flex items-center justify-end gap-2">
-              <button
+            <div className="pt-2 border-t border-border flex items-center justify-end gap-2">
+              <Button
                 type="button"
-                onClick={() => setEntryToDelete(null)}
-                className="px-4 py-2 rounded-lg text-slate-300 hover:text-white bg-[#1e293b] hover:bg-[#283548] text-xs font-semibold transition-colors"
+                variant="outline"
+                size="sm"
+                onPress={() => setEntryToDelete(null)}
+                className="cursor-pointer"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                onClick={() => {
+                variant="destructive"
+                size="sm"
+                onPress={() => {
                   deleteTimetableEntry(entryToDelete.id)
                   setQuickLogMessage('Removed timetable block from schedule.')
                   setEntryToDelete(null)
                   setTimeout(() => setQuickLogMessage(null), 4000)
                 }}
-                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-xs transition-colors"
+                className="cursor-pointer font-medium"
               >
                 Confirm Delete
-              </button>
+              </Button>
             </div>
           </div>
         </div>
