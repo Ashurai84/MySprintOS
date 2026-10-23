@@ -2,9 +2,15 @@ import React, { useState } from 'react'
 import {
   AlertTriangle,
   ArrowRight,
-  Edit2
+  Edit2,
+  CheckCircle2,
+  UserCheck,
+  CalendarClock
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Badge } from '../components/ui/badge'
+import { Button } from '../components/ui/button'
 
 interface AttendancePageProps {
   onOpenQuickLecture?: (subjectId?: string) => void
@@ -55,35 +61,33 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
   }
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-16">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs uppercase font-bold tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">
-              Official University Attendance
-            </span>
-            <span className="text-xs text-slate-400 font-mono">
-              Mandatory Minimum: {threshold}%
-            </span>
+            <h1 className="text-lg sm:text-xl font-semibold text-foreground tracking-tight flex items-center gap-2">
+              <UserCheck className="w-5 h-5 text-emerald-400" />
+              Subject-Wise Attendance Center
+            </h1>
+            <Badge variant="outline" className="text-[10px] font-mono text-primary border-primary/30">
+              Min Threshold: {threshold}%
+            </Badge>
           </div>
-          <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight mt-1">
-            Subject-Wise Attendance Center
-          </h2>
-          <p className="text-xs md:text-sm text-slate-400 mt-0.5">
-            Real-time percentage calculated strictly from individual held sessions. Cancelled and future scheduled sessions are excluded.
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Calculated strictly from individual held sessions. Cancelled and future sessions are excluded.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="px-3.5 py-2 rounded-lg bg-[#111827] border border-[#1e293d] text-xs">
-            <span className="text-slate-400">Semester Status: </span>
+          <div className="px-3 py-1.5 rounded-md bg-secondary/40 border border-border text-xs">
+            <span className="text-muted-foreground">Semester Status: </span>
             {overallPercent !== null ? (
-              <span className={`font-mono font-bold ${overallPercent >= threshold ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {overallPercent}% Aggregate ({totalAttended}/{totalHeld})
+              <span className={`font-mono font-semibold ${overallPercent >= threshold ? 'text-emerald-400' : 'text-destructive'}`}>
+                {overallPercent}% ({totalAttended}/{totalHeld})
               </span>
             ) : (
-              <span className="text-slate-400 font-mono">No sessions held yet</span>
+              <span className="text-muted-foreground font-mono">No sessions held yet</span>
             )}
           </div>
         </div>
@@ -91,68 +95,84 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
 
       {/* Top Banner Alert (If any subject is below 75%) */}
       {totalWarnings > 0 && (
-        <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-500/40 text-rose-200 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-          <div className="space-y-1 text-xs">
-            <h4 className="font-bold text-rose-300">
+        <div className="p-3.5 rounded-lg bg-destructive/10 border border-destructive/25 text-destructive flex items-start gap-3">
+          <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+          <div className="space-y-0.5 text-xs">
+            <h4 className="font-semibold text-destructive">
               Attendance Warning: {totalWarnings} Subject{totalWarnings > 1 ? 's' : ''} Below University Mandatory {threshold}% Threshold
             </h4>
-            <p className="text-rose-200/90 leading-relaxed">
-              University regulations require at least {threshold}% attendance per subject to be eligible for end-semester examinations. Check the consecutive session targets below to recover your attendance standing.
+            <p className="text-destructive/90 leading-relaxed text-[11px]">
+              University regulations require at least {threshold}% attendance per subject to be eligible for end-semester examinations. Check consecutive session targets below.
             </p>
           </div>
         </div>
       )}
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="p-4 rounded-xl bg-[#111827] border border-[#1e293d]">
-          <span className="text-xs text-slate-400 block">Total Held Sessions</span>
-          <div className="text-2xl font-bold font-mono text-white mt-1">
-            {totalHeld}
-          </div>
-          <span className="text-[11px] text-slate-500 font-mono mt-0.5 block">
-            Across 6 subjects
-          </span>
-        </div>
+      {/* Top KPI Metrics Cards using shadcn Card */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+            <span className="text-xs text-muted-foreground font-medium">Total Held</span>
+            <CalendarClock className="w-4 h-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent className="space-y-0.5">
+            <div className="text-2xl font-semibold font-mono tracking-tight text-foreground">
+              {totalHeld}
+            </div>
+            <p className="text-[11px] text-muted-foreground font-mono">Across 6 subjects</p>
+          </CardContent>
+        </Card>
 
-        <div className="p-4 rounded-xl bg-[#111827] border border-[#1e293d]">
-          <span className="text-xs text-emerald-400 block">Attended Sessions</span>
-          <div className="text-2xl font-bold font-mono text-emerald-300 mt-1">
-            {totalAttended}
-          </div>
-          <span className="text-[11px] text-slate-500 font-mono mt-0.5 block">
-            Present in class
-          </span>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+            <span className="text-xs text-emerald-400 font-medium">Attended</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          </CardHeader>
+          <CardContent className="space-y-0.5">
+            <div className="text-2xl font-semibold font-mono tracking-tight text-emerald-400">
+              {totalAttended}
+            </div>
+            <p className="text-[11px] text-muted-foreground font-mono">Present in class</p>
+          </CardContent>
+        </Card>
 
-        <div className="p-4 rounded-xl bg-[#111827] border border-[#1e293d]">
-          <span className="text-xs text-rose-400 block">Absent Sessions</span>
-          <div className="text-2xl font-bold font-mono text-rose-300 mt-1">
-            {totalAbsent}
-          </div>
-          <span className="text-[11px] text-slate-500 font-mono mt-0.5 block">
-            Missed lectures
-          </span>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+            <span className="text-xs text-destructive font-medium">Absent</span>
+            <AlertTriangle className="w-4 h-4 text-destructive" />
+          </CardHeader>
+          <CardContent className="space-y-0.5">
+            <div className="text-2xl font-semibold font-mono tracking-tight text-destructive">
+              {totalAbsent}
+            </div>
+            <p className="text-[11px] text-muted-foreground font-mono">Missed lectures</p>
+          </CardContent>
+        </Card>
 
-        <div className="p-4 rounded-xl bg-[#111827] border border-[#1e293d]">
-          <span className="text-xs text-blue-400 block">Scheduled Upcoming</span>
-          <div className="text-2xl font-bold font-mono text-blue-300 mt-1">
-            {totalScheduled}
-          </div>
-          <span className="text-[11px] text-slate-500 font-mono mt-0.5 block">
-            Awaiting session
-          </span>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+            <span className="text-xs text-primary font-medium">Scheduled</span>
+            <CalendarClock className="w-4 h-4 text-primary" />
+          </CardHeader>
+          <CardContent className="space-y-0.5">
+            <div className="text-2xl font-semibold font-mono tracking-tight text-primary">
+              {totalScheduled}
+            </div>
+            <p className="text-[11px] text-muted-foreground font-mono">Upcoming in schedule</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Subject Cards Grid */}
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-white tracking-tight flex items-center justify-between">
-          <span>Official 6 Course Breakdowns</span>
-          <span className="text-xs text-slate-400 font-normal">Formula: Attended ÷ (Attended + Absent) × 100</span>
-        </h3>
+        <div className="flex items-center justify-between px-1">
+          <h3 className="text-sm font-semibold text-foreground tracking-tight">
+            Official Course Breakdowns
+          </h3>
+          <span className="text-xs text-muted-foreground font-mono">
+            Attended ÷ (Attended + Absent) × 100
+          </span>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {subjects.map(subject => {
@@ -161,73 +181,76 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
             const subjectLectures = lectures.filter(l => l.subjectId === subject.id)
 
             return (
-              <div
+              <Card
                 key={subject.id}
-                className={`p-5 rounded-xl bg-[#111827] border transition-all flex flex-col justify-between ${stats.isWarning
-                    ? 'border-rose-500/50 bg-[#16121a]'
+                className={`transition-all flex flex-col justify-between ${
+                  stats.isWarning
+                    ? 'border-destructive/40 bg-destructive/5'
                     : stats.isApproaching
-                      ? 'border-amber-500/40 bg-[#161413]'
-                      : 'border-[#1e293d] hover:border-slate-700'
-                  }`}
+                    ? 'border-amber-500/30 bg-amber-500/5'
+                    : 'border-border hover:border-primary/30'
+                }`}
               >
-                <div className="space-y-3">
-                  {/* Card Header: Subject Code & Name */}
+                <CardHeader className="space-y-2 pb-2">
                   <div className="flex items-start justify-between gap-3">
-                    <div>
+                    <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-blue-400 bg-[#141e33] px-2 py-0.5 rounded border border-[#213152]">
+                        <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
                           {subject.code}
-                        </span>
-                        <span className="text-xs text-slate-400 font-mono">
+                        </Badge>
+                        <span className="text-xs text-muted-foreground font-mono">
                           {subject.totalHours} Course Hours
                         </span>
                       </div>
-                      <h4 className="text-base font-bold text-white tracking-tight mt-1">
+                      <CardTitle className="text-sm font-semibold text-foreground truncate">
                         {subject.name}
-                      </h4>
-                      <p className="text-xs text-slate-400 mt-0.5">
-                        Faculty: <span className="text-slate-300">{subject.faculty}</span>
+                      </CardTitle>
+                      <p className="text-xs text-muted-foreground">
+                        Faculty: <span className="text-foreground">{subject.faculty}</span>
                       </p>
                     </div>
 
                     {/* Percentage Display Pill */}
                     <div className="text-right shrink-0">
                       {stats.percentage !== null ? (
-                        <div className={`px-3 py-1.5 rounded-lg border font-mono font-bold text-sm ${stats.isWarning
-                            ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-                            : stats.isApproaching
-                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                              : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                          }`}>
+                        <Badge
+                          variant={stats.isWarning ? 'destructive' : stats.isApproaching ? 'outline' : 'secondary'}
+                          className={`font-mono text-xs px-2.5 py-1 ${
+                            !stats.isWarning && !stats.isApproaching ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' : ''
+                          }`}
+                        >
                           {stats.percentage}%
-                        </div>
+                        </Badge>
                       ) : (
-                        <div className="px-2.5 py-1 rounded bg-[#0b0f19] text-slate-400 border border-[#1e293d] text-xs font-mono">
-                          No held sessions yet
-                        </div>
+                        <Badge variant="outline" className="font-mono text-xs text-muted-foreground">
+                          No held data
+                        </Badge>
                       )}
                     </div>
                   </div>
+                </CardHeader>
 
+                <CardContent className="space-y-3">
                   {/* Attendance Visual Bar */}
                   <div>
-                    <div className="flex items-center justify-between text-xs text-slate-400 mb-1 font-mono">
-                      <span>Progress against {threshold}% threshold</span>
-                      <span className="text-white font-semibold">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1 font-mono">
+                      <span>Progress vs {threshold}% target</span>
+                      <span className="text-foreground font-medium">
                         {stats.attended} / {stats.totalHeld} held sessions
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-[#090d16] rounded-full overflow-hidden relative border border-[#1a2538]">
+                    <div className="w-full h-2 bg-secondary/50 rounded-full overflow-hidden relative border border-border">
                       {/* 75% target marker */}
                       <div
-                        className="absolute top-0 bottom-0 w-0.5 bg-slate-500 z-10"
+                        className="absolute top-0 bottom-0 w-0.5 bg-muted-foreground/60 z-10"
                         style={{ left: `${threshold}%` }}
                         title={`${threshold}% Requirement Marker`}
                       />
                       {stats.percentage !== null && (
                         <div
-                          className={`h-full rounded-full transition-all duration-300 ${stats.isWarning ? 'bg-rose-500' : stats.isApproaching ? 'bg-amber-500' : 'bg-emerald-500'
-                            }`}
+                          className={`h-full rounded-full transition-all duration-300 ${
+                            stats.isWarning ? 'bg-destructive' : stats.isApproaching ? 'bg-amber-400' : 'bg-emerald-500'
+                          }`}
                           style={{ width: `${Math.min(100, stats.percentage)}%` }}
                         />
                       )}
@@ -235,37 +258,37 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
                   </div>
 
                   {/* Metrics Row: Attended, Absent, Scheduled, Cancelled */}
-                  <div className="grid grid-cols-4 gap-2 pt-2 text-center text-xs">
-                    <div className="p-2 rounded-lg bg-[#0b0f19] border border-[#1d273a]">
-                      <span className="text-[10px] text-slate-500 uppercase block font-semibold">Attended</span>
-                      <span className="font-mono text-sm font-bold text-emerald-300">{stats.attended}</span>
+                  <div className="grid grid-cols-4 gap-2 pt-1 text-center text-xs">
+                    <div className="p-2 rounded-md bg-secondary/30 border border-border">
+                      <span className="text-[10px] text-muted-foreground uppercase block font-semibold">Attended</span>
+                      <span className="font-mono text-sm font-semibold text-emerald-400">{stats.attended}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-[#0b0f19] border border-[#1d273a]">
-                      <span className="text-[10px] text-slate-500 uppercase block font-semibold">Absent</span>
-                      <span className="font-mono text-sm font-bold text-rose-300">{stats.absent}</span>
+                    <div className="p-2 rounded-md bg-secondary/30 border border-border">
+                      <span className="text-[10px] text-muted-foreground uppercase block font-semibold">Absent</span>
+                      <span className="font-mono text-sm font-semibold text-destructive">{stats.absent}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-[#0b0f19] border border-[#1d273a]">
-                      <span className="text-[10px] text-slate-500 uppercase block font-semibold">Scheduled</span>
-                      <span className="font-mono text-sm font-bold text-blue-300">{stats.scheduled}</span>
+                    <div className="p-2 rounded-md bg-secondary/30 border border-border">
+                      <span className="text-[10px] text-muted-foreground uppercase block font-semibold">Scheduled</span>
+                      <span className="font-mono text-sm font-semibold text-primary">{stats.scheduled}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-[#0b0f19] border border-[#1d273a]">
-                      <span className="text-[10px] text-slate-500 uppercase block font-semibold">Cancelled</span>
-                      <span className="font-mono text-sm font-bold text-slate-400">{stats.cancelled}</span>
+                    <div className="p-2 rounded-md bg-secondary/30 border border-border">
+                      <span className="text-[10px] text-muted-foreground uppercase block font-semibold">Cancelled</span>
+                      <span className="font-mono text-sm font-semibold text-muted-foreground">{stats.cancelled}</span>
                     </div>
                   </div>
 
                   {/* Recovery target notice if warning */}
                   {stats.isWarning && (
-                    <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-500/30 text-rose-200 text-xs space-y-1">
-                      <div className="flex items-center gap-1.5 font-bold text-rose-300">
+                    <div className="p-2.5 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs space-y-0.5">
+                      <div className="flex items-center gap-1.5 font-semibold text-destructive">
                         <AlertTriangle className="w-3.5 h-3.5" />
-                        <span>Action Required to Reach {threshold}%:</span>
+                        <span>Action Required:</span>
                       </div>
-                      <p className="leading-relaxed">
-                        Must attend the next <strong className="font-mono text-white underline">{stats.consecutiveNeededToReachTarget} consecutive lecture sessions</strong> without missing to reach {threshold}%.
+                      <p className="leading-relaxed text-[11px]">
+                        Attend next <strong className="font-mono underline text-foreground">{stats.consecutiveNeededToReachTarget} consecutive lectures</strong> to reach {threshold}%.
                         {!stats.possibleToReachTarget && (
-                          <span className="block text-rose-300 font-semibold mt-1">
-                            Warning: Exceeds standard estimated remaining course hours. Speak with academic faculty mentor.
+                          <span className="block text-destructive font-medium mt-0.5">
+                            Warning: Exceeds standard remaining hours. Consult faculty mentor.
                           </span>
                         )}
                       </p>
@@ -274,73 +297,81 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
 
                   {/* Approaching warning */}
                   {stats.isApproaching && (
-                    <div className="p-2.5 rounded-lg bg-amber-950/30 border border-amber-500/30 text-amber-200 text-xs">
-                      <strong>Approaching Margin:</strong> Attendance is close to the {threshold}% boundary. Do not miss upcoming sessions.
+                    <div className="p-2.5 rounded-md bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs text-[11px]">
+                      <strong>Approaching Margin:</strong> Attendance is close to the {threshold}% boundary. Avoid absences.
                     </div>
                   )}
-                </div>
 
-                {/* Footer Actions: Audit manual correction & View Lectures */}
-                <div className="mt-4 pt-3 border-t border-[#1e293d] flex items-center justify-between">
-                  {isEditing ? (
-                    <div className="w-full flex items-center gap-2">
-                      <div className="flex items-center gap-1 text-xs">
-                        <label className="text-slate-400">Attended:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={manualAttended}
-                          onChange={e => setManualAttended(Math.max(0, Number(e.target.value)))}
-                          className="w-14 px-1.5 py-1 rounded bg-[#0b0f19] border border-[#233352] text-white text-xs font-mono"
-                        />
-                      </div>
-                      <div className="flex items-center gap-1 text-xs">
-                        <label className="text-slate-400">Total Held:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={manualTotal}
-                          onChange={e => setManualTotal(Math.max(0, Number(e.target.value)))}
-                          className="w-14 px-1.5 py-1 rounded bg-[#0b0f19] border border-[#233352] text-white text-xs font-mono"
-                        />
-                      </div>
-                      <button
-                        onClick={() => handleSaveManualEdit(subject.id)}
-                        className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingSubjectId(null)}
-                        className="px-2 py-1 rounded text-slate-400 hover:text-white text-xs"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => handleStartManualEdit(subject.id)}
-                        className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-colors"
-                        title="Audit-friendly manual correction"
-                      >
-                        <Edit2 className="w-3 h-3" />
-                        <span>Manual Correction</span>
-                      </button>
-
-                      {onNavigateToLectures && (
-                        <button
-                          onClick={() => onNavigateToLectures(subject.id)}
-                          className="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+                  {/* Footer Actions: Audit manual correction & View Lectures */}
+                  <div className="pt-2 border-t border-border flex items-center justify-between">
+                    {isEditing ? (
+                      <div className="w-full flex items-center gap-2">
+                        <div className="flex items-center gap-1 text-xs">
+                          <label className="text-muted-foreground text-[11px]">Attended:</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={manualAttended}
+                            onChange={e => setManualAttended(Math.max(0, Number(e.target.value)))}
+                            className="w-12 px-1.5 py-0.5 rounded bg-secondary/50 border border-border text-foreground text-xs font-mono"
+                          />
+                        </div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <label className="text-muted-foreground text-[11px]">Total Held:</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={manualTotal}
+                            onChange={e => setManualTotal(Math.max(0, Number(e.target.value)))}
+                            className="w-12 px-1.5 py-0.5 rounded bg-secondary/50 border border-border text-foreground text-xs font-mono"
+                          />
+                        </div>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onPress={() => handleSaveManualEdit(subject.id)}
+                          className="h-6 text-[11px] px-2 cursor-pointer font-medium"
                         >
-                          <span>View Lectures ({subjectLectures.length})</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
+                          Save
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onPress={() => setEditingSubjectId(null)}
+                          className="h-6 text-[11px] px-2 text-muted-foreground cursor-pointer"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onPress={() => handleStartManualEdit(subject.id)}
+                          className="h-7 text-[11px] text-muted-foreground hover:text-foreground px-2 cursor-pointer"
+                          title="Manual audit correction"
+                        >
+                          <Edit2 className="w-3 h-3 mr-1" />
+                          Correction
+                        </Button>
+
+                        {onNavigateToLectures && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onPress={() => onNavigateToLectures(subject.id)}
+                            className="h-7 text-[11px] font-medium text-primary hover:text-primary/80 px-2 cursor-pointer"
+                          >
+                            <span>Lectures ({subjectLectures.length})</span>
+                            <ArrowRight className="w-3 h-3 ml-1" />
+                          </Button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             )
           })}
         </div>
