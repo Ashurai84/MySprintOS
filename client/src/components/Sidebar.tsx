@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { getKolkataDateString, getEntriesForDate } from '../utils/timetableUtils'
+import { Badge } from './ui/badge'
 
 interface SidebarProps {
   currentTab: string
@@ -43,7 +44,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const allStats = getAllSubjectAttendanceStats()
   const attendanceWarningCount = allStats.filter(s => s.isWarning).length
-
   const pendingAssignmentsCount = tasks.filter(t => t.status !== 'completed').length
 
   const navItems = [
@@ -57,29 +57,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'timetable', 
       label: 'Timetable', 
       icon: Clock,
-      badge: todayTimetableCount > 0 ? `${todayTimetableCount} Today` : '7 Days',
-      badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+      badge: todayTimetableCount > 0 ? `${todayTimetableCount} Today` : undefined,
+      badgeVariant: 'secondary' as const
     },
     { 
       id: 'lectures', 
       label: 'My Lectures', 
       icon: CalendarClock,
-      badge: todayLecturesCount > 0 ? `${todayLecturesCount} Today` : undefined,
-      badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+      badge: todayLecturesCount > 0 ? `${todayLecturesCount}` : undefined,
+      badgeVariant: 'secondary' as const
     },
     { 
       id: 'attendance', 
       label: 'Attendance', 
       icon: UserCheck,
       badge: attendanceWarningCount > 0 ? `${attendanceWarningCount} Alert` : undefined,
-      badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+      badgeVariant: 'destructive' as const
     },
     { 
       id: 'java-recovery', 
       label: 'Java Recovery', 
       icon: Code2,
-      badge: '14 Topics',
-      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+      badge: undefined
     },
     { 
       id: 'learning', 
@@ -92,7 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Assignments', 
       icon: CheckSquare,
       badge: pendingAssignmentsCount > 0 ? `${pendingAssignmentsCount}` : undefined,
-      badgeColor: 'bg-slate-700 text-slate-300 border-slate-600'
+      badgeVariant: 'outline' as const
     },
     { 
       id: 'certifications', 
@@ -104,13 +103,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'subjects', 
       label: 'Subjects & Syllabus', 
       icon: BookOpen,
-      badge: '6 Scope' 
+      badge: undefined 
     },
     { 
       id: 'documents', 
       label: 'Documents', 
       icon: FileText,
-      badge: '7 Files' 
+      badge: undefined 
     },
     { 
       id: 'revision', 
@@ -136,45 +135,45 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Mobile backdrop */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-xs"
+          className="fixed inset-0 bg-background/80 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
 
       {/* Sidebar container */}
       <aside 
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#0e1422] border-r border-[#1e293d] flex flex-col transition-transform duration-200 ease-in-out md:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-200 ease-in-out md:translate-x-0 ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand header */}
-        <div className="p-5 border-b border-[#1e293d]">
+        <div className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs">
-              <Zap className="w-4 h-4 fill-white" />
+            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-xs">
+              <Zap className="w-4 h-4 fill-primary" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold tracking-tight text-white text-base">SprintOS</span>
-                <span className="text-[10px] uppercase font-semibold tracking-wider bg-blue-500/20 text-blue-300 border border-blue-500/30 px-1.5 py-0.5 rounded">
+                <span className="font-semibold tracking-tight text-foreground text-sm">SprintOS</span>
+                <Badge variant="outline" className="text-[10px] uppercase font-mono px-1 py-0 border-primary/30 text-primary">
                   2.0
-                </span>
+                </Badge>
               </div>
-              <p className="text-xs text-slate-400">Semester 5 • Sprint 2</p>
+              <p className="text-[11px] text-muted-foreground">Semester 5 • Sprint 2</p>
             </div>
           </div>
 
           {/* Student & Cohort Pill */}
-          <div className="mt-3.5 p-2.5 rounded-md bg-[#131b2e] border border-[#1f2b42] text-xs space-y-1">
+          <div className="mt-3 p-2 rounded-md bg-secondary/50 border border-border text-xs space-y-0.5">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Student:</span>
-              <span className="font-semibold text-white truncate max-w-[120px]">
+              <span className="text-muted-foreground text-[11px]">Student</span>
+              <span className="font-medium text-foreground truncate max-w-[130px] text-[11px]">
                 {profile.name}
               </span>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-slate-400">
-              <span>Cohort:</span>
-              <span className="font-medium text-blue-400">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-muted-foreground">Cohort</span>
+              <span className="font-medium text-primary text-[11px]">
                 {profile.cohort}
               </span>
             </div>
@@ -182,7 +181,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Navigation links */}
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
           {navItems.map(item => {
             const Icon = item.icon
             const isActive = currentTab === item.id
@@ -190,25 +189,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors text-left focus-ring ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors text-left focus-ring ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-xs font-semibold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#151e30]'
+                    ? 'bg-primary/10 text-primary border border-primary/20 font-semibold'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'
                 }`}
               >
-                <div className="flex items-center gap-2.5">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                  <span>{item.label}</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <span className="truncate">{item.label}</span>
                 </div>
 
                 {item.badge && (
-                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
-                    isActive 
-                      ? 'bg-blue-700/60 text-white border-blue-400/40' 
-                      : (item.badgeColor || 'bg-[#182338] text-slate-400 border-[#233350]')
-                  }`}>
+                  <Badge 
+                    variant={item.badgeVariant || 'outline'}
+                    className="text-[10px] font-mono h-4 px-1.5 py-0 shrink-0"
+                  >
                     {item.badge}
-                  </span>
+                  </Badge>
                 )}
               </button>
             )
@@ -216,25 +214,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         {/* Footer info: 6 Active Subjects Status */}
-        <div className="p-3 border-t border-[#1e293d]">
+        <div className="p-3 border-t border-sidebar-border">
           {attendanceWarningCount > 0 ? (
             <button
               onClick={() => handleNavClick('attendance')}
-              className="w-full p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/25 text-rose-300 text-xs flex items-center justify-between text-left hover:bg-rose-500/15 transition-colors"
+              className="w-full p-2.5 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center justify-between text-left hover:bg-destructive/15 transition-colors focus-ring"
             >
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-rose-400" />
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-destructive" />
                 <span className="font-medium text-[11px]">{attendanceWarningCount} Subject &lt; 75%</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-rose-400" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <div className="px-3 py-2 rounded-lg bg-[#111827] border border-[#1d273a] flex items-center justify-between text-[11px] text-slate-400">
+            <div className="px-3 py-2 rounded-md bg-secondary/40 border border-border flex items-center justify-between text-[11px] text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
-                6 Subjects Tracked
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                6 Subjects Active
               </span>
-              <span className="font-mono text-slate-500">75% Min</span>
+              <span className="font-mono text-muted-foreground/80">75% Min</span>
             </div>
           )}
         </div>

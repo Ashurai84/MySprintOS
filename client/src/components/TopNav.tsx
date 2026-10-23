@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Menu, Plus, Calendar, CalendarClock, Palette, Clock, Check } from 'lucide-react'
+import { Menu, Plus, Calendar, CalendarClock, Clock } from 'lucide-react'
 import { formatFullDate } from '../utils/dateUtils'
 import { useApp } from '../context/AppContext'
-import type { AppTheme } from '../context/AppContext'
+import { Button } from './ui/button'
 
 interface TopNavProps {
   currentTab: string
@@ -14,6 +14,7 @@ interface TopNavProps {
 const tabTitles: Record<string, { title: string; subtitle: string }> = {
   home: { title: 'Home', subtitle: 'Daily Academic Overview & Attendance Status' },
   lectures: { title: 'My Lectures', subtitle: 'Daily Lecture Tracking, Attendance & Notes' },
+  timetable: { title: 'Timetable', subtitle: 'Weekly Schedule & 12-Hour Daily Matrix' },
   attendance: { title: 'Attendance', subtitle: 'Subject-Wise Verification & 75% Target Recovery' },
   learning: { title: 'My Learning', subtitle: 'Daily Reflections, Understood Concepts & Questions' },
   assignments: { title: 'Assignments', subtitle: 'Coursework, Labs, Projects & Submissions' },
@@ -21,19 +22,11 @@ const tabTitles: Record<string, { title: string; subtitle: string }> = {
   documents: { title: 'Documents', subtitle: 'In-App Document Reader (PDF, XLSX, DOCX)' },
   revision: { title: 'Revision & Progress', subtitle: 'Topic Review Queue & Daily Self-Recall Checklist' },
   settings: { title: 'Settings', subtitle: 'Academic Configuration, Student Profile & Data Backup' },
-  // Legacy aliases
+  'java-recovery': { title: 'Java Recovery', subtitle: 'Diagnostic Recovery & Topic Re-evaluation' },
+  certifications: { title: 'Courses & Certs', subtitle: 'Professional Credentials & Verified Certificates' },
   dashboard: { title: 'Home', subtitle: 'Daily Academic Overview & Attendance Status' },
-  tasks: { title: 'Assignments', subtitle: 'Coursework & Deliverables' },
-  certifications: { title: 'Certifications', subtitle: 'Skill Credentials' },
-  resources: { title: 'Resource Library', subtitle: 'Textbooks & Guides' }
+  tasks: { title: 'Assignments', subtitle: 'Coursework & Deliverables' }
 }
-
-const themes: Array<{ id: AppTheme; label: string; icon: string; preview: string }> = [
-  { id: 'warm-sunset', label: 'Warm Sunset Amber & Gold', icon: '🌅', preview: 'bg-gradient-to-r from-amber-500 to-orange-500' },
-  { id: 'cyber-violet', label: 'Midnight Cyber Violet', icon: '🌌', preview: 'bg-gradient-to-r from-purple-500 to-pink-500' },
-  { id: 'emerald-matrix', label: 'Emerald Matrix & Jade', icon: '🌲', preview: 'bg-gradient-to-r from-emerald-500 to-teal-500' },
-  { id: 'deep-sapphire', label: 'Deep Space Sapphire', icon: '🌊', preview: 'bg-gradient-to-r from-blue-500 to-cyan-500' }
-]
 
 export const TopNav: React.FC<TopNavProps> = ({
   currentTab,
@@ -41,10 +34,9 @@ export const TopNav: React.FC<TopNavProps> = ({
   onOpenQuickLecture,
   onOpenQuickTask
 }) => {
-  const { profile, theme, setTheme } = useApp()
+  const { profile } = useApp()
   const info = tabTitles[currentTab] || { title: 'SprintOS', subtitle: 'Academic Command Center' }
   const todayStr = formatFullDate()
-  const [isThemeOpen, setIsThemeOpen] = useState(false)
   const [time12H, setTime12H] = useState('')
 
   useEffect(() => {
@@ -64,113 +56,69 @@ export const TopNav: React.FC<TopNavProps> = ({
   }, [])
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-[#0e1422]/90 backdrop-blur-md border-b border-[#1e293d] px-4 md:px-8 flex items-center justify-between">
+    <header className="sticky top-0 z-30 h-14 bg-card/85 backdrop-blur-md border-b border-border px-4 md:px-8 flex items-center justify-between">
       {/* Left side: Hamburger + Page Title */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => setIsMobileOpen(true)}
-          className="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-[#1a2338] md:hidden focus-ring"
+          className="p-1.5 -ml-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 md:hidden focus-ring"
           aria-label="Open navigation menu"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         <div>
-          <h1 className="text-base md:text-lg font-semibold text-white tracking-tight leading-none">
+          <h1 className="text-sm md:text-base font-semibold text-foreground tracking-tight leading-none">
             {info.title}
           </h1>
-          <p className="text-xs text-slate-400 hidden sm:block mt-0.5">
+          <p className="text-[11px] text-muted-foreground hidden sm:block mt-0.5">
             {info.subtitle}
           </p>
         </div>
       </div>
 
-      {/* Right side: Live Date, 12-Hour Time, Theme Switcher & Quick Actions */}
+      {/* Right side: 12-Hour Clock, Date, Essential Actions & Avatar */}
       <div className="flex items-center gap-2 sm:gap-2.5">
-        {/* 12-Hour Live Clock Pill */}
+        {/* 12-Hour Live Clock */}
         <div 
-          className="hidden md:flex items-center gap-1.5 text-xs text-amber-300/90 bg-[#162035] border border-[#21304d] px-2.5 py-1.5 rounded-lg font-mono"
-          title="Standard 12-Hour Time"
+          className="hidden md:flex items-center gap-1.5 text-xs text-primary bg-secondary/50 border border-border px-2.5 py-1 rounded-md font-mono"
+          title="Current IST (12-Hour)"
         >
-          <Clock className="w-3.5 h-3.5 text-amber-400" />
-          <span>{time12H} <span className="text-[10px] text-slate-400">(12h)</span></span>
+          <Clock className="w-3.5 h-3.5 text-primary" />
+          <span>{time12H}</span>
         </div>
 
-        {/* Live Date Pill */}
-        <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-300 bg-[#141d30] border border-[#212e47] px-3 py-1.5 rounded-lg">
-          <Calendar className="w-3.5 h-3.5 text-blue-400" />
+        {/* Live Date */}
+        <div className="hidden lg:flex items-center gap-1.5 text-xs text-muted-foreground bg-secondary/30 border border-border px-2.5 py-1 rounded-md">
+          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
           <span>{todayStr}</span>
         </div>
 
-        {/* Color Theme Selector Dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => setIsThemeOpen(prev => !prev)}
-            className="flex items-center gap-1.5 text-xs text-slate-300 bg-[#141d30] hover:bg-[#1f2d4a] border border-[#212e47] px-2.5 py-1.5 rounded-lg transition-colors focus-ring"
-            title="Change Web App Color Theme"
-          >
-            <Palette className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">Theme</span>
-          </button>
-
-          {isThemeOpen && (
-            <div 
-              className="absolute right-0 mt-2 w-64 bg-[#14110e] border border-[#382c1f] rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 space-y-1"
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="px-2 py-1 text-[11px] font-bold text-amber-300 uppercase tracking-wider border-b border-[#2e2419] mb-1">
-                Color Themes
-              </div>
-              {themes.map(t => {
-                const isActive = theme === t.id
-                return (
-                  <button
-                    key={t.id}
-                    onClick={() => {
-                      setTheme(t.id)
-                      setIsThemeOpen(false)
-                    }}
-                    className={`w-full text-left px-2.5 py-2 rounded-lg text-xs flex items-center justify-between transition-colors ${
-                      isActive 
-                        ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30 font-semibold' 
-                        : 'text-slate-300 hover:bg-[#261f18] hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm">{t.icon}</span>
-                      <span className="truncate">{t.label}</span>
-                    </div>
-                    {isActive && <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-                  </button>
-                )
-              })}
-            </div>
-          )}
-        </div>
-
         {/* Quick Add Assignment Button (Secondary) */}
-        <button
-          onClick={onOpenQuickTask}
-          className="hidden sm:flex items-center gap-1 text-xs font-medium text-slate-300 bg-[#162035] hover:bg-[#1f2d4a] hover:text-white border border-[#22314e] px-3 py-2 rounded-lg transition-colors focus-ring"
-          title="Add coursework or lab deliverable"
+        <Button
+          variant="outline"
+          size="sm"
+          onPress={onOpenQuickTask}
+          className="hidden sm:inline-flex text-xs h-8 px-2.5 cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5 text-slate-400" />
-          <span>Assignment</span>
-        </button>
+          <Plus className="w-3.5 h-3.5 mr-1" />
+          Assignment
+        </Button>
 
         {/* Primary Quick Add Lecture Button */}
-        <button
-          onClick={onOpenQuickLecture}
-          className="flex items-center gap-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-xs px-3.5 py-2 rounded-lg transition-colors focus-ring"
-          title="Add a daily lecture session"
+        <Button
+          variant="default"
+          size="sm"
+          onPress={onOpenQuickLecture}
+          className="text-xs h-8 px-3 font-medium cursor-pointer"
         >
-          <CalendarClock className="w-4 h-4" />
-          <span>Log Lecture</span>
-        </button>
+          <CalendarClock className="w-3.5 h-3.5 mr-1" />
+          Log Lecture
+        </Button>
 
-        {/* User avatar indicator */}
+        {/* Student Avatar */}
         <div 
-          className="w-8 h-8 rounded-full bg-slate-800 text-slate-200 border border-slate-700 flex items-center justify-center text-xs font-bold ml-1"
+          className="w-7 h-7 rounded-full bg-secondary text-foreground border border-border flex items-center justify-center text-xs font-semibold ml-1 shrink-0"
           title={`${profile.name} (${profile.cohort})`}
         >
           {profile.name.charAt(0)}

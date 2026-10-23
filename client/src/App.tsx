@@ -53,7 +53,7 @@ const AppMain: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-[#e2e8f0] flex">
+    <div className="min-h-screen bg-background text-foreground flex">
       {/* Sidebar Navigation */}
       <Sidebar
         currentTab={currentTab}
