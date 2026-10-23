@@ -1,0 +1,24 @@
+{
+  "name": "sprint-os",
+  "version": "1.0.0",
+  "description": "SprintOS - Personal Semester 5 Academic Command Center (Elon Musk Cohort)",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix client run dev",
+    "server": "node server/index.js",
+    "server:dev": "node --watch server/index.js",
+    "build": "npm --prefix client run build",
+    "test": "npm --prefix client test",
+    "lint": "npm --prefix client run lint",
+    "preview": "npm --prefix client run preview"
+  },
+  "keywords": [
+    "sprint-os",
+    "academic-dashboard",
+    "itm-skills-university",
+    "elon-musk-cohort",
+    "semester-5"
+  ],
+  "author": "Ashutosh Rai",
+  "license": "ISC"
+}

@@ -1,0 +1,1932 @@
+{
+  "semester": "Semester 5",
+  "sprint": "Sprint 2",
+  "academicYear": "2026-27",
+  "cohort": "Elon Musk",
+  "institution": "ITM Skills University - School of FutureTech",
+  "dates": {
+    "classesStart": "2026-10-12",
+    "classesEnd": "2026-12-05",
+    "internalAssessmentStart": "2026-10-12",
+    "internalAssessmentEnd": "2026-12-05",
+    "examsStart": "2026-12-10",
+    "examsEnd": "2026-12-22",
+    "winterVacationStart": "2026-12-26",
+    "winterVacationEnd": "2027-01-03"
+  },
+  "holidays": [
+    {
+      "name": "Dussehra (Vijayadashami)",
+      "date": "2026-10-20",
+      "type": "Public Holiday"
+    },
+    {
+      "name": "Diwali Break",
+      "startDate": "2026-11-07",
+      "endDate": "2026-11-15",
+      "type": "Vacation Break"
+    },
+    {
+      "name": "Guru Nanak Jayanti",
+      "date": "2026-11-24",
+      "type": "Public Holiday"
+    },
+    {
+      "name": "Winter Break",
+      "startDate": "2026-12-25",
+      "endDate": "2027-01-03",
+      "type": "Vacation Break"
+    }
+  ],
+  "evaluation": {
+    "internalMarks": 60,
+    "externalMarks": 40,
+    "totalMarks": 100,
+    "minAttendancePercent": 75,
+    "internalBreakdown": {
+      "attendance": 5,
+      "classParticipation": 5,
+      "assignments": 30,
+      "miniProject": 20
+    },
+    "externalBreakdown": {
+      "theoryExam": 20,
+      "projectViva": 20
+    }
+  },
+  "subjects": [
+    {
+      "id": "llm-rag-agentic-ai",
+      "code": "S5-AI01",
+      "name": "LLMs, RAG & Agentic AI",
+      "totalHours": 30,
+      "faculty": "Dr. Dipanjan Biswas",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Core AI Specialization",
+      "hasDetailedSyllabus": true,
+      "description": "Understand Generative AI, Transformer architecture, prompt engineering, RAG pipelines, vector embeddings, multi-agent workflows, and production deployment.",
+      "modules": [
+        {
+          "unitNumber": "Unit 1",
+          "title": "Foundations of Generative AI and Large Language Models",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "llm-t1-1",
+              "title": "Introduction to Generative AI vs Traditional Machine Learning"
+            },
+            {
+              "id": "llm-t1-2",
+              "title": "Transformer Architecture & Self-Attention Mechanisms"
+            },
+            {
+              "id": "llm-t1-3",
+              "title": "Tokenization, Embeddings & Latent Space Representation"
+            },
+            {
+              "id": "llm-t1-4",
+              "title": "Pre-training, Fine-tuning, and Instruction Tuning Concepts"
+            },
+            {
+              "id": "llm-t1-5",
+              "title": "LLM Scaling Laws, Quantization & Compute Efficiency"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 2",
+          "title": "Prompt Engineering and LLM API Integration",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "llm-t2-1",
+              "title": "Zero-shot, Few-shot, and Chain-of-Thought (CoT) Prompting"
+            },
+            {
+              "id": "llm-t2-2",
+              "title": "Sampling Parameters: Temperature, Top-p, Top-k, Presence Penalty"
+            },
+            {
+              "id": "llm-t2-3",
+              "title": "System Prompts, Role Conditioning & Structured Output Parsing"
+            },
+            {
+              "id": "llm-t2-4",
+              "title": "LLM API Integration with Python (OpenAI, Anthropic, Gemini)"
+            },
+            {
+              "id": "llm-t2-5",
+              "title": "Prompt Robustness, Prompt Injection, Jailbreaks & Guardrails"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 3",
+          "title": "Retrieval-Augmented Generation, Embeddings, and Evaluation",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "llm-t3-1",
+              "title": "RAG Architecture Overview, Motivation & Failure Modes"
+            },
+            {
+              "id": "llm-t3-2",
+              "title": "Document Chunking Strategies (Fixed, Recursive, Semantic)"
+            },
+            {
+              "id": "llm-t3-3",
+              "title": "Vector Databases (ChromaDB, Pinecone, FAISS) & Indexing"
+            },
+            {
+              "id": "llm-t3-4",
+              "title": "Similarity Metrics (Cosine Distance, Dot Product, Euclidean)"
+            },
+            {
+              "id": "llm-t3-5",
+              "title": "Reranking & RAG Evaluation Metrics (Faithfulness, Context Relevance)"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 4",
+          "title": "Agentic AI, Tool Use, and Multi-Agent Systems",
+          "hours": 5,
+          "topics": [
+            {
+              "id": "llm-t4-1",
+              "title": "ReAct Framework & Tool Execution Loops"
+            },
+            {
+              "id": "llm-t4-2",
+              "title": "Function Calling & Schema Design for Tools (JSON Schema)"
+            },
+            {
+              "id": "llm-t4-3",
+              "title": "Memory Architectures: Short-term buffer, Summary, Vector Memory"
+            },
+            {
+              "id": "llm-t4-4",
+              "title": "Multi-Agent Collaboration Workflows (LangGraph, CrewAI)"
+            },
+            {
+              "id": "llm-t4-5",
+              "title": "Human-in-the-Loop Safeguards & Error Handling in Autonomous Agents"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 5",
+          "title": "Production Deployment, API Design & LLMOps",
+          "hours": 3,
+          "topics": [
+            {
+              "id": "llm-t5-1",
+              "title": "FastAPI Backend Integration for LLM Services"
+            },
+            {
+              "id": "llm-t5-2",
+              "title": "Containerization with Docker & Local Model Serving (Ollama/vLLM)"
+            },
+            {
+              "id": "llm-t5-3",
+              "title": "Latency Optimization, Caching Strategies & Token Cost Tracking"
+            },
+            {
+              "id": "llm-t5-4",
+              "title": "AI Safety, Data Privacy Compliance & Deployment Checklist"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "llm-a1",
+          "sno": 1,
+          "co": "CO1",
+          "type": "Concept Mapping",
+          "title": "Explain how Generative AI differs from traditional rule-based and supervised ML systems using a real-world example.",
+          "description": "Create a one-page concept map that contrasts traditional ML with Generative AI and Large Language Models. Use a concrete example (e.g., FAQ chatbot vs LLM assistant) to highlight differences in data requirements, capabilities, and limitations."
+        },
+        {
+          "id": "llm-a2",
+          "sno": 2,
+          "co": "CO1",
+          "type": "Short Reflective Essay",
+          "title": "Describe the role of tokenization and embeddings in LLMs in your own words with a simple analogy.",
+          "description": "Write a 500-word reflection explaining tokenization and embeddings, using an analogy from daily life (e.g., words as ingredients, embeddings as flavor profiles). Include how these concepts impact retrieval and generation quality."
+        },
+        {
+          "id": "llm-a3",
+          "sno": 3,
+          "co": "CO2",
+          "type": "Prompt Design Portfolio",
+          "title": "Design prompts that transform a generic model into three different specialized assistants (e.g., teacher, recruiter, customer support agent).",
+          "description": "Create at least 6 prompts (2 per role) showcasing zero-shot, few-shot, and chain-of-thought patterns. For each, show the system prompt, user prompt, and at least one sample response with brief commentary on why the prompt works."
+        },
+        {
+          "id": "llm-a4",
+          "sno": 4,
+          "co": "CO2",
+          "type": "API Integration Task",
+          "title": "Build a small CLI tool that queries an LLM API to summarize a given paragraph into bullet points.",
+          "description": "Implement a Python script that takes text input, calls an LLM API (OpenAI/Gemini or local via Ollama), and prints a concise bullet-point summary. Include configuration via environment variables for API keys and parameters."
+        },
+        {
+          "id": "llm-a5",
+          "sno": 5,
+          "co": "CO2",
+          "type": "Prompt Robustness Study",
+          "title": "Evaluate how temperature and top-p influence the determinism and creativity of LLM outputs for the same task.",
+          "description": "Choose a fixed task (e.g., explanation of binary search) and systematically vary temperature/top-p. Collect outputs in a table and write a 700-word analysis of how style, coherence, and variability change."
+        },
+        {
+          "id": "llm-a6",
+          "sno": 6,
+          "co": "CO3",
+          "type": "RAG Design Document",
+          "title": "Design an end-to-end RAG pipeline for a \u201cDepartment Handbook Assistant\u201d for your college.",
+          "description": "Draw and explain an architecture showing data ingestion, chunking, embeddings, vector store, retrieval, reranking, and answer generation. Specify tools (e.g., LangChain/LlamaIndex, ChromaDB/FAISS) and justify design choices."
+        },
+        {
+          "id": "llm-a7",
+          "sno": 7,
+          "co": "CO3",
+          "type": "Implementation Assignment",
+          "title": "Implement a basic RAG-based PDF Question Answering system using LangChain or LlamaIndex.",
+          "description": "Build a Python app that ingests at least one multi-page PDF, chunks it, stores embeddings in a vector DB, and answers user questions via a simple CLI or web UI. Include basic logging of queries and answers."
+        },
+        {
+          "id": "llm-a8",
+          "sno": 8,
+          "co": "CO3",
+          "type": "RAG Evaluation Task",
+          "title": "Measure and compare the quality of answers from a RAG system vs a pure LLM (no retrieval) on a fixed test set.",
+          "description": "Prepare at least 15 domain-specific questions, run them on both \u201cLLM-only\u201d and your RAG system, and manually rate answers for correctness and faithfulness. Summarize results in charts and a short report."
+        },
+        {
+          "id": "llm-a9",
+          "sno": 9,
+          "co": "CO4",
+          "type": "Tool Schema Design",
+          "title": "Design robust tool/function calling schemas for three tools: web_search, calculator, and calendar_lookup.",
+          "description": "Specify JSON schemas (parameters, types, descriptions, constraints) for each tool so that an LLM can call them reliably. Include 3 example prompts and expected tool call JSON for each."
+        },
+        {
+          "id": "llm-a10",
+          "sno": 10,
+          "co": "CO4",
+          "type": "Single-Agent Tool-Using Demo",
+          "title": "Build an AI agent that can answer questions using both web search (or mock search) and a local knowledge base via RAG.",
+          "description": "Using LangChain/LangGraph or similar, implement an agent with at least two tools: a search-like tool (real or stubbed) and a RAG tool over a small document set. Demonstrate multi-step reasoning for 5 queries."
+        },
+        {
+          "id": "llm-a11",
+          "sno": 11,
+          "co": "CO4",
+          "type": "Multi-Agent Workflow Design",
+          "title": "Design a multi-agent workflow for \u201cAI Research Assistant\u201d with at least three roles.",
+          "description": "Define roles (e.g., Researcher, Summarizer, Critic), responsibilities, communication protocol, and failure-handling strategy. Represent the workflow as a sequence diagram with narrative explanation."
+        },
+        {
+          "id": "llm-a12",
+          "sno": 12,
+          "co": "CO5",
+          "type": "Deployment Plan",
+          "title": "Prepare a deployment and monitoring plan for turning a classroom prototype agent/RAG app into a production-ready service.",
+          "description": "Describe target environment (server/on-prem/cloud), API gateway, authentication, logging, metrics, alerting, and versioning strategy for prompts and models. Include a simple CI/CD outline using GitHub."
+        },
+        {
+          "id": "llm-a13",
+          "sno": 13,
+          "co": "CO5",
+          "type": "Containerization & API Assignment",
+          "title": "Containerize a simple LLM-powered API using FastAPI and Docker.",
+          "description": "Expose a /generate endpoint that calls an LLM (hosted or local), package the app in a Docker image, and provide steps to run it locally. Include basic request validation and error responses."
+        },
+        {
+          "id": "llm-a14",
+          "sno": 14,
+          "co": "CO6",
+          "type": "Ethics & Safety Case Study",
+          "title": "Analyze an LLM misuse scenario (e.g., harmful content, data leakage) and propose concrete guardrails and policies.",
+          "description": "Given a short case describing potential misuse in an educational or enterprise setting, write a 1500-word analysis covering risks, stakeholders, mitigation strategies (prompting, filters, access control), and monitoring."
+        },
+        {
+          "id": "llm-a15",
+          "sno": 15,
+          "co": "CO6",
+          "type": "Policy Brief on Emerging Trends",
+          "title": "Write a policy brief for your department on how to responsibly adopt agentic AI and RAG systems over the next 3 years.",
+          "description": "Summarize key trends (on-device LLMs, RAG+agents, MCP ecosystem), opportunities, risks, and recommended guidelines for student/faculty use in 2\u20133 pages targeted at HOD/principal."
+        }
+      ],
+      "certifications": [
+        {
+          "name": "Gemini University Student Certification",
+          "platform": "Google for Education",
+          "hours": "1\u20132 Hrs (Exam only)",
+          "description": "Free, exam-only certification testing GenAI fundamentals, prompting, and responsible AI use with Google Gemini; instant PDF certificate on passing, no course purchase required.",
+          "url": "https://educertifications.google/"
+        },
+        {
+          "name": "Building AI Agents with RAG and LangChain (Certification)",
+          "platform": "Coursera / Activeloop",
+          "hours": "8 Hrs",
+          "description": "Project- and assessment-based certification covering RAG pipelines, embeddings, LangChain, and LlamaIndex, directly aligned with Unit III of the syllabus.",
+          "url": "https://www.coursera.org/learn/fundamentals-of-ai-agents-using-rag-and-langchain"
+        }
+      ],
+      "resources": [
+        {
+          "title": "Attention Is All You Need (Original Transformer Paper)",
+          "type": "Research Paper",
+          "url": "https://arxiv.org/abs/1706.03762",
+          "description": "Foundational paper on self-attention and transformer architecture."
+        },
+        {
+          "title": "LangChain Official Documentation",
+          "type": "Documentation",
+          "url": "https://python.langchain.com/docs/",
+          "description": "Core framework for building LLM and RAG applications."
+        },
+        {
+          "title": "LlamaIndex Documentation",
+          "type": "Documentation",
+          "url": "https://docs.llamaindex.ai/",
+          "description": "Data framework for LLM-based query engines and search."
+        },
+        {
+          "title": "Prompt Engineering Guide (DAIR.AI)",
+          "type": "Guide",
+          "url": "https://www.promptingguide.ai/",
+          "description": "Comprehensive guides on zero-shot, few-shot, and CoT prompting."
+        }
+      ]
+    },
+    {
+      "id": "dsa-3",
+      "code": "S5-CS01",
+      "name": "Data Structures and Algorithms III",
+      "totalHours": 45,
+      "faculty": "Mr. Kunal Suri",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Discipline Specific Core (DSC)",
+      "hasDetailedSyllabus": true,
+      "description": "Advanced algorithmic design and data structures focusing on graph algorithms, dynamic programming, string processing, advanced query data structures, and competitive programming.",
+      "modules": [
+        {
+          "unitNumber": "Module I",
+          "title": "Graph Algorithms",
+          "hours": 10,
+          "topics": [
+            {
+              "id": "dsa-m1-1",
+              "title": "Strongly Connected Components (SCC) Overview & Kosaraju Algorithm"
+            },
+            {
+              "id": "dsa-m1-2",
+              "title": "Tarjan Algorithm (Low-Link Value) for SCCs and Bridges"
+            },
+            {
+              "id": "dsa-m1-3",
+              "title": "Flow Networks Basics, Residual Graph, Augmenting Paths"
+            },
+            {
+              "id": "dsa-m1-4",
+              "title": "Ford-Fulkerson Method & Edmonds-Karp BFS Implementation"
+            },
+            {
+              "id": "dsa-m1-5",
+              "title": "Max-Flow Min-Cut Theorem & Global Min Cut Applications"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module II",
+          "title": "Dynamic Programming",
+          "hours": 10,
+          "topics": [
+            {
+              "id": "dsa-m2-1",
+              "title": "Bitmask Representation & Operations for DP States"
+            },
+            {
+              "id": "dsa-m2-2",
+              "title": "Subset DP & Traveling Salesperson Problem (TSP)"
+            },
+            {
+              "id": "dsa-m2-3",
+              "title": "DP on Trees: Tree Diameter, Maximum Independent Set on Trees"
+            },
+            {
+              "id": "dsa-m2-4",
+              "title": "Rerooting Techniques in Tree DP"
+            },
+            {
+              "id": "dsa-m2-5",
+              "title": "Digit DP: Digit Transitions, Tight Bounds, Range Counting"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module III",
+          "title": "String Algorithms",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "dsa-m3-1",
+              "title": "Suffix Array Construction & Kasai Algorithm for LCP"
+            },
+            {
+              "id": "dsa-m3-2",
+              "title": "Multi-Pattern Matching & Aho-Corasick Automaton"
+            },
+            {
+              "id": "dsa-m3-3",
+              "title": "Trie with Failure Links for Dictionary Matching"
+            },
+            {
+              "id": "dsa-m3-4",
+              "title": "Manacher\u2019s Algorithm for Linear-Time Longest Palindromic Substring (LPS)"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module IV",
+          "title": "Advanced Data Structures",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "dsa-m4-1",
+              "title": "Segment Tree Fundamentals: Build, Point Query, Point Update"
+            },
+            {
+              "id": "dsa-m4-2",
+              "title": "Range Updates with Lazy Propagation in Segment Trees"
+            },
+            {
+              "id": "dsa-m4-3",
+              "title": "Binary Indexed Tree (BIT / Fenwick Tree) Principles & Implementation"
+            },
+            {
+              "id": "dsa-m4-4",
+              "title": "Trie Data Structure for String Storage, Autocomplete & XOR Maxima"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module V",
+          "title": "Advanced Algorithm Techniques",
+          "hours": 5,
+          "topics": [
+            {
+              "id": "dsa-m5-1",
+              "title": "Mo\u2019s Algorithm for Offline Range Queries"
+            },
+            {
+              "id": "dsa-m5-2",
+              "title": "Heavy-Light Decomposition (HLD) on Trees"
+            },
+            {
+              "id": "dsa-m5-3",
+              "title": "Centroid Decomposition for Tree Distance Queries"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module VI & VII",
+          "title": "Mixed Topics & Capstone Project Work",
+          "hours": 4,
+          "topics": [
+            {
+              "id": "dsa-m6-1",
+              "title": "Competitive Programming Patterns & Multi-Technique Problems"
+            },
+            {
+              "id": "dsa-m6-2",
+              "title": "Design & Implementation of Custom Data Structures Library"
+            },
+            {
+              "id": "dsa-m6-3",
+              "title": "Integrated Project Evaluation & Benchmark Testing"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "dsa-a1",
+          "sno": 1,
+          "co": "CO1",
+          "type": "Lab Practical",
+          "title": "Kosaraju and Tarjan SCC Implementation",
+          "description": "Implement both Kosaraju and Tarjan algorithms in C++/Python. Compare their time and memory performance on large directed graphs with up to 100,000 nodes."
+        },
+        {
+          "id": "dsa-a2",
+          "sno": 2,
+          "co": "CO1",
+          "type": "Problem Set",
+          "title": "Network Flow & Min-Cut Modeling",
+          "description": "Formulate bipartite matching and image segmentation as maximum flow problems. Solve with Edmonds-Karp or Dinic algorithm."
+        },
+        {
+          "id": "dsa-a3",
+          "sno": 3,
+          "co": "CO2",
+          "type": "Problem Set",
+          "title": "Bitmask and Tree DP Mastery",
+          "description": "Solve 5 canonical problems on LeetCode/Codeforces covering Traveling Salesperson, Assignment problem, Tree Diameter, and Subtree Queries."
+        },
+        {
+          "id": "dsa-a4",
+          "sno": 4,
+          "co": "CO3",
+          "type": "Coding Assignment",
+          "title": "Suffix Array and Manacher Implementation",
+          "description": "Construct Suffix Array and LCP array using Kasai algorithm. Implement Manacher\u2019s algorithm to find longest palindromic substring in O(n)."
+        },
+        {
+          "id": "dsa-a5",
+          "sno": 5,
+          "co": "CO4",
+          "type": "Lab Practical",
+          "title": "Segment Tree with Lazy Propagation",
+          "description": "Build an efficient Segment Tree supporting range addition and range minimum/sum queries with lazy updates. Test against random queries."
+        },
+        {
+          "id": "dsa-a6",
+          "sno": 6,
+          "co": "CO5",
+          "type": "Capstone Project",
+          "title": "Advanced Data Structures & Algorithms Library",
+          "description": "Develop a modular, tested open-source C++ or Python library containing generic implementations of HLD, Centroid Decomposition, and Fenwick Trees."
+        }
+      ],
+      "certifications": [],
+      "resources": [
+        {
+          "title": "Introduction to Algorithms (CLRS)",
+          "type": "Textbook",
+          "url": "https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/",
+          "description": "Core reference textbook for advanced algorithms (Cormen, Leiserson, Rivest, Stein)."
+        },
+        {
+          "title": "CP-Algorithms (e-maxx algorithms in English)",
+          "type": "Reference Website",
+          "url": "https://cp-algorithms.com",
+          "description": "Comprehensive algorithms reference for competitive programming."
+        },
+        {
+          "title": "LeetCode Problem Archive",
+          "type": "Practice Platform",
+          "url": "https://leetcode.com",
+          "description": "Primary coding platform for algorithmic interview practice."
+        },
+        {
+          "title": "Codeforces Problemset",
+          "type": "Contest Platform",
+          "url": "https://codeforces.com/problemset",
+          "description": "Problem archive for advanced tree, DP, and flow problems."
+        },
+        {
+          "title": "GeeksforGeeks Advanced Data Structures",
+          "type": "Tutorial",
+          "url": "https://www.geeksforgeeks.org/data-structures/",
+          "description": "Tutorials and code snippets for Segment Trees, BIT, and Tries."
+        }
+      ]
+    },
+    {
+      "id": "stqa",
+      "code": "S5-SE01",
+      "name": "Software Testing & Quality Assurance",
+      "totalHours": 30,
+      "faculty": "Ms. Muskan",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Software Engineering Core",
+      "hasDetailedSyllabus": true,
+      "description": "Master software testing methodologies, manual test case design, automation frameworks (Selenium, TestNG), REST API testing, performance testing with JMeter, and CI/CD quality assurance.",
+      "modules": [
+        {
+          "unitNumber": "Module I",
+          "title": "Software Testing Fundamentals & Quality Assurance",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "stqa-m1-1",
+              "title": "Software Quality Concepts & Testing Principles (7 Testing Principles)"
+            },
+            {
+              "id": "stqa-m1-2",
+              "title": "SDLC vs STLC, Defect Life Cycle & Defect Clustering"
+            },
+            {
+              "id": "stqa-m1-3",
+              "title": "Verification vs Validation, Review Techniques & Walkthroughs"
+            },
+            {
+              "id": "stqa-m1-4",
+              "title": "Test Levels: Unit, Integration, System, and User Acceptance Testing (UAT)"
+            },
+            {
+              "id": "stqa-m1-5",
+              "title": "Test Planning, Requirement Traceability Matrix (RTM) & Test Closure"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module II",
+          "title": "Manual Testing & Test Design Techniques",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "stqa-m2-1",
+              "title": "Black Box Testing: Equivalence Partitioning (EP) & Boundary Value Analysis (BVA)"
+            },
+            {
+              "id": "stqa-m2-2",
+              "title": "Decision Table Testing & State Transition Testing"
+            },
+            {
+              "id": "stqa-m2-3",
+              "title": "White Box Testing: Statement, Branch, Condition & Path Coverage"
+            },
+            {
+              "id": "stqa-m2-4",
+              "title": "Smoke, Sanity, Regression & Exploratory Testing Strategies"
+            },
+            {
+              "id": "stqa-m2-5",
+              "title": "Defect Logging, Bug Severity vs Priority, Bug Reporting Standards"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module III",
+          "title": "Automation Testing & Quality Engineering",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "stqa-m3-1",
+              "title": "Test Automation Fundamentals: Criteria for Automation & ROI"
+            },
+            {
+              "id": "stqa-m3-2",
+              "title": "Selenium WebDriver Architecture, Locators & Web Element Interaction"
+            },
+            {
+              "id": "stqa-m3-3",
+              "title": "TestNG Framework: Annotations, Assertions, Data Providers, Reports"
+            },
+            {
+              "id": "stqa-m3-4",
+              "title": "Page Object Model (POM) Design Pattern for Maintainability"
+            },
+            {
+              "id": "stqa-m3-5",
+              "title": "REST API Testing with Postman: Collections, Headers, JSON Schema Validation"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module IV",
+          "title": "Advanced Software Testing & Performance Engineering",
+          "hours": 5,
+          "topics": [
+            {
+              "id": "stqa-m4-1",
+              "title": "Performance Testing Concepts: Load, Stress, Endurance, Spike Testing"
+            },
+            {
+              "id": "stqa-m4-2",
+              "title": "Apache JMeter: Test Plans, Thread Groups, Listeners & Bottleneck Analysis"
+            },
+            {
+              "id": "stqa-m4-3",
+              "title": "Security Testing Basics: OWASP Top 10 Vulnerability Assessment"
+            },
+            {
+              "id": "stqa-m4-4",
+              "title": "Risk-Based Testing & Mitigation Strategies"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module V",
+          "title": "Modern QA Engineering & Industry Practices",
+          "hours": 3,
+          "topics": [
+            {
+              "id": "stqa-m5-1",
+              "title": "Continuous Testing & CI/CD Pipeline Integration (Jenkins / GitHub Actions)"
+            },
+            {
+              "id": "stqa-m5-2",
+              "title": "Agile Testing, BDD with Cucumber, Sprint QA Ceremonies"
+            },
+            {
+              "id": "stqa-m5-3",
+              "title": "Test Management & Tracking with Jira and Defect Metrics"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "stqa-a1",
+          "sno": 1,
+          "co": "CO1",
+          "type": "Assignment",
+          "title": "Prepare a comprehensive Software Test Plan and Requirement Traceability Matrix (RTM) for an Online Shopping System.",
+          "description": "Students will analyze the Software Requirement Specification (SRS), identify functional and non-functional requirements, prepare a professional Test Plan including scope, objectives, testing strategy, test environment, resources, risks, entry/exit criteria, schedule, and develop an RTM mapping requirements to test cases."
+        },
+        {
+          "id": "stqa-a2",
+          "sno": 2,
+          "co": "CO2",
+          "type": "Assignment",
+          "title": "Design comprehensive manual test cases using Equivalence Partitioning (EP) and Boundary Value Analysis (BVA) for a Banking/Login application.",
+          "description": "Students will identify valid and invalid input conditions, prepare positive and negative test cases, define expected results, assign priorities, and justify the selected test design techniques."
+        },
+        {
+          "id": "stqa-a3",
+          "sno": 3,
+          "co": "CO2",
+          "type": "Practical",
+          "title": "Perform manual testing on a web application and generate a professional defect report.",
+          "description": "Students will execute prepared test cases on an assigned application, identify defects, classify severity and priority, reproduce defects, capture evidence, and prepare bug reports using standard defect templates."
+        },
+        {
+          "id": "stqa-a4",
+          "sno": 4,
+          "co": "CO3",
+          "type": "Assignment",
+          "title": "Develop an automation testing framework using Selenium WebDriver and TestNG.",
+          "description": "Students will automate login, registration, search, and logout functionalities using Selenium WebDriver, implement Page Object Model (POM), reusable utilities, assertions, and generate HTML execution reports."
+        },
+        {
+          "id": "stqa-a5",
+          "sno": 5,
+          "co": "CO3",
+          "type": "Practical",
+          "title": "Perform REST API Testing using Postman for a public REST API.",
+          "description": "Students will create API collections, validate HTTP methods, authentication, status codes, response payloads, headers, and automate test execution using Collection Runner with assertions."
+        },
+        {
+          "id": "stqa-a6",
+          "sno": 6,
+          "co": "CO3",
+          "type": "Practical",
+          "title": "Analyze the performance of a web application using Apache JMeter.",
+          "description": "Students will create load test scenarios, simulate concurrent users, measure response time, throughput, latency, and identify potential performance bottlenecks through result analysis."
+        },
+        {
+          "id": "stqa-a7",
+          "sno": 7,
+          "co": "CO4",
+          "type": "Assignment",
+          "title": "Conduct Risk-Based Testing and perform a basic OWASP security assessment for an e-commerce application.",
+          "description": "Students will identify business risks, prioritize testing based on risk exposure, analyze common web vulnerabilities (SQL Injection, XSS, Broken Authentication), recommend mitigation strategies, and prepare a security assessment report."
+        },
+        {
+          "id": "stqa-a8",
+          "sno": 8,
+          "co": "CO5",
+          "type": "Practical / Project",
+          "title": "Design and implement a complete End-to-End Software Testing Solution integrating Manual Testing, Automation, API Testing, Performance Testing, CI/CD, and Defect Management.",
+          "description": "Students will execute a real-world testing project by preparing test artefacts, automating functional tests, testing APIs, performing load testing, managing defects using Jira, integrating automated execution with Jenkins, creating testing dashboards, and presenting project outcomes."
+        }
+      ],
+      "certifications": [
+        {
+          "name": "Software Testing Fundamentals",
+          "platform": "Great Learning Academy",
+          "hours": "2.0",
+          "description": "Covers Software Testing, SDLC, STLC, testing principles, defect lifecycle, and testing levels. Free downloadable certificate.",
+          "url": "https://www.mygreatlearning.com/academy/learn-for-free/courses/software-testing-fundamentals"
+        },
+        {
+          "name": "Software Testing Course",
+          "platform": "Simplilearn SkillUp",
+          "hours": "4.0",
+          "description": "Covers manual testing, QA processes, testing techniques, and defect management with practical examples. Free downloadable certificate.",
+          "url": "https://www.simplilearn.com/skillup"
+        },
+        {
+          "name": "Introduction to Cybersecurity",
+          "platform": "Cisco Networking Academy \u2013 Skills for All",
+          "hours": "6.0",
+          "description": "Covers cybersecurity fundamentals and secure software practices relevant to security testing. Free downloadable certificate and badge.",
+          "url": "https://skillsforall.com/course/introduction-to-cybersecurity"
+        }
+      ],
+      "resources": [
+        {
+          "title": "ISTQB Foundation Level Syllabus",
+          "type": "Standard",
+          "url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+          "description": "The international standard definition for software testing terminology and processes."
+        },
+        {
+          "title": "Selenium Documentation",
+          "type": "Documentation",
+          "url": "https://www.selenium.dev/documentation/",
+          "description": "Official documentation for Selenium WebDriver and client bindings."
+        },
+        {
+          "title": "Postman Learning Center",
+          "type": "Learning Guide",
+          "url": "https://learning.postman.com/",
+          "description": "Tutorials for API testing, automation, and CI/CD collection runners."
+        },
+        {
+          "title": "OWASP Top 10 Web Application Security Risks",
+          "type": "Security Standard",
+          "url": "https://owasp.org/www-project-top-ten/",
+          "description": "Standard awareness document for developers and web application security."
+        }
+      ]
+    },
+    {
+      "id": "foundation-aiml-ds",
+      "code": "S5-DS01",
+      "name": "Foundation of AI/ML & Data Science",
+      "totalHours": 30,
+      "faculty": "Prof. Shreya Raokhonde",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Core AI/Data Science",
+      "hasDetailedSyllabus": true,
+      "description": "Foundational concepts in AI and data science workflow: CRISP-DM, exploratory data analysis, statistics, supervised/unsupervised machine learning, evaluation metrics, and responsible AI.",
+      "modules": [
+        {
+          "unitNumber": "Unit 1",
+          "title": "Introduction to AI and Intelligent Systems",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "fai-m1-1",
+              "title": "AI vs ML vs DL: History, Definitions, Scope and Ecosystem"
+            },
+            {
+              "id": "fai-m1-2",
+              "title": "AI Applications in Industry: Healthcare, Finance, E-commerce, Vision"
+            },
+            {
+              "id": "fai-m1-3",
+              "title": "Agent Types & Environments: Reflex, Goal-based, Utility, Learning Agents"
+            },
+            {
+              "id": "fai-m1-4",
+              "title": "Problem Formulation, State Space Representation & Search Trees (BFS, DFS)"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 2",
+          "title": "Data Science Workflow & Preprocessing",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "fai-m2-1",
+              "title": "CRISP-DM Methodology: 6 Iterative Phases for Data Projects"
+            },
+            {
+              "id": "fai-m2-2",
+              "title": "Structured, Semi-Structured & Unstructured Data Handling"
+            },
+            {
+              "id": "fai-m2-3",
+              "title": "Data Ingestion: REST APIs, Databases, Web Scraping, Sensors"
+            },
+            {
+              "id": "fai-m2-4",
+              "title": "Data Cleaning: Missing Value Imputation, Outlier Detection, Duplicates"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 3",
+          "title": "Statistics & Exploratory Data Analysis (EDA)",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "fai-m3-1",
+              "title": "Descriptive Statistics: Central Tendency, Dispersion, Skewness, Kurtosis"
+            },
+            {
+              "id": "fai-m3-2",
+              "title": "Probability Distributions & Correlation vs Causation Analysis"
+            },
+            {
+              "id": "fai-m3-3",
+              "title": "Data Visualization Principles: Bar, Histogram, Boxplot, Scatter, Heatmap"
+            },
+            {
+              "id": "fai-m3-4",
+              "title": "Feature Scaling, Normalization, Standardization & Encoding"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 4",
+          "title": "Machine Learning Overview & Model Evaluation",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "fai-m4-1",
+              "title": "Supervised vs Unsupervised vs Reinforcement Learning Paradigms"
+            },
+            {
+              "id": "fai-m4-2",
+              "title": "Classification Algorithms & Regression Foundations"
+            },
+            {
+              "id": "fai-m4-3",
+              "title": "Model Evaluation Metrics: Accuracy, Precision, Recall, F1, ROC-AUC"
+            },
+            {
+              "id": "fai-m4-4",
+              "title": "Overfitting, Underfitting, Bias-Variance Tradeoff, Cross-Validation"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 5",
+          "title": "Ethics, Responsible AI & Communication",
+          "hours": 4,
+          "topics": [
+            {
+              "id": "fai-m5-1",
+              "title": "Fairness, Accountability & Algorithmic Bias in Real-World Systems"
+            },
+            {
+              "id": "fai-m5-2",
+              "title": "Data Privacy, GDPR Article 22 & Ethical Guidelines"
+            },
+            {
+              "id": "fai-m5-3",
+              "title": "Data Storytelling & Communicating Analytical Findings"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "fai-a1",
+          "sno": 1,
+          "unit": "Introduction to AI",
+          "title": "AI vs ML vs DL",
+          "co": "CO1",
+          "type": "Pen & Paper Assignment",
+          "difficulty": "1 - Basic"
+        },
+        {
+          "id": "fai-a2",
+          "sno": 2,
+          "unit": "",
+          "title": "AI Applications in Industry",
+          "co": "CO1",
+          "type": "Written Report",
+          "difficulty": "2 - Basic"
+        },
+        {
+          "id": "fai-a3",
+          "sno": 3,
+          "unit": "",
+          "title": "Agents and Search Techniques",
+          "co": "CO1",
+          "type": "Pen & Paper Problem Set",
+          "difficulty": "3 - Basic to Moderate"
+        },
+        {
+          "id": "fai-a4",
+          "sno": 4,
+          "unit": "Statistics Basics",
+          "title": "Descriptive Statistics",
+          "co": "CO2",
+          "type": "Pen & Paper Problem Set",
+          "difficulty": "4 - Moderate"
+        },
+        {
+          "id": "fai-a5",
+          "sno": 5,
+          "unit": "",
+          "title": "Data Visualization",
+          "co": "CO2",
+          "type": "Tool Based Activity",
+          "difficulty": "5 - Moderate"
+        },
+        {
+          "id": "fai-a6",
+          "sno": 6,
+          "unit": "",
+          "title": "Probability and Correlation",
+          "co": "CO2",
+          "type": "Pen & Paper Problem Set",
+          "difficulty": "6 - Moderate"
+        },
+        {
+          "id": "fai-a7",
+          "sno": 7,
+          "unit": "ML Overview",
+          "title": "Supervised vs Unsupervised Learning",
+          "co": "CO1",
+          "type": "Pen & Paper Assignment",
+          "difficulty": "7 - Moderate"
+        },
+        {
+          "id": "fai-a8",
+          "sno": 8,
+          "unit": "",
+          "title": "Model Evaluation Metrics",
+          "co": "CO3",
+          "type": "Pen & Paper Problem Set",
+          "difficulty": "8 - Moderate to Intermediate"
+        },
+        {
+          "id": "fai-a9",
+          "sno": 9,
+          "unit": "",
+          "title": "Overfitting and Underfitting",
+          "co": "CO3",
+          "type": "Screen Recording",
+          "difficulty": "9 - Intermediate"
+        },
+        {
+          "id": "fai-a10",
+          "sno": 10,
+          "unit": "",
+          "title": "AI Ethics and Governance",
+          "co": "CO4",
+          "type": "Case Study Analysis",
+          "difficulty": "10 - Intermediate"
+        },
+        {
+          "id": "fai-a11",
+          "sno": 11,
+          "unit": "Python Basics",
+          "title": "Pandas Data Operations",
+          "co": "CO2",
+          "type": "Lab Notebook",
+          "difficulty": "11 - Intermediate"
+        },
+        {
+          "id": "fai-a12",
+          "sno": 12,
+          "unit": "",
+          "title": "Exploratory Data Analysis",
+          "co": "CO3",
+          "type": "Lab Notebook",
+          "difficulty": "12 - Intermediate"
+        },
+        {
+          "id": "fai-a13",
+          "sno": 13,
+          "unit": "",
+          "title": "Train-Test Split and Model Evaluation",
+          "co": "CO4",
+          "type": "Lab Notebook",
+          "difficulty": "13 - Intermediate"
+        },
+        {
+          "id": "fai-a14",
+          "sno": 14,
+          "unit": "Communication",
+          "title": "Data Storytelling",
+          "co": "CO5",
+          "type": "Recorded Presentation",
+          "difficulty": "14 - Intermediate"
+        },
+        {
+          "id": "fai-a15",
+          "sno": 15,
+          "unit": "",
+          "title": "Mini Project Report and Viva",
+          "co": "CO5",
+          "type": "Project Report with Viva",
+          "difficulty": "15 - Intermediate (Highest)"
+        }
+      ],
+      "certifications": [
+        {
+          "name": "Elements of AI",
+          "platform": "University of Helsinki",
+          "description": "Free, non-technical foundation course on AI concepts and implications; ideal starting certificate for Semester VII students.",
+          "url": "https://www.elementsofai.com/"
+        },
+        {
+          "name": "Google Data Analytics Professional Certificate",
+          "platform": "Coursera",
+          "description": "Industry-recognised entry credential covering the full data workflow from cleaning to communication.",
+          "url": "https://www.coursera.org/professional-certificates/google-data-analytics"
+        },
+        {
+          "name": "Machine Learning Specialization",
+          "platform": "Coursera (DeepLearning.AI / Stanford)",
+          "description": "Andrew Ng's foundational ML specialization; the most widely recognised credential for supervised and unsupervised learning.",
+          "url": "https://www.coursera.org/specializations/machine-learning-introduction"
+        },
+        {
+          "name": "IBM Data Science Professional Certificate",
+          "platform": "Coursera",
+          "description": "Ten-course credential covering Python, Pandas, visualization and a capstone project with a portfolio artefact.",
+          "url": "https://www.coursera.org/professional-certificates/ibm-data-science"
+        },
+        {
+          "name": "Introduction to Machine Learning",
+          "platform": "NPTEL (IIT Madras)",
+          "description": "Credit-transferable Indian national certification with a proctored exam; strong signal for Indian recruiters and PG admissions.",
+          "url": "https://nptel.ac.in/courses/106106139"
+        },
+        {
+          "name": "Microsoft Certified: Azure AI Fundamentals (AI-900)",
+          "platform": "Microsoft",
+          "description": "Vendor certification validating AI and ML fundamentals plus responsible AI principles; maps closely to Units 1, 3 and 5.",
+          "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/"
+        },
+        {
+          "name": "AWS Certified AI Practitioner",
+          "platform": "Amazon Web Services",
+          "description": "Foundational cloud AI credential covering ML concepts, responsible AI and applied use cases.",
+          "url": "https://aws.amazon.com/certification/certified-ai-practitioner/"
+        },
+        {
+          "name": "Kaggle Learn: Intro to Machine Learning",
+          "platform": "Kaggle",
+          "description": "Short, free, hands-on micro-course ending in a leaderboard submission; good for quick practical validation.",
+          "url": "https://www.kaggle.com/learn/intro-to-machine-learning"
+        },
+        {
+          "name": "Kaggle Learn: Pandas",
+          "platform": "Kaggle",
+          "description": "Free micro-course on dataframe manipulation that directly supports Unit 4 lab work.",
+          "url": "https://www.kaggle.com/learn/pandas"
+        },
+        {
+          "name": "Python (Basic) Skills Certification",
+          "platform": "HackerRank",
+          "description": "Timed coding assessment widely accepted by recruiters as evidence of working Python ability.",
+          "url": "https://www.hackerrank.com/skills-verification/python_basic"
+        },
+        {
+          "name": "Machine Learning with Python",
+          "platform": "freeCodeCamp",
+          "description": "Free certification requiring five completed projects; strong portfolio evidence at no cost.",
+          "url": "https://www.freecodecamp.org/learn/machine-learning-with-python/"
+        },
+        {
+          "name": "Google Cloud: Professional Machine Learning Engineer",
+          "platform": "Google Cloud",
+          "description": "Advanced credential to target after this course, for students continuing into MLOps and production ML.",
+          "url": "https://cloud.google.com/learn/certification/machine-learning-engineer"
+        }
+      ],
+      "resources": [
+        {
+          "unit": "Introduction to AI",
+          "title": "What Is Artificial Intelligence (AI)?",
+          "author": "IBM Think",
+          "description": "Vendor-neutral explainer covering the scope of AI, its subfields and where the boundaries actually sit.",
+          "url": "https://www.ibm.com/think/topics/artificial-intelligence"
+        },
+        {
+          "unit": "",
+          "title": "AI vs. Machine Learning vs. Deep Learning vs. Neural Networks",
+          "author": "IBM Think",
+          "description": "Disentangles the four terms students most often confuse, with a containment view rather than definitions alone.",
+          "url": "https://www.ibm.com/think/topics/ai-vs-machine-learning-vs-deep-learning-vs-neural-networks"
+        },
+        {
+          "unit": "",
+          "title": "Computing Machinery and Intelligence (the Turing Test paper)",
+          "author": "Alan Turing, Mind (1950)",
+          "description": "The original source of the Turing Test, including Turing's own answers to the objections still raised today.",
+          "url": "https://academic.oup.com/mind/article/LIX/236/433/986238"
+        },
+        {
+          "unit": "",
+          "title": "What is CRISP-DM?",
+          "author": "Data Science PM (Nick Hotz)",
+          "description": "Walks all six phases with an opinionated discussion of whether CRISP-DM is agile or waterfall, and its weaknesses.",
+          "url": "https://www.datascience-pm.com/crisp-dm-2/"
+        },
+        {
+          "unit": "Statistics Basics",
+          "title": "Descriptive Statistics: Definitions, Types, Examples",
+          "author": "Scribbr",
+          "description": "Clear treatment of central tendency and dispersion with worked examples and guidance on which measure to report.",
+          "url": "https://www.scribbr.com/statistics/descriptive-statistics/"
+        },
+        {
+          "unit": "",
+          "title": "Seeing Theory: A Visual Introduction to Probability and Statistics",
+          "author": "Brown University",
+          "description": "Interactive visual explanations of probability, random variables and distributions; excellent for classroom demos.",
+          "url": "https://seeing-theory.brown.edu/"
+        },
+        {
+          "unit": "",
+          "title": "Anscombe's Quartet",
+          "author": "Wikipedia",
+          "description": "Four datasets with identical summary statistics and completely different shapes; the strongest argument for plotting first.",
+          "url": "https://en.wikipedia.org/wiki/Anscombe%27s_quartet"
+        },
+        {
+          "unit": "",
+          "title": "Spurious Correlations",
+          "author": "Tyler Vigen",
+          "description": "A gallery of strong correlations with no causal link; ideal raw material for the correlation-vs-causation session.",
+          "url": "https://www.tylervigen.com/spurious-correlations"
+        },
+        {
+          "unit": "ML Overview",
+          "title": "Machine Learning Crash Course",
+          "author": "Google for Developers",
+          "description": "Free structured course covering supervised learning, generalisation, and train/test discipline with interactive exercises.",
+          "url": "https://developers.google.com/machine-learning/crash-course"
+        },
+        {
+          "unit": "",
+          "title": "Classification: Accuracy, Recall, Precision and Related Metrics",
+          "author": "Google for Developers",
+          "description": "Explains why accuracy misleads on imbalanced data and how to choose a metric that matches the domain cost.",
+          "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall"
+        },
+        {
+          "unit": "",
+          "title": "Machine Learning Glossary: Responsible AI",
+          "author": "Google for Developers",
+          "description": "Precise definitions of fairness metrics, bias types and their mutual incompatibility, with worked numeric examples.",
+          "url": "https://developers.google.com/machine-learning/glossary/responsible-ai"
+        },
+        {
+          "unit": "",
+          "title": "Gender Shades",
+          "author": "MIT Media Lab (Joy Buolamwini, Timnit Gebru)",
+          "description": "The landmark audit showing commercial face classifiers failing on darker-skinned women; the canonical bias case study.",
+          "url": "https://www.media.mit.edu/projects/gender-shades/overview/"
+        },
+        {
+          "unit": "",
+          "title": "Art. 22 GDPR - Automated individual decision-making, including profiling",
+          "author": "GDPR-info.eu",
+          "description": "The actual legal text behind the 'right to explanation'; short enough to read in class and annotate.",
+          "url": "https://gdpr-info.eu/art-22-gdpr/"
+        },
+        {
+          "unit": "Python Basics",
+          "title": "10 Minutes to pandas",
+          "author": "Pandas Development Team",
+          "description": "The official quick tour of dataframes, selection, grouping and joins; the fastest route to working fluency.",
+          "url": "https://pandas.pydata.org/docs/user_guide/10min.html"
+        },
+        {
+          "unit": "",
+          "title": "Common Pitfalls and Recommended Practices",
+          "author": "Scikit-learn",
+          "description": "Documents the mistakes students actually make: leakage, inconsistent preprocessing and randomness handling.",
+          "url": "https://scikit-learn.org/stable/common_pitfalls.html"
+        },
+        {
+          "unit": "",
+          "title": "Data Leakage",
+          "author": "Kaggle Learn (Alexis Cook)",
+          "description": "Short, example-driven tutorial on target leakage and train-test contamination, with a hands-on exercise.",
+          "url": "https://www.kaggle.com/code/alexisbcook/data-leakage"
+        },
+        {
+          "unit": "",
+          "title": "Project Jupyter Documentation",
+          "author": "Project Jupyter",
+          "description": "Reference for notebooks, kernels and reproducible execution; the basis for the notebook-as-document idea.",
+          "url": "https://docs.jupyter.org/en/latest/"
+        },
+        {
+          "unit": "Communication",
+          "title": "Storytelling with Data - Blog",
+          "author": "Cole Nussbaumer Knaflic",
+          "description": "Practical, opinionated posts on chart design and narrative structure, with before-and-after makeovers.",
+          "url": "https://www.storytellingwithdata.com/blog"
+        },
+        {
+          "unit": "",
+          "title": "Chart Doctor: Visual Vocabulary",
+          "author": "Financial Times",
+          "description": "A working newsroom's poster and repo mapping analytical intent to the correct chart type.",
+          "url": "https://github.com/Financial-Times/chart-doctor"
+        },
+        {
+          "unit": "",
+          "title": "Ten Simple Rules for Reproducible Computational Research",
+          "author": "PLOS Computational Biology",
+          "description": "Peer-reviewed, concrete rules that map directly onto notebook discipline and the reproducibility assignment.",
+          "url": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003285"
+        },
+        {
+          "unit": "",
+          "title": "People + AI Guidebook",
+          "author": "Google PAIR",
+          "description": "Design guidance on explaining AI decisions to users, setting expectations and communicating uncertainty.",
+          "url": "https://pair.withgoogle.com/guidebook/"
+        }
+      ]
+    },
+    {
+      "id": "venture-product-strategy",
+      "code": "S5-MG01",
+      "name": "Venture & Product Strategy",
+      "totalHours": 15,
+      "faculty": "Mr. Vivekanand Jha",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Employability / Entrepreneurship",
+      "hasDetailedSyllabus": true,
+      "description": "Introduces Financial & Cost Accounting and Venture Capital with a practical, project-based approach covering financial statements, break-even analysis, startup valuation, term sheets, cap tables, and investor pitches.",
+      "modules": [
+        {
+          "unitNumber": "Unit 1",
+          "title": "Fundamentals of Financial Accounting",
+          "hours": 5,
+          "topics": [
+            {
+              "id": "vps-u1-1",
+              "title": "Accounting equation, double entry book-keeping, debit & credit"
+            },
+            {
+              "id": "vps-u1-2",
+              "title": "Classification of assets, liabilities, equity, revenue, expenses"
+            },
+            {
+              "id": "vps-u1-3",
+              "title": "Preparation of Journals, Ledgers, and Trial Balance"
+            },
+            {
+              "id": "vps-u1-4",
+              "title": "Financial Statements: Balance Sheet, Profit & Loss, Cash Flow Statement"
+            },
+            {
+              "id": "vps-u1-5",
+              "title": "Financial Ratio Analysis: Liquidity, Profitability, Solvency, Turnover"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 2",
+          "title": "Cost Accounting & Managerial Decision-Making",
+          "hours": 5,
+          "topics": [
+            {
+              "id": "vps-u2-1",
+              "title": "Cost Classification: Fixed, Variable, Semi-variable, Direct & Indirect"
+            },
+            {
+              "id": "vps-u2-2",
+              "title": "Marginal Costing, Contribution Margin, Break-Even Point (BEP)"
+            },
+            {
+              "id": "vps-u2-3",
+              "title": "Operating Leverage & Margin of Safety in Startups"
+            },
+            {
+              "id": "vps-u2-4",
+              "title": "Budgeting: Master Budget, Cash Budget, Capital Expenditure Budget"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 3",
+          "title": "Venture Capital, Valuation & Startup Pitching",
+          "hours": 5,
+          "topics": [
+            {
+              "id": "vps-u3-1",
+              "title": "Startup Funding Stages: Bootstrapping, Friends & Family, Angel, Seed, Series A-C"
+            },
+            {
+              "id": "vps-u3-2",
+              "title": "Valuation Methodologies: DCF, Comparable Multiples, Berkus Method, Scorecard"
+            },
+            {
+              "id": "vps-u3-3",
+              "title": "Cap Table Construction, Pre-Money vs Post-Money Valuation, Dilution"
+            },
+            {
+              "id": "vps-u3-4",
+              "title": "Term Sheets, Liquidation Preference, Anti-dilution Clauses"
+            },
+            {
+              "id": "vps-u3-5",
+              "title": "Developing a 3-Statement Financial Model & Crafting an Investor Pitch Deck"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "vps-a1",
+          "sno": 1,
+          "co": "CO1",
+          "type": "Problem Set",
+          "title": "Financial Statement Preparation",
+          "description": "Given a simulated tech startup transaction history for month 1, prepare journal entries, trial balance, and end-of-month P&L and Balance Sheet."
+        },
+        {
+          "id": "vps-a2",
+          "sno": 2,
+          "co": "CO2",
+          "type": "Practical Assignment",
+          "title": "Break-Even and Unit Economics Analysis",
+          "description": "Model unit economics (CAC, LTV, payback period, contribution margin) for a SaaS business model and compute monthly break-even user target."
+        },
+        {
+          "id": "vps-a3",
+          "sno": 3,
+          "co": "CO3",
+          "type": "Case Study",
+          "title": "Cash Flow Runway Analysis",
+          "description": "Analyze a high-growth startup with positive accounting profit but negative operating cash flow. Diagnose cash burn and model emergency survival runway."
+        },
+        {
+          "id": "vps-a4",
+          "sno": 4,
+          "co": "CO4",
+          "type": "Cap Table Modeling",
+          "title": "Cap Table and Dilution Spreadsheet",
+          "description": "Construct a dynamic spreadsheet tracking equity ownership across Seed and Series A rounds with convertible notes/SAFEs and ESOP pool creation."
+        },
+        {
+          "id": "vps-a5",
+          "sno": 5,
+          "co": "CO5",
+          "type": "Capstone Presentation",
+          "title": "Startup Financial Model & Investor Pitch Deck",
+          "description": "Build a complete 3-year projected financial model and a 10-slide investor pitch deck for a software startup idea."
+        }
+      ],
+      "certifications": [],
+      "resources": [
+        {
+          "title": "Startup Valuation Guide (Aswath Damodaran - NYU Stern)",
+          "type": "Resource Guide",
+          "url": "http://pages.stern.nyu.edu/~adamodar/",
+          "description": "Canonical framework for estimating discount rates and cash flow forecasts for young growth companies."
+        },
+        {
+          "title": "OpenStax Principles of Managerial Accounting",
+          "type": "Open Textbook",
+          "url": "https://openstax.org/details/books/principles-managerial-accounting",
+          "description": "Free, peer-reviewed textbook covering cost behaviors, budgeting, and CVP analysis."
+        },
+        {
+          "title": "Financial Accounting - University of Minnesota",
+          "type": "Open Textbook",
+          "url": "https://open.umn.edu/opentextbooks/textbooks/financial-accounting",
+          "description": "Open textbook covering double-entry accounting and financial statement analysis."
+        }
+      ]
+    },
+    {
+      "id": "career-readiness-leadership",
+      "code": "S5-SS01",
+      "name": "Career Readiness & Leadership",
+      "totalHours": 30,
+      "faculty": "Prof. Amaan",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Skill Development / Soft Skills",
+      "hasDetailedSyllabus": true,
+      "description": "Develops leadership mindset, emotional intelligence, executive presence, resume and portfolio polish, technical interview behavioral preparation, and workplace communication.",
+      "modules": [
+        {
+          "unitNumber": "Module 1",
+          "title": "Foundation of Soft Skills and Leadership",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "crl-m1-1",
+              "title": "Concept, Importance, and Cognitive/Behavioral Domains of Soft Skills"
+            },
+            {
+              "id": "crl-m1-2",
+              "title": "Leadership Fundamentals: Styles, Servant Leadership, Team Roles"
+            },
+            {
+              "id": "crl-m1-3",
+              "title": "Self-Leadership: Self-Awareness, Discipline, Personal Accountability"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module 2",
+          "title": "Leadership Skills Application & Communication",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "crl-m2-1",
+              "title": "Decision-Making Frameworks & Team Conflict Resolution"
+            },
+            {
+              "id": "crl-m2-2",
+              "title": "Executive Presence, Persuasion & Influence Without Authority"
+            },
+            {
+              "id": "crl-m2-3",
+              "title": "Technical Communication: Explaining Complex Systems to Non-Tech Stakeholders"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module 3",
+          "title": "Emotional Intelligence Fundamentals",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "crl-m3-1",
+              "title": "Daniel Goleman\u2019s 5 Components of Emotional Intelligence (EQ)"
+            },
+            {
+              "id": "crl-m3-2",
+              "title": "Self-Regulation: Stress Inoculation & Emotional Control under Pressure"
+            },
+            {
+              "id": "crl-m3-3",
+              "title": "Empathy, Active Listening & Cross-Functional Relationship Management"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module 4",
+          "title": "Career Preparation, Resume & Interview Strategy",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "crl-m4-1",
+              "title": "ATS-Compliant Resume Architecture & GitHub / LinkedIn Auditing"
+            },
+            {
+              "id": "crl-m4-2",
+              "title": "STAR Methodology for Behavioral Interview Question Mastery"
+            },
+            {
+              "id": "crl-m4-3",
+              "title": "Mock Interviewing: Technical Deep Dives and Situational Judgement"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Module 5",
+          "title": "Practical Leadership & Simulation",
+          "hours": 4,
+          "topics": [
+            {
+              "id": "crl-m5-1",
+              "title": "Team Leadership Simulation: Sprint Retrospective & Blameless Post-Mortems"
+            },
+            {
+              "id": "crl-m5-2",
+              "title": "Personal Growth Plan & Semester Career Roadmap"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "crl-a1",
+          "sno": 1,
+          "co": "CO1",
+          "type": "Written Reflection",
+          "title": "Leadership Style & Self-Assessment",
+          "description": "Complete self-assessment diagnostics on leadership tendencies and write a 600-word reflection identifying strengths and growth areas."
+        },
+        {
+          "id": "crl-a2",
+          "sno": 2,
+          "co": "CO2",
+          "type": "Portfolio Deliverable",
+          "title": "ATS Resume & GitHub Portfolio Audit",
+          "description": "Refactor technical resume targeting SDE/AI intern roles. Include quantified project impact metrics and optimized LinkedIn summary."
+        },
+        {
+          "id": "crl-a3",
+          "sno": 3,
+          "co": "CO3",
+          "type": "Video Presentation",
+          "title": "STAR Behavioral Interview Responses",
+          "description": "Record video responses to 3 challenging behavioral prompts (dealing with conflict, handling project failure, tight deadline delivery)."
+        },
+        {
+          "id": "crl-a4",
+          "sno": 4,
+          "co": "CO5",
+          "type": "Simulation Exercise",
+          "title": "Team Leadership & Sprint Post-Mortem",
+          "description": "Conduct a simulated incident post-mortem with root cause analysis (5 Whys) and actionable preventive measures."
+        }
+      ],
+      "certifications": [],
+      "resources": [
+        {
+          "title": "Emotional Intelligence 2.0 Summary & Assessments",
+          "type": "Book Summary",
+          "url": "https://www.talentsmart.com/about/emotional-intelligence/",
+          "description": "Reference frameworks on self-awareness and relationship management."
+        },
+        {
+          "title": "Tech Interview Handbook - Behavioral Guide",
+          "type": "Career Guide",
+          "url": "https://www.techinterviewhandbook.org/behavioral-interview/",
+          "description": "Comprehensive preparation guide for behavioral software engineer interviews."
+        }
+      ]
+    },
+    {
+      "id": "blockchain-fundamentals",
+      "code": "S5-BC01",
+      "name": "Blockchain Fundamentals",
+      "totalHours": 30,
+      "faculty": "Prof. Harshal Juikar",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Elective / Specialization Track",
+      "hasDetailedSyllabus": false,
+      "syllabusStatusNote": "Detailed subject syllabus document pending upload from academic portal. Faculty verified from Sprint 2 Academic Plan.",
+      "description": "Distributed ledger principles, cryptographic hashing, consensus mechanisms (PoW, PoS), smart contract architecture, decentralized applications (DApps), and Web3 ecosystems.",
+      "modules": [
+        {
+          "unitNumber": "Unit 1 (Pending Final Upload)",
+          "title": "Core Blockchain Architecture & Cryptography",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "bc-m1-1",
+              "title": "Distributed Ledgers vs Centralized Databases"
+            },
+            {
+              "id": "bc-m1-2",
+              "title": "Cryptographic Hash Functions (SHA-256) & Merkle Trees"
+            },
+            {
+              "id": "bc-m1-3",
+              "title": "Public Key Cryptography, Digital Signatures & Wallets"
+            },
+            {
+              "id": "bc-m1-4",
+              "title": "Block Structure, Chaining & Immutability"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 2 (Pending Final Upload)",
+          "title": "Consensus Mechanisms & Network Dynamics",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "bc-m2-1",
+              "title": "Byzantine Generals Problem & Fault Tolerance"
+            },
+            {
+              "id": "bc-m2-2",
+              "title": "Proof of Work (PoW) & Difficulty Adjustment"
+            },
+            {
+              "id": "bc-m2-3",
+              "title": "Proof of Stake (PoS) & Slashing Conditions"
+            },
+            {
+              "id": "bc-m2-4",
+              "title": "Delegated PoS, Practical BFT & Layer 1 Protocols"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 3 (Pending Final Upload)",
+          "title": "Smart Contracts & Ethereum Virtual Machine",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "bc-m3-1",
+              "title": "EVM Architecture, Gas Economics & State Machine"
+            },
+            {
+              "id": "bc-m3-2",
+              "title": "Solidity Basics: Data Types, Modifiers, Events"
+            },
+            {
+              "id": "bc-m3-3",
+              "title": "ERC-20 and ERC-721 Token Standards"
+            },
+            {
+              "id": "bc-m3-4",
+              "title": "Reentrancy, Front-Running & Smart Contract Security"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 4 (Pending Final Upload)",
+          "title": "DApps, Web3 & Future Horizons",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "bc-m4-1",
+              "title": "Web3 Provider Integration (Ethers.js / Web3.js)"
+            },
+            {
+              "id": "bc-m4-2",
+              "title": "Decentralized Storage: IPFS & Arweave"
+            },
+            {
+              "id": "bc-m4-3",
+              "title": "Layer 2 Scaling: Rollups, State Channels & Zero-Knowledge Proofs"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "bc-a1",
+          "sno": 1,
+          "co": "Pending Official CO",
+          "type": "Lab Assignment",
+          "title": "Cryptographic Hashing & Mini-Blockchain in Python",
+          "description": "Build a toy blockchain in Python with block hashing, proof of work nonce finding, and chain validation logic."
+        },
+        {
+          "id": "bc-a2",
+          "sno": 2,
+          "co": "Pending Official CO",
+          "type": "Smart Contract",
+          "title": "ERC-20 Token Deployment on Sepolia Testnet",
+          "description": "Write and deploy an ERC-20 token using Solidity, Hardhat/Remix, and verify contract on Etherscan."
+        }
+      ],
+      "certifications": [],
+      "resources": [
+        {
+          "title": "Bitcoin: A Peer-to-Peer Electronic Cash System",
+          "type": "Whitepaper",
+          "url": "https://bitcoin.org/bitcoin.pdf",
+          "description": "Satoshi Nakamoto\u2019s foundational 2008 whitepaper."
+        },
+        {
+          "title": "Ethereum Whitepaper",
+          "type": "Whitepaper",
+          "url": "https://ethereum.org/en/whitepaper/",
+          "description": "Vitalik Buterin\u2019s original architecture specification for smart contracts."
+        },
+        {
+          "title": "Solidity Documentation",
+          "type": "Documentation",
+          "url": "https://docs.soliditylang.org/",
+          "description": "Official documentation for Solidity language and best practices."
+        }
+      ]
+    },
+    {
+      "id": "ar-vr-foundation",
+      "code": "S5-XR01",
+      "name": "AR & VR Foundation",
+      "totalHours": 30,
+      "faculty": "Mr. Prasanna",
+      "facultyStatus": "Verified (Academic Plan - Elon Musk Cohort)",
+      "cohort": "Elon Musk",
+      "courseType": "Elective / Emerging Technologies",
+      "hasDetailedSyllabus": false,
+      "syllabusStatusNote": "Detailed subject syllabus document pending upload from academic portal. Faculty verified from Sprint 2 Academic Plan.",
+      "description": "Spatial computing fundamentals, 3D graphics pipeline, Unity/Unreal Engine development for XR, tracking technologies (6DoF, SLAM), spatial audio, and immersive user experience design.",
+      "modules": [
+        {
+          "unitNumber": "Unit 1 (Pending Final Upload)",
+          "title": "Introduction to XR & Spatial Computing",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "ar-m1-1",
+              "title": "Reality-Virtuality Continuum: AR, VR, MR, and XR definitions"
+            },
+            {
+              "id": "ar-m1-2",
+              "title": "Human Visual Perception: Stereopsis, Depth Cues, Field of View"
+            },
+            {
+              "id": "ar-m1-3",
+              "title": "Hardware Systems: HMDs, Inside-Out vs Outside-In Tracking"
+            },
+            {
+              "id": "ar-m1-4",
+              "title": "Degrees of Freedom: 3DoF vs 6DoF, Latency & Motion Sickness Mitigation"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 2 (Pending Final Upload)",
+          "title": "3D Mathematics & Graphics Pipeline",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "ar-m2-1",
+              "title": "Vector Mathematics, Coordinate Systems (Left vs Right Handed)"
+            },
+            {
+              "id": "ar-m2-2",
+              "title": "Transformations: Translation, Scaling, Rotation (Euler vs Quaternions)"
+            },
+            {
+              "id": "ar-m2-3",
+              "title": "Camera Projections, View Frustum, Rendering Pipeline"
+            },
+            {
+              "id": "ar-m2-4",
+              "title": "Lighting, Shaders, PBR Materials & Performance Optimization for XR"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 3 (Pending Final Upload)",
+          "title": "Augmented Reality Technologies & Computer Vision",
+          "hours": 8,
+          "topics": [
+            {
+              "id": "ar-m3-1",
+              "title": "Simultaneous Localization and Mapping (SLAM) Fundamentals"
+            },
+            {
+              "id": "ar-m3-2",
+              "title": "Marker-based vs Markerless AR Tracking"
+            },
+            {
+              "id": "ar-m3-3",
+              "title": "Plane Detection, Hit Testing & Environmental Understanding"
+            },
+            {
+              "id": "ar-m3-4",
+              "title": "ARCore / ARKit SDK Architecture and Capabilities"
+            }
+          ]
+        },
+        {
+          "unitNumber": "Unit 4 (Pending Final Upload)",
+          "title": "XR Interaction Design & Capstone Project",
+          "hours": 6,
+          "topics": [
+            {
+              "id": "ar-m4-1",
+              "title": "Direct vs Raycast Interactions, Spatial UI & Ergonomics"
+            },
+            {
+              "id": "ar-m4-2",
+              "title": "Spatial Audio Design & Environmental Reverb"
+            },
+            {
+              "id": "ar-m4-3",
+              "title": "Unity XR Interaction Toolkit & WebXR Standards"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "ar-a1",
+          "sno": 1,
+          "co": "Pending Official CO",
+          "type": "Lab Practical",
+          "title": "Interactive 3D Scene with Physics in Unity",
+          "description": "Create an interactive 3D scene implementing custom lighting, physics colliders, and quaternion-based object manipulation."
+        },
+        {
+          "id": "ar-a2",
+          "sno": 2,
+          "co": "Pending Official CO",
+          "type": "Mini Project",
+          "title": "Markerless AR Placement Mobile App",
+          "description": "Build an AR application using ARCore/ARKit that detects horizontal planes and allows users to tap to spawn realistic 3D assets with real-time shadows."
+        }
+      ],
+      "certifications": [],
+      "resources": [
+        {
+          "title": "Unity Learn XR Development Pathway",
+          "type": "Interactive Course",
+          "url": "https://learn.unity.com/",
+          "description": "Free guided tutorials on Unity XR Interaction Toolkit and VR/AR development."
+        },
+        {
+          "title": "WebXR Device API Specification (W3C)",
+          "type": "Technical Standard",
+          "url": "https://www.w3.org/TR/webxr/",
+          "description": "The official web standard for rendering immersive 3D graphics in the browser."
+        },
+        {
+          "title": "Google ARCore Developer Documentation",
+          "type": "Documentation",
+          "url": "https://developers.google.com/ar",
+          "description": "Official guides for motion tracking, environmental understanding, and light estimation."
+        }
+      ]
+    }
+  ]
+}
