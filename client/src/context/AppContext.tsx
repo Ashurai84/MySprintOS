@@ -198,7 +198,7 @@ function harmonizeLectureRecords(rawLectures: Lecture[]): Lecture[] {
 
   // 2. Canonicalize subject IDs, sanitize faculty from single source of truth, and fix time bug
   const migrated: Lecture[] = nonMisleading.map(l => {
-    const canonId = canonicalSubjectId(l.subjectId)
+    const canonId = canonicalSubjectId(l.subjectId || l.title || l.notes)
     
     // Resolve faculty from single source of truth
     let faculty = l.faculty
@@ -861,12 +861,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const getTimetableSlotLecture = (entry: TimetableEntry, targetDate?: string): Lecture | undefined => {
     const lectureDate = targetDate || entry.specificDate || getKolkataDateString()
-    const sub = subjects.find(s => isSameSubject(s.id, entry.subjectId))
+    const canonSubId = canonicalSubjectId(entry.subjectId || entry.notes)
+    const sub = subjects.find(s => isSameSubject(s.id, canonSubId))
     const expectedTitle = entry.notes || `${sub?.name || 'Class'} Session`
     return lectures.find(l => 
       l.date === lectureDate && 
-      isSameSubject(l.subjectId, entry.subjectId) && 
-      (l.startTime === entry.startTime || l.title === expectedTitle)
+      isSameSubject(l.subjectId, canonSubId) && 
+      (l.startTime === entry.startTime || l.title === expectedTitle || (l.title && entry.notes && l.title === entry.notes))
     )
   }
 
@@ -891,22 +892,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (notesLower.includes('independent study') || notesLower.includes('unassigned')) return ''
 
     const lectureDate = targetDate || entry.specificDate || getKolkataDateString()
-    const sub = subjects.find(s => isSameSubject(s.id, entry.subjectId))
+    const canonSubId = canonicalSubjectId(entry.subjectId || entry.notes) || 'S5-CS01'
+    const sub = subjects.find(s => isSameSubject(s.id, canonSubId))
     const expectedTitle = entry.notes || `${sub?.name || 'Class'} Session`
 
     // Check if this timetable entry is ALREADY logged to avoid duplicate phantom lectures
     const existing = lectures.find(l => 
       l.date === lectureDate && 
-      isSameSubject(l.subjectId, entry.subjectId) && 
-      (l.startTime === entry.startTime || l.title === expectedTitle)
+      isSameSubject(l.subjectId, canonSubId) && 
+      (l.startTime === entry.startTime || l.title === expectedTitle || (l.title && entry.notes && l.title === entry.notes))
     )
 
     if (existing) {
-      updateLecture(existing.id, { status })
+      updateLecture(existing.id, { status, subjectId: canonSubId })
       return existing.id
     }
 
-    const canonSubId = canonicalSubjectId(entry.subjectId) || 'S5-CS01'
     const faculty = resolveFacultyName(entry.facultyId, canonSubId, entry.faculty)
     const facultyId = entry.facultyId || resolveFacultyId(canonSubId, faculty)
     const dur = entry.startTime && entry.endTime 

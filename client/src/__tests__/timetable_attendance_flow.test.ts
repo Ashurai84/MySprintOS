@@ -71,4 +71,27 @@ describe('Timetable to Attendance Flow & Marking Verification', () => {
     expect(stats.totalHeld).toBe(3)
     expect(stats.percentage).toBe(100)
   })
+
+  it('correctly maps raw title "Data Structures & Algorithm - III" to canonical ID S5-CS01', () => {
+    const rawLecture: Lecture = {
+      id: 'lec-oct26-slot1',
+      date: '2026-10-26',
+      subjectId: 'Data Structures & Algorithm - III',
+      title: 'Data Structures & Algorithm - III',
+      faculty: 'Sanjay Sahu (VF)',
+      startTime: '09:00',
+      endTime: '10:00',
+      durationMinutes: 60,
+      status: 'attended',
+      classroom: 'Classroom No. - 20',
+      createdAt: '2026-10-26T09:00:00Z',
+      updatedAt: '2026-10-26T09:00:00Z'
+    }
+
+    const testList = [...initialLectures, rawLecture]
+    const stats = calculateSubjectAttendance('S5-CS01', testList)
+    expect(stats.attended).toBe(4)
+    expect(stats.totalHeld).toBe(4)
+    expect(stats.percentage).toBe(100)
+  })
 })

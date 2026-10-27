@@ -212,8 +212,8 @@ export function sanitizeTimetableEntries(entries: TimetableEntry[]): TimetableEn
 
     const duration = calculateDurationFromTimes(start24, end24)
 
-    // Canonicalize subject ID if present
-    const canonSubId = entry.subjectId ? canonicalSubjectId(entry.subjectId) : undefined
+    // Canonicalize subject ID if present or infer from notes
+    const canonSubId = canonicalSubjectId(entry.subjectId || entry.notes) || undefined
 
     // Sanitize faculty strictly from single source of truth (FACULTY_ROSTER)
     let faculty = entry.faculty
