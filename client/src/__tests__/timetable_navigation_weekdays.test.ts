@@ -71,18 +71,20 @@ describe('Timetable 7-Weekday Support & Navigation (SprintOS)', () => {
   // 4. Preservation of historical Thursday & Friday entries
   it('preserves existing historical Thursday and Friday timetable entries intact', () => {
     const thuSlots = getEntriesForDate(initialTimetableEntries, '2026-10-22')
-    expect(thuSlots.length).toBe(7)
-    expect(thuSlots[0].subjectId).toBe('S5-CS01')
-    expect(thuSlots[0].faculty).toBe('Sanjay Sahu (VF)')
-    expect(thuSlots[2].slotType).toBe('lunch_break')
-    expect(thuSlots[2].durationMinutes).toBe(40)
+    expect(thuSlots.length).toBe(8)
+    expect(thuSlots[0].slotType).toBe('unassigned')
+    expect(thuSlots[1].subjectId).toBe('S5-CS01')
+    expect(thuSlots[1].faculty).toBe('Sanjay Sahu (VF)')
+    expect(thuSlots[3].slotType).toBe('lunch_break')
+    expect(thuSlots[3].durationMinutes).toBe(40)
 
     const friSlots = getEntriesForDate(initialTimetableEntries, '2026-10-23')
     expect(friSlots.length).toBe(7)
     expect(friSlots[0].slotType).toBe('unassigned')
     expect(friSlots[1].subjectId).toBe('S5-CS01')
     expect(friSlots[1].faculty).toBe('Sanjay Sahu (VF)')
-    expect(friSlots[3].slotType).toBe('lunch_break')
+    expect(friSlots[3].slotType).toBe('lecture')
+    expect(friSlots[4].slotType).toBe('lunch_break')
   })
 
   // 5. Empty days handling

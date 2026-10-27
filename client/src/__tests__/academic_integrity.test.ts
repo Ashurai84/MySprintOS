@@ -110,50 +110,55 @@ describe('Priority 2: Timetable Data, Times & Rendering', () => {
 
   it('renders Thursday, 22 October 2026 timetable exactly matching the verified reference', () => {
     const thuEntries = getEntriesForDate(initialTimetableEntries, '2026-10-22')
-    expect(thuEntries.length).toBe(7)
+    expect(thuEntries.length).toBe(8)
+
+    // 09:00-10:00: Unassigned / Unscheduled period
+    expect(thuEntries[0].startTime).toBe('09:00')
+    expect(thuEntries[0].endTime).toBe('10:00')
+    expect(thuEntries[0].slotType).toBe('unassigned')
 
     // 10:00-11:00: DSA III, Sanjay Sahu (VF), Room 37
-    expect(thuEntries[0].startTime).toBe('10:00')
-    expect(thuEntries[0].endTime).toBe('11:00')
-    expect(thuEntries[0].subjectId).toBe('S5-CS01')
-    expect(thuEntries[0].faculty).toBe('Sanjay Sahu (VF)')
-    expect(thuEntries[0].classroom).toBe('Classroom 37')
-
-    // 11:10-12:10: DSA III, Sanjay Sahu (VF), Room 37
-    expect(thuEntries[1].startTime).toBe('11:10')
-    expect(thuEntries[1].endTime).toBe('12:10')
+    expect(thuEntries[1].startTime).toBe('10:00')
+    expect(thuEntries[1].endTime).toBe('11:00')
     expect(thuEntries[1].subjectId).toBe('S5-CS01')
     expect(thuEntries[1].faculty).toBe('Sanjay Sahu (VF)')
+    expect(thuEntries[1].classroom).toBe('Classroom No. - 37')
+
+    // 11:10-12:10: DSA III, Sanjay Sahu (VF), Room 37
+    expect(thuEntries[2].startTime).toBe('11:10')
+    expect(thuEntries[2].endTime).toBe('12:10')
+    expect(thuEntries[2].subjectId).toBe('S5-CS01')
+    expect(thuEntries[2].faculty).toBe('Sanjay Sahu (VF)')
 
     // 12:20-13:00: Lunch break (40 min)
-    expect(thuEntries[2].startTime).toBe('12:20')
-    expect(thuEntries[2].endTime).toBe('13:00')
-    expect(thuEntries[2].durationMinutes).toBe(40)
-    expect(thuEntries[2].slotType).toBe('lunch_break')
+    expect(thuEntries[3].startTime).toBe('12:20')
+    expect(thuEntries[3].endTime).toBe('13:00')
+    expect(thuEntries[3].durationMinutes).toBe(40)
+    expect(thuEntries[3].slotType).toBe('lunch_break')
 
     // 13:00-14:00: LLMs, RAG & Agentic AI, Dr. Dipanjan, Room 37
-    expect(thuEntries[3].startTime).toBe('13:00')
-    expect(thuEntries[3].endTime).toBe('14:00')
-    expect(thuEntries[3].subjectId).toBe('S5-AI01')
-    expect(thuEntries[3].faculty).toBe('Dr. Dipanjan')
+    expect(thuEntries[4].startTime).toBe('13:00')
+    expect(thuEntries[4].endTime).toBe('14:00')
+    expect(thuEntries[4].subjectId).toBe('S5-AI01')
+    expect(thuEntries[4].faculty).toBe('Dr. Dipanjan')
 
     // 14:00-15:00: Career Readiness & Leadership, Prof. Amaan, Room 37
-    expect(thuEntries[4].startTime).toBe('14:00')
-    expect(thuEntries[4].endTime).toBe('15:00')
-    expect(thuEntries[4].subjectId).toBe('S5-SS01')
-    expect(thuEntries[4].faculty).toBe('Prof. Amaan')
+    expect(thuEntries[5].startTime).toBe('14:00')
+    expect(thuEntries[5].endTime).toBe('15:00')
+    expect(thuEntries[5].subjectId).toBe('S5-SS01')
+    expect(thuEntries[5].faculty).toBe('Prof. Amaan')
 
-    // 15:00-16:00: Venture & Product Strategy, Mr. Vivekanand Jha, Room 37
-    expect(thuEntries[5].startTime).toBe('15:00')
-    expect(thuEntries[5].endTime).toBe('16:00')
-    expect(thuEntries[5].subjectId).toBe('S5-MG01')
-    expect(thuEntries[5].faculty).toBe('Mr. Vivekanand Jha')
-
-    // 16:00-17:00: Venture & Product Strategy, Mr. Vivekanand Jha, Room 37
-    expect(thuEntries[6].startTime).toBe('16:00')
-    expect(thuEntries[6].endTime).toBe('17:00')
+    // 15:10-16:10: Venture & Product Strategy, Mr. Vivekanand Jha, Room 37
+    expect(thuEntries[6].startTime).toBe('15:10')
+    expect(thuEntries[6].endTime).toBe('16:10')
     expect(thuEntries[6].subjectId).toBe('S5-MG01')
     expect(thuEntries[6].faculty).toBe('Mr. Vivekanand Jha')
+
+    // 16:10-17:10: Venture & Product Strategy, Mr. Vivekanand Jha, Room 37
+    expect(thuEntries[7].startTime).toBe('16:10')
+    expect(thuEntries[7].endTime).toBe('17:10')
+    expect(thuEntries[7].subjectId).toBe('S5-MG01')
+    expect(thuEntries[7].faculty).toBe('Mr. Vivekanand Jha')
   })
 
   it('renders Friday, 23 October 2026 timetable without duplicate unassigned block conflict', () => {
@@ -176,18 +181,20 @@ describe('Priority 2: Timetable Data, Times & Rendering', () => {
     expect(friEntries[2].endTime).toBe('12:10')
     expect(friEntries[2].subjectId).toBe('S5-CS01')
 
-    // 12:20-13:00: Lunch break (40m)
+    // 12:20-13:00: DSA III, Sanjay Sahu (VF) (40m lecture)
     expect(friEntries[3].startTime).toBe('12:20')
     expect(friEntries[3].endTime).toBe('13:00')
     expect(friEntries[3].durationMinutes).toBe(40)
-    expect(friEntries[3].slotType).toBe('lunch_break')
+    expect(friEntries[3].slotType).toBe('lecture')
+    expect(friEntries[3].subjectId).toBe('S5-CS01')
 
-    // 13:00-14:00: LLMs, RAG & Agentic AI, Dr. Dipanjan
+    // 13:00-14:00: Lunch break (60m)
     expect(friEntries[4].startTime).toBe('13:00')
     expect(friEntries[4].endTime).toBe('14:00')
-    expect(friEntries[4].subjectId).toBe('S5-AI01')
+    expect(friEntries[4].durationMinutes).toBe(60)
+    expect(friEntries[4].slotType).toBe('lunch_break')
 
-    // 14:10-15:10: LLMs, RAG & Agentic AI, Dr. Dipanjan (real lecture occupies this, NOT unassigned)
+    // 14:10-15:10: LLMs, RAG & Agentic AI, Dr. Dipanjan
     expect(friEntries[5].startTime).toBe('14:10')
     expect(friEntries[5].endTime).toBe('15:10')
     expect(friEntries[5].subjectId).toBe('S5-AI01')

@@ -14,16 +14,23 @@ export const SUBJECT_ID_MAP: Record<string, string> = {
   'llm-rag-agentic-ai': 'S5-AI01',
   's5-ai01': 'S5-AI01',
   'S5-AI01': 'S5-AI01',
+  's5-cs02': 'S5-AI01',
+  'S5-CS02': 'S5-AI01',
 
   // Software Testing & Quality Assurance
   'stqa': 'S5-SE01',
+  'software-testing-qa': 'S5-SE01',
   's5-se01': 'S5-SE01',
   'S5-SE01': 'S5-SE01',
+  's5-cs03': 'S5-SE01',
+  'S5-CS03': 'S5-SE01',
 
   // Venture Capital & Product Strategy
   'venture-product-strategy': 'S5-MG01',
   's5-mg01': 'S5-MG01',
   'S5-MG01': 'S5-MG01',
+  's5-ms01': 'S5-MG01',
+  'S5-MS01': 'S5-MG01',
 
   // Career Readiness & Leadership
   'career-readiness-leadership': 'S5-SS01',
@@ -32,6 +39,7 @@ export const SUBJECT_ID_MAP: Record<string, string> = {
 
   // Foundations of AI/ML & Data Science
   'foundation-aiml-ds': 'S5-DS01',
+  'foundations-aiml-data-science': 'S5-DS01',
   's5-ds01': 'S5-DS01',
   'S5-DS01': 'S5-DS01'
 }
@@ -44,6 +52,12 @@ export function canonicalSubjectId(id?: string): string {
   const trimmed = id.trim()
   return SUBJECT_ID_MAP[trimmed] || SUBJECT_ID_MAP[trimmed.toLowerCase()] || trimmed
 }
+
+/**
+ * Returns canonical subject code (e.g. "S5-CS01" for "dsa-3" or "S5-CS01")
+ */
+export const canonicalSubjectCode = canonicalSubjectId
+
 
 /**
  * Compares two subject IDs or codes safely across legacy and canonical formats.

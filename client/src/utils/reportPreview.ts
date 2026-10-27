@@ -31,7 +31,7 @@ export function generateClientDailyHtml(data: {
     deadline: string
   }>
   completedTasksCount: number
-  javaMasteryPercentage: number
+  curriculumMasteryPercentage?: number
 }): string {
   const lectureRows = data.todayLectures.length > 0
     ? data.todayLectures.map(l => `
@@ -96,8 +96,8 @@ export function generateClientDailyHtml(data: {
           </td>
           <td width="2%"></td>
           <td width="32%" style="background-color: #162035; border: 1px solid #23314e; border-radius: 8px; padding: 12px; text-align: center;">
-            <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Java Recovery</div>
-            <div style="font-size: 22px; font-weight: bold; color: #a78bfa; margin-top: 4px;">${data.javaMasteryPercentage}%</div>
+            <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 600;">S5 Topic Mastery</div>
+            <div style="font-size: 22px; font-weight: bold; color: #a78bfa; margin-top: 4px;">${data.curriculumMasteryPercentage ?? 0}%</div>
             <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Curriculum Mastery</div>
           </td>
         </tr>
@@ -186,12 +186,32 @@ export function generateClientWeeklyHtml(data: {
     percentage: number
     isWarning: boolean
   }>
-  completedTasksCount: number
-  pendingTasksCount: number
-  javaRecoveryTopicsUnderstood: number
-  javaRecoveryTotalTopics: number
-  activeCoursesCount: number
+  completedTasksCount?: number
+  pendingTasksCount?: number
+  curriculumProgress?: {
+    totalTopics: number
+    understood: number
+    learning: number
+    needsRevision: number
+  }
+  curriculumTopicsUnderstood?: number
+  curriculumTotalTopics?: number
+  activeCoursesCount?: number
+  coursesProgress?: Array<{ title: string; provider: string; status: string; progressPercentage: number; certificateEarned: boolean }>
+  attendanceStats?: Array<any>
+  weeklyLecturesCount?: number
+  weeklyAttendedCount?: number
+  weeklyStudyHours?: number
 }): string {
+  const understood = data.curriculumProgress?.understood ?? data.curriculumTopicsUnderstood ?? 0
+  const total = data.curriculumProgress?.totalTopics ?? data.curriculumTotalTopics ?? 1
+  const attendedCount = data.totalClassesAttended ?? data.weeklyAttendedCount ?? 0
+  const heldCount = data.totalClassesHeld ?? data.weeklyLecturesCount ?? 0
+  const attendanceRate = data.weeklyAttendancePercentage ?? (heldCount > 0 ? (attendedCount / heldCount) * 100 : 100)
+  const studyHours = data.studyHoursLogged ?? data.weeklyStudyHours ?? 0
+  const completedTasks = data.completedTasksCount ?? 0
+  const pendingTasks = data.pendingTasksCount ?? 0
+  const activeCourses = data.activeCoursesCount ?? data.coursesProgress?.length ?? 0
   const subjectRows = data.subjectBreakdown.map(s => `
     <tr style="border-bottom: 1px solid #1e293d;">
       <td style="padding: 10px; color: #ffffff; font-weight: 600;">${s.subjectName}</td>
@@ -233,24 +253,24 @@ export function generateClientWeeklyHtml(data: {
         <tr>
           <td width="32%" style="background-color: #162035; border: 1px solid #23314e; border-radius: 8px; padding: 12px; text-align: center;">
             <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Attendance Rate</div>
-            <div style="font-size: 22px; font-weight: bold; color: ${data.weeklyAttendancePercentage >= 75 ? '#34d399' : '#fb7185'}; margin-top: 4px;">
-              ${data.weeklyAttendancePercentage.toFixed(1)}%
+            <div style="font-size: 22px; font-weight: bold; color: ${attendanceRate >= 75 ? '#34d399' : '#fb7185'}; margin-top: 4px;">
+              ${attendanceRate.toFixed(1)}%
             </div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${data.totalClassesAttended} / ${data.totalClassesHeld} sessions</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${attendedCount} / ${heldCount} sessions</div>
           </td>
           <td width="2%"></td>
           <td width="32%" style="background-color: #162035; border: 1px solid #23314e; border-radius: 8px; padding: 12px; text-align: center;">
             <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Study Hours</div>
-            <div style="font-size: 22px; font-weight: bold; color: #38bdf8; margin-top: 4px;">${data.studyHoursLogged}h</div>
+            <div style="font-size: 22px; font-weight: bold; color: #38bdf8; margin-top: 4px;">${studyHours}h</div>
             <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Logged lecture time</div>
           </td>
           <td width="2%"></td>
           <td width="32%" style="background-color: #162035; border: 1px solid #23314e; border-radius: 8px; padding: 12px; text-align: center;">
-            <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Java Mastery</div>
+            <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 600;">S5 Topic Mastery</div>
             <div style="font-size: 22px; font-weight: bold; color: #a78bfa; margin-top: 4px;">
-              ${Math.round((data.javaRecoveryTopicsUnderstood / Math.max(1, data.javaRecoveryTotalTopics)) * 100)}%
+              ${Math.round((understood / Math.max(1, total)) * 100)}%
             </div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${data.javaRecoveryTopicsUnderstood}/${data.javaRecoveryTotalTopics} topics</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${understood}/${total} topics</div>
           </td>
         </tr>
       </table>
@@ -276,9 +296,9 @@ export function generateClientWeeklyHtml(data: {
       <div style="background-color: #162035; border: 1px solid #23314e; border-radius: 8px; padding: 14px; margin-bottom: 20px;">
         <div style="font-size: 12px; color: #ffffff; font-weight: 600; margin-bottom: 6px;">Sprint Objectives & Momentum:</div>
         <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
-          • Completed <strong style="color: #ffffff;">${data.completedTasksCount}</strong> assignments and milestones; <strong style="color: #ffffff;">${data.pendingTasksCount}</strong> remain in pipeline.<br>
-          • Tracking <strong style="color: #ffffff;">${data.activeCoursesCount}</strong> active professional certification tracks (Coursera GenAI, DSA Specialization, STQA).<br>
-          • Java fundamentals recovery is currently at <strong style="color: #ffffff;">${data.javaRecoveryTopicsUnderstood}/${data.javaRecoveryTotalTopics}</strong> topics with full conceptual clarity.
+          • Completed <strong style="color: #ffffff;">${completedTasks}</strong> assignments and milestones; <strong style="color: #ffffff;">${pendingTasks}</strong> remain in pipeline.<br>
+          • Tracking <strong style="color: #ffffff;">${activeCourses}</strong> active professional certification tracks (Coursera GenAI, DSA Specialization, STQA).<br>
+          • Semester 5 curriculum mastery is currently at <strong style="color: #ffffff;">${understood}/${total}</strong> topics with full conceptual clarity.
         </div>
       </div>
 

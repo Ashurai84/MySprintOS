@@ -15,9 +15,9 @@ import type {
   AppDocument,
   RevisionSession,
   SubjectAttendanceStats,
+  OverallAttendanceStats,
   TimetableEntry,
   TimetableConflict,
-  JavaTopicRecovery,
   EnhancedCourse,
   EmailReportSettings
 } from '../types'
@@ -35,20 +35,19 @@ import {
   initialAppDocuments,
   initialRevisionSessions,
   initialTimetableEntries,
-  initialJavaTopics,
-  initialJavaDiagnosticQuestions,
   initialEnhancedCourses,
   initialEmailSettings
 } from '../data/defaultData'
 import { loadFromStorage, saveToStorage } from '../utils/storage'
-import { calculateSubjectAttendance } from '../utils/attendanceCalculator'
+import { calculateSubjectAttendance, calculateOverallAttendance } from '../utils/attendanceCalculator'
 import { 
   detectTimetableConflicts, 
   sanitizeTimetableEntries, 
   normalizeTimeTo24H,
   timeToMinutes,
   minutesToTime,
-  validateTimes
+  validateTimes,
+  getKolkataDateString
 } from '../utils/timetableUtils'
 import { 
   canonicalSubjectId, 
@@ -84,15 +83,11 @@ interface AppContextType {
   addTimetableEntry: (entry: Omit<TimetableEntry, 'id'>) => string
   updateTimetableEntry: (id: string, updates: Partial<TimetableEntry>) => void
   deleteTimetableEntry: (id: string) => void
-  logTimetableAsLecture: (timetableId: string, status?: AttendanceStatus) => string
+  logTimetableAsLecture: (timetableId: string, status?: AttendanceStatus, targetDate?: string) => string
+  removeTimetableLectureLog: (timetableId: string, targetDate?: string) => void
+  getTimetableSlotLecture: (entry: TimetableEntry, targetDate?: string) => Lecture | undefined
+  importTimetableEntries: (entries: TimetableEntry[]) => { added: number; updated: number; skipped: number }
 
-  // Java Recovery
-  javaTopics: JavaTopicRecovery[]
-  updateJavaTopic: (topicId: string, updates: Partial<JavaTopicRecovery>) => void
-  javaDiagnosticCompleted: boolean
-  javaDiagnosticScore: { score: number; total: number; date: string } | null
-  submitJavaDiagnostic: (answers: Record<string, number>) => { score: number; total: number; passed: boolean; weakTopicIds: string[] }
-  resetJavaDiagnostic: () => void
 
   // Enhanced Courses
   enhancedCourses: EnhancedCourse[]
@@ -168,6 +163,7 @@ interface AppContextType {
   getSubjectAttendance: (subjectId: string) => { attended: number; total: number; percentage: number; isWarning: boolean }
   getSubjectAttendanceStats: (subjectId: string) => SubjectAttendanceStats
   getAllSubjectAttendanceStats: () => SubjectAttendanceStats[]
+  getOverallAttendanceStats: () => OverallAttendanceStats
 }
 
 /**
@@ -274,18 +270,21 @@ function harmonizeLectureRecords(rawLectures: Lecture[]): Lecture[] {
     return true
   })
 
-  // Ensure all 3 authentic DSA-3 lectures exist
-  const dsaInitial = initialLectures.filter(l => isSameSubject(l.subjectId, 'S5-CS01'))
-  for (const initLec of dsaInitial) {
-    if (!cleaned.some(l => isSameSubject(l.subjectId, 'S5-CS01') && (l.title === initLec.title || l.id === initLec.id))) {
+  // Ensure all 7 verified initial lectures exist if not already present
+  for (const initLec of initialLectures) {
+    const exists = cleaned.some(l => 
+      l.id === initLec.id || 
+      (isSameSubject(l.subjectId, initLec.subjectId) && l.date === initLec.date && (l.startTime === initLec.startTime || l.title === initLec.title))
+    )
+    if (!exists) {
       cleaned.push(initLec)
     }
   }
 
-  // Deduplicate exact same (subjectId + title + date)
+  // Deduplicate exact same (subjectId + title + date + startTime), preserving multiple sessions on the same day
   const seen = new Set<string>()
   cleaned = cleaned.filter(l => {
-    const key = `${canonicalSubjectId(l.subjectId)}_${l.title}_${l.date}`
+    const key = `${canonicalSubjectId(l.subjectId)}_${l.title}_${l.date}_${l.startTime || l.id}`
     if (seen.has(key)) return false
     seen.add(key)
     return true
@@ -359,16 +358,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sanitizeTimetableEntries(loadFromStorage<TimetableEntry[]>('timetable_v2', initialTimetableEntries))
   )
 
-  // 10. SprintOS 2.1 Java Recovery
-  const [javaTopics, setJavaTopics] = useState<JavaTopicRecovery[]>(() =>
-    loadFromStorage<JavaTopicRecovery[]>('javaTopics_v2', initialJavaTopics)
-  )
-  const [javaDiagnosticCompleted, setJavaDiagnosticCompleted] = useState<boolean>(() =>
-    loadFromStorage<boolean>('javaDiagnosticCompleted_v2', false)
-  )
-  const [javaDiagnosticScore, setJavaDiagnosticScore] = useState<{ score: number; total: number; date: string } | null>(() =>
-    loadFromStorage<{ score: number; total: number; date: string } | null>('javaDiagnosticScore_v2', null)
-  )
 
   // 11. SprintOS 2.1 Enhanced Courses
   const [enhancedCourses, setEnhancedCourses] = useState<EnhancedCourse[]>(() =>
@@ -399,9 +388,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => { saveToStorage('profile', profile) }, [profile])
   useEffect(() => { saveToStorage('completedTopics', completedTopics) }, [completedTopics])
   useEffect(() => { saveToStorage('timetable_v2', timetableEntries) }, [timetableEntries])
-  useEffect(() => { saveToStorage('javaTopics_v2', javaTopics) }, [javaTopics])
-  useEffect(() => { saveToStorage('javaDiagnosticCompleted_v2', javaDiagnosticCompleted) }, [javaDiagnosticCompleted])
-  useEffect(() => { saveToStorage('javaDiagnosticScore_v2', javaDiagnosticScore) }, [javaDiagnosticScore])
+  // Clean obsolete Java recovery keys
+  useEffect(() => {
+    try {
+      localStorage.removeItem('javaTopics_v2')
+      localStorage.removeItem('javaDiagnosticCompleted_v2')
+      localStorage.removeItem('javaDiagnosticScore_v2')
+    } catch {
+      // sandbox / storage unavailable
+    }
+  }, [])
   useEffect(() => { saveToStorage('enhancedCourses_v2', enhancedCourses) }, [enhancedCourses])
   useEffect(() => { saveToStorage('emailSettings_v2', emailSettings) }, [emailSettings])
 
@@ -822,15 +818,79 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setTimetableEntries(prev => prev.filter(e => e.id !== id))
   }
 
-  const logTimetableAsLecture = (timetableId: string, status: AttendanceStatus = 'attended'): string => {
+  const importTimetableEntries = (entries: TimetableEntry[]): { added: number; updated: number; skipped: number } => {
+    let added = 0
+    let updated = 0
+    let skipped = 0
+
+    const current = [...timetableEntries]
+    for (const newEntry of entries) {
+      const matchIdx = current.findIndex(e => 
+        e.id === newEntry.id || 
+        (
+          (e.specificDate && newEntry.specificDate ? e.specificDate === newEntry.specificDate : e.dayOfWeek === newEntry.dayOfWeek) &&
+          e.startTime === newEntry.startTime &&
+          e.endTime === newEntry.endTime &&
+          isSameSubject(e.subjectId, newEntry.subjectId)
+        )
+      )
+
+      if (matchIdx >= 0) {
+        const cur = current[matchIdx]
+        const isIdentical = 
+          cur.faculty === newEntry.faculty &&
+          cur.classroom === newEntry.classroom &&
+          cur.notes === newEntry.notes &&
+          cur.slotType === newEntry.slotType
+
+        if (isIdentical) {
+          skipped++
+        } else {
+          current[matchIdx] = { ...cur, ...newEntry }
+          updated++
+        }
+      } else {
+        current.push(newEntry)
+        added++
+      }
+    }
+
+    setTimetableEntries(sanitizeTimetableEntries(current))
+    return { added, updated, skipped }
+  }
+
+  const getTimetableSlotLecture = (entry: TimetableEntry, targetDate?: string): Lecture | undefined => {
+    const lectureDate = targetDate || entry.specificDate || getKolkataDateString()
+    const sub = subjects.find(s => isSameSubject(s.id, entry.subjectId))
+    const expectedTitle = entry.notes || `${sub?.name || 'Class'} Session`
+    return lectures.find(l => 
+      l.date === lectureDate && 
+      isSameSubject(l.subjectId, entry.subjectId) && 
+      (l.startTime === entry.startTime || l.title === expectedTitle)
+    )
+  }
+
+  const removeTimetableLectureLog = (timetableId: string, targetDate?: string) => {
+    const entry = timetableEntries.find(e => e.id === timetableId)
+    if (!entry) return
+    const existing = getTimetableSlotLecture(entry, targetDate)
+    if (existing) {
+      deleteLecture(existing.id)
+    }
+  }
+
+  const logTimetableAsLecture = (
+    timetableId: string, 
+    status: AttendanceStatus = 'attended',
+    targetDate?: string
+  ): string => {
     const entry = timetableEntries.find(e => e.id === timetableId)
     if (!entry) return ''
     if (entry.slotType !== 'lecture') return '' // Breaks/free periods/independent study never count toward attendance
     const notesLower = (entry.notes || '').toLowerCase()
     if (notesLower.includes('independent study') || notesLower.includes('unassigned')) return ''
 
-    const todayStr = new Date().toISOString().split('T')[0]
-    const lectureDate = entry.specificDate || todayStr
+    const lectureDate = targetDate || entry.specificDate || getKolkataDateString()
     const sub = subjects.find(s => isSameSubject(s.id, entry.subjectId))
     const expectedTitle = entry.notes || `${sub?.name || 'Class'} Session`
 
@@ -868,71 +928,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     })
   }
 
-  // --------------------------------------------------------------------------
-  // JAVA RECOVERY ACTIONS
-  // --------------------------------------------------------------------------
-  const updateJavaTopic = (topicId: string, updates: Partial<JavaTopicRecovery>) => {
-    const now = new Date().toISOString()
-    setJavaTopics(prev => prev.map(t => {
-      if (t.id === topicId) {
-        return {
-          ...t,
-          ...updates,
-          lastRevisedAt: updates.status || updates.confidenceRating ? now : t.lastRevisedAt
-        }
-      }
-      return t
-    }))
-  }
-
-  const submitJavaDiagnostic = (answers: Record<string, number>) => {
-    let score = 0
-    const weakTopics: string[] = []
-
-    for (const q of initialJavaDiagnosticQuestions) {
-      const selected = answers[q.id]
-      if (selected === q.correctIndex) {
-        score++
-      } else {
-        if (!weakTopics.includes(q.topic)) {
-          weakTopics.push(q.topic)
-        }
-      }
-    }
-
-    const total = initialJavaDiagnosticQuestions.length
-    const passed = score >= Math.ceil(total * 0.7)
-    const result = { score, total, date: new Date().toISOString().split('T')[0] }
-
-    setJavaDiagnosticScore(result)
-    setJavaDiagnosticCompleted(true)
-
-    // Mark weak topics as needs_revision
-    if (weakTopics.length > 0) {
-      setJavaTopics(prev => prev.map(t => {
-        const matches = weakTopics.some(topicName => 
-          t.title.toLowerCase().includes(topicName.toLowerCase()) || 
-          topicName.toLowerCase().includes(t.title.toLowerCase())
-        )
-        if (matches) {
-          return {
-            ...t,
-            status: 'needs_revision' as const,
-            needsRevision: true,
-            confidenceRating: Math.min(t.confidenceRating, 2)
-          }
-        }
-        return t
-      }))
-    }
-
-    return { score, total, passed, weakTopicIds: weakTopics }
-  }
-
-  const resetJavaDiagnostic = () => {
-    setJavaDiagnosticCompleted(false)
-    setJavaDiagnosticScore(null)
-  }
 
   // --------------------------------------------------------------------------
   // ENHANCED COURSE ACTIONS
@@ -986,7 +981,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       pendingTasksCount: pendingTasks.length,
       urgentTasks: pendingTasks.filter(t => t.priority === 'high').slice(0, 3),
       completedTasksCount: completedTasksToday.length,
-      javaMasteryPercentage: Math.round((javaTopics.filter(t => t.status === 'understood').length / Math.max(1, javaTopics.length)) * 100)
+      curriculumMasteryPercentage: (() => {
+        const totalS5Topics = subjects.reduce((sum, s) => sum + s.modules.reduce((mSum, m) => mSum + m.topics.length, 0), 0)
+        const understood = Object.values(topicProgress).filter(t => t.status === 'understood' || t.confidenceRating >= 4).length
+        return totalS5Topics > 0 ? Math.round((understood / totalS5Topics) * 100) : 0
+      })()
     }
   }
 
@@ -1017,12 +1016,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         completed: tasks.filter(t => t.status === 'completed').length,
         pending: tasks.filter(t => t.status !== 'completed').length
       },
-      javaProgress: {
-        totalTopics: javaTopics.length,
-        understood: javaTopics.filter(t => t.status === 'understood').length,
-        learning: javaTopics.filter(t => t.status === 'learning').length,
-        needsRevision: javaTopics.filter(t => t.status === 'needs_revision' || t.needsRevision).length
-      },
+      curriculumProgress: (() => {
+        const totalS5Topics = subjects.reduce((sum, s) => sum + s.modules.reduce((mSum, m) => mSum + m.topics.length, 0), 0)
+        return {
+          totalTopics: totalS5Topics,
+          understood: Object.values(topicProgress).filter(t => t.status === 'understood' || t.confidenceRating >= 4).length,
+          learning: Object.values(topicProgress).filter(t => t.status === 'learning').length,
+          needsRevision: Object.values(topicProgress).filter(t => t.status === 'needs_revision' || t.needsRevision).length
+        }
+      })(),
       coursesProgress: enhancedCourses.map(c => ({
         title: c.title,
         provider: c.provider,
@@ -1173,9 +1175,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setSettings(initialAcademicSettings)
     setAppDocuments(initialAppDocuments)
     setTimetableEntries(initialTimetableEntries)
-    setJavaTopics(initialJavaTopics)
-    setJavaDiagnosticCompleted(false)
-    setJavaDiagnosticScore(null)
     setEnhancedCourses(initialEnhancedCourses)
     setEmailSettings(initialEmailSettings)
   }
@@ -1195,7 +1194,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (Array.isArray(parsed.notes)) setNotes(parsed.notes)
       if (parsed.completedTopics) setCompletedTopics(parsed.completedTopics)
       if (Array.isArray(parsed.timetable)) setTimetableEntries(parsed.timetable)
-      if (Array.isArray(parsed.javaTopics)) setJavaTopics(parsed.javaTopics)
       if (Array.isArray(parsed.enhancedCourses)) setEnhancedCourses(parsed.enhancedCourses)
       if (parsed.emailSettings) setEmailSettings(parsed.emailSettings)
       return { success: true, message: 'SprintOS backup restored successfully!' }
@@ -1239,6 +1237,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return subjects.map(sub => getSubjectAttendanceStats(sub.id))
   }
 
+  const getOverallAttendanceStats = (): OverallAttendanceStats => {
+    const stats = getAllSubjectAttendanceStats()
+    return calculateOverallAttendance(stats, settings.minAttendancePercent)
+  }
+
   const getSubjectAttendance = (subjectId: string) => {
     const stats = getSubjectAttendanceStats(subjectId)
     return {
@@ -1270,13 +1273,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addTimetableEntry,
     updateTimetableEntry,
     deleteTimetableEntry,
+    importTimetableEntries,
     logTimetableAsLecture,
-    javaTopics,
-    updateJavaTopic,
-    javaDiagnosticCompleted,
-    javaDiagnosticScore,
-    submitJavaDiagnostic,
-    resetJavaDiagnostic,
+    removeTimetableLectureLog,
+    getTimetableSlotLecture,
     enhancedCourses,
     addEnhancedCourse,
     updateEnhancedCourse,
@@ -1324,6 +1324,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     getSubjectAttendance,
     getSubjectAttendanceStats,
     getAllSubjectAttendanceStats,
+    getOverallAttendanceStats,
     theme,
     setTheme
   }

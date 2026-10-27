@@ -133,19 +133,23 @@ describe('Phase A — Audit & Data Bug Fixes', () => {
     })
   })
 
-  describe('4. Quick Jump Chips Deduplication', () => {
-    it('filters out today date from historical list to avoid duplicate Today chips', () => {
-      const kolkataToday = '2026-10-23'
-      const historicalPresets = [
-        { date: '2026-10-21', label: 'Wed 21 Oct' },
-        { date: '2026-10-22', label: 'Thu 22 Oct' },
-        { date: '2026-10-23', label: 'Fri 23 Oct' }
-      ]
+  describe('4. Clean Single-Calendar-Day Navigation', () => {
+    it('shifts selected date by exactly one calendar day without timezone offset drift', () => {
+      const shiftDate = (dateStr: string, days: number): string => {
+        const [y, m, d] = dateStr.split('-').map(Number)
+        const dt = new Date(y, m - 1, d)
+        dt.setDate(dt.getDate() + days)
+        const nextY = dt.getFullYear()
+        const nextM = String(dt.getMonth() + 1).padStart(2, '0')
+        const nextD = String(dt.getDate()).padStart(2, '0')
+        return `${nextY}-${nextM}-${nextD}`
+      }
 
-      const filtered = historicalPresets.filter(p => p.date !== kolkataToday)
-      expect(filtered.length).toBe(2)
-      expect(filtered.map(f => f.date)).toEqual(['2026-10-21', '2026-10-22'])
-      expect(filtered.some(f => f.date === kolkataToday)).toBe(false)
+      expect(shiftDate('2026-10-25', 1)).toBe('2026-10-26')
+      expect(shiftDate('2026-10-25', -1)).toBe('2026-10-24')
+      expect(shiftDate('2026-10-31', 1)).toBe('2026-11-01')
+      expect(shiftDate('2026-03-01', -1)).toBe('2026-02-28')
     })
   })
 })
+

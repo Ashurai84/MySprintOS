@@ -11,8 +11,7 @@ import {
 } from '../utils/timetableUtils'
 import type { TimetableEntry } from '../types'
 import { 
-  initialJavaDiagnosticQuestions, 
-  initialJavaTopics,
+  initialSubjects,
   initialLectures
 } from '../data/defaultData'
 import { calculateSubjectAttendance } from '../utils/attendanceCalculator'
@@ -134,48 +133,47 @@ describe('SprintOS 2.1 — Lecture Duration & Timetable Engine', () => {
   })
 })
 
-describe('SprintOS 2.1 — Java Fundamentals Recovery Assessment', () => {
-  it('has 10 diagnostic assessment questions covering key core Java topics', () => {
-    expect(initialJavaDiagnosticQuestions.length).toBe(10)
-    initialJavaDiagnosticQuestions.forEach(q => {
-      expect(q.options.length).toBe(4)
-      expect(q.correctIndex).toBeGreaterThanOrEqual(0)
-      expect(q.correctIndex).toBeLessThan(4)
-      expect(q.topic).toBeDefined()
+describe('SprintOS — Semester 5 Active Academic Scope & Revision Infrastructure', () => {
+  const expectedCodes = ['S5-CS01', 'S5-AI01', 'S5-SE01', 'S5-MG01', 'S5-DS01', 'S5-SS01']
+
+  it('verifies all 6 active Semester 5 core subjects are present with approved codes', () => {
+    expect(initialSubjects.length).toBe(6)
+    const presentCodes = initialSubjects.map(s => s.code)
+    expectedCodes.forEach(code => {
+      expect(presentCodes).toContain(code)
     })
   })
 
-  it('has 14 curated curriculum topics with concepts and practice prompts', () => {
-    expect(initialJavaTopics.length).toBe(14)
-    initialJavaTopics.forEach(t => {
-      expect(t.keyConcepts.length).toBeGreaterThan(0)
-      expect(t.practicePrompt).toBeDefined()
-      expect(t.confidenceRating).toBeGreaterThanOrEqual(1)
-      expect(t.confidenceRating).toBeLessThanOrEqual(5)
+  it('verifies each Semester 5 subject contains verified curriculum modules and topics', () => {
+    initialSubjects.forEach(sub => {
+      expect(sub.modules.length).toBeGreaterThan(0)
+      sub.modules.forEach(mod => {
+        expect(mod.topics.length).toBeGreaterThan(0)
+        mod.topics.forEach(t => {
+          expect(t.id).toBeDefined()
+          expect(t.title).toBeDefined()
+        })
+      })
     })
   })
 
-  it('evaluates diagnostic test results and isolates weak topic tags accurately', () => {
-    // Student answers questions 0..6 correctly, 7..9 incorrectly
-    const answers: Record<string, number> = {}
-    initialJavaDiagnosticQuestions.forEach((q, idx) => {
-      answers[q.id] = idx < 7 ? q.correctIndex : (q.correctIndex + 1) % 4
+  it('verifies revision queue identifies weak topics and maintains mastery state for Semester 5', () => {
+    // Collect all topics across the 6 semester 5 subjects
+    const allTopics = initialSubjects.flatMap(s => s.modules.flatMap(m => m.topics))
+    expect(allTopics.length).toBeGreaterThan(20)
+
+    // Simulate progress where topics with confidence <= 2 or needsRevision flag need revision
+    const sampleProgress: Record<string, { status: string; confidenceRating: number; needsRevision: boolean }> = {}
+    sampleProgress[allTopics[0].id] = { status: 'needs_revision', confidenceRating: 2, needsRevision: true }
+    sampleProgress[allTopics[1].id] = { status: 'understood', confidenceRating: 5, needsRevision: false }
+
+    const needsReview = allTopics.filter(t => {
+      const p = sampleProgress[t.id]
+      return p && (p.needsRevision || p.confidenceRating <= 2 || p.status === 'needs_revision')
     })
 
-    let score = 0
-    const weakTopicNames: string[] = []
-    initialJavaDiagnosticQuestions.forEach(q => {
-      if (answers[q.id] === q.correctIndex) {
-        score++
-      } else {
-        weakTopicNames.push(q.topic)
-      }
-    })
-
-    expect(score).toBe(7)
-    expect(weakTopicNames.length).toBe(3)
-    // 7/10 meets passing criteria (>= 7)
-    expect(score >= 7).toBe(true)
+    expect(needsReview.length).toBe(1)
+    expect(needsReview[0].id).toBe(allTopics[0].id)
   })
 })
 

@@ -15,7 +15,7 @@ function generateDailyReportHtml(data) {
     pendingTasksCount = 0,
     urgentTasks = [],
     completedTasksCount = 0,
-    javaMasteryPercentage = 0
+    curriculumMasteryPercentage = data.curriculumMasteryPercentage ?? 0
   } = data
 
   const lectureRows = todayLectures.length > 0
@@ -73,8 +73,8 @@ function generateDailyReportHtml(data) {
         <span style="font-size: 18px; font-weight: bold; color: #f59e0b; font-family: monospace;">${pendingTasksCount}</span>
       </div>
       <div style="display: table-cell; width: 33%; padding: 16px; text-align: center;">
-        <span style="font-size: 11px; color: #94a3b8; display: block; text-transform: uppercase;">Java Mastery</span>
-        <span style="font-size: 18px; font-weight: bold; color: #10b981; font-family: monospace;">${javaMasteryPercentage}%</span>
+        <span style="font-size: 11px; color: #94a3b8; display: block; text-transform: uppercase;">S5 Mastery</span>
+        <span style="font-size: 18px; font-weight: bold; color: #10b981; font-family: monospace;">${curriculumMasteryPercentage}%</span>
       </div>
     </div>
 
@@ -162,7 +162,7 @@ function generateWeeklyReportHtml(data) {
     weeklyAttendedCount = 0,
     weeklyStudyHours = 0,
     tasksOverview = { total: 0, completed: 0, pending: 0 },
-    javaProgress = { totalTopics: 14, understood: 0, learning: 0, needsRevision: 0 },
+    curriculumProgress = data.curriculumProgress ?? { totalTopics: 0, understood: 0, learning: 0, needsRevision: 0 },
     coursesProgress = []
   } = data
 
@@ -217,8 +217,8 @@ function generateWeeklyReportHtml(data) {
         <span style="font-size: 16px; font-weight: bold; color: #f59e0b; font-family: monospace;">${tasksOverview.completed}</span>
       </div>
       <div style="display: table-cell; width: 25%; padding: 14px 10px; text-align: center;">
-        <span style="font-size: 10px; color: #94a3b8; display: block; text-transform: uppercase;">Java Mastery</span>
-        <span style="font-size: 16px; font-weight: bold; color: #a78bfa; font-family: monospace;">${javaProgress.understood} / 14</span>
+        <span style="font-size: 10px; color: #94a3b8; display: block; text-transform: uppercase;">S5 Mastery</span>
+        <span style="font-size: 16px; font-weight: bold; color: #a78bfa; font-family: monospace;">${curriculumProgress.understood} / ${curriculumProgress.totalTopics || 0}</span>
       </div>
     </div>
 

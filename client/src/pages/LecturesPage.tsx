@@ -179,6 +179,13 @@ export const LecturesPage: React.FC<LecturesPageProps> = ({
           bg: 'bg-slate-700/40 text-slate-400 border-slate-600',
           dot: 'bg-slate-500'
         }
+      case 'unmarked':
+      default:
+        return {
+          label: 'Unmarked',
+          bg: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+          dot: 'bg-amber-400'
+        }
     }
   }
 

@@ -18,7 +18,7 @@ async function generateAiBriefing(academicData = {}) {
   const attendedCount = lectures.filter(l => l.status === 'attended').length
   const totalHeld = lectures.length
   const urgentTasks = academicData.urgentTasks || []
-  const javaMastery = academicData.javaMasteryPercentage || 65
+  const curriculumMastery = academicData.curriculumMasteryPercentage ?? 75
 
   // Fallback if no API key is provided
   if (!apiKey || apiKey.includes('your_groq_api_key')) {
@@ -40,7 +40,7 @@ Date: ${date}
 Sessions Held Today: ${totalHeld} (Attended: ${attendedCount})
 Lectures Breakdown: ${JSON.stringify(lectures.map(l => ({ subject: l.subject, title: l.title, status: l.status })))}
 Urgent Tasks/Assignments: ${JSON.stringify(urgentTasks.map(t => ({ title: t.title, deadline: t.deadline })))}
-Java Recovery Mastery: ${javaMastery}%
+Semester 5 Curriculum Mastery: ${curriculumMastery}%
 
 Please provide a concise, elite academic briefing with:
 1. Executive Summary (1-2 sentences on today's discipline and momentum)

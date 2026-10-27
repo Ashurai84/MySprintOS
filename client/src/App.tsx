@@ -16,7 +16,6 @@ import { CertificationsPage } from './pages/CertificationsPage'
 import { ResourcesPage } from './pages/ResourcesPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { TimetablePage } from './pages/TimetablePage'
-import { JavaRecoveryPage } from './pages/JavaRecoveryPage'
 import type { Lecture } from './types'
 
 const AppMain: React.FC = () => {
@@ -87,6 +86,7 @@ const AppMain: React.FC = () => {
           {currentTab === 'timetable' && (
             <TimetablePage
               onOpenQuickLecture={(subId) => handleOpenQuickLecture(subId)}
+              onNavigateToAttendance={() => handleNavigateToTab('attendance')}
             />
           )}
 
@@ -98,12 +98,6 @@ const AppMain: React.FC = () => {
             />
           )}
 
-          {/* Java Fundamentals Recovery */}
-          {currentTab === 'java-recovery' && (
-            <JavaRecoveryPage
-              onNavigateToRevision={() => handleNavigateToTab('revision')}
-            />
-          )}
 
           {/* 3. Attendance Verification */}
           {currentTab === 'attendance' && (

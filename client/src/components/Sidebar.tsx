@@ -1,7 +1,6 @@
 import React from 'react'
 import { 
   LayoutDashboard, 
-  CalendarClock,
   UserCheck, 
   GraduationCap, 
   CheckSquare, 
@@ -13,7 +12,6 @@ import {
   Zap,
   ChevronRight,
   Clock,
-  Code2,
   Award
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -33,10 +31,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isMobileOpen,
   setIsMobileOpen
 }) => {
-  const { profile, lectures, tasks, getAllSubjectAttendanceStats, timetableEntries } = useApp()
+  const { profile, tasks, getAllSubjectAttendanceStats, timetableEntries } = useApp()
 
   const kolkataTodayStr = getKolkataDateString()
-  const todayLecturesCount = lectures.filter(l => l.date === kolkataTodayStr && l.status === 'scheduled').length
 
   const todayTimetableCount = React.useMemo(() => {
     return getEntriesForDate(timetableEntries, kolkataTodayStr).length
@@ -61,24 +58,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badgeVariant: 'secondary' as const
     },
     { 
-      id: 'lectures', 
-      label: 'My Lectures', 
-      icon: CalendarClock,
-      badge: todayLecturesCount > 0 ? `${todayLecturesCount}` : undefined,
-      badgeVariant: 'secondary' as const
-    },
-    { 
       id: 'attendance', 
       label: 'Attendance', 
       icon: UserCheck,
       badge: attendanceWarningCount > 0 ? `${attendanceWarningCount} Alert` : undefined,
       badgeVariant: 'destructive' as const
-    },
-    { 
-      id: 'java-recovery', 
-      label: 'Java Recovery', 
-      icon: Code2,
-      badge: undefined
     },
     { 
       id: 'learning', 

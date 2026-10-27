@@ -64,7 +64,7 @@ app.post('/api/email/preview-daily', (req, res) => {
     pendingTasksCount: 2,
     urgentTasks: [{ title: 'Assignment 2: Graph Theory', deadline: '2026-10-25' }],
     completedTasksCount: 1,
-    javaMasteryPercentage: 65
+    curriculumMasteryPercentage: 75
   }
   const html = generateDailyReportHtml(data)
   res.send(html)
@@ -85,7 +85,7 @@ app.post('/api/email/preview-weekly', (req, res) => {
       { subjectId: 'llm-rag-agentic-ai', attended: 8, totalHeld: 10, percentage: 80.0, isWarning: false }
     ],
     tasksOverview: { total: 10, completed: 7, pending: 3 },
-    javaProgress: { totalTopics: 14, understood: 8, learning: 4, needsRevision: 2 },
+    curriculumProgress: { totalTopics: 28, understood: 18, learning: 6, needsRevision: 4 },
     coursesProgress: [
       { title: 'Generative AI with Large Language Models', provider: 'DeepLearning.AI', progressPercentage: 60, status: 'in_progress', certificateEarned: false }
     ]
@@ -161,7 +161,7 @@ app.post('/api/ai/briefing', async (req, res) => {
         { subject: 'DSA III', title: "Kosaraju's Algorithm & Strongly Connected Components", durationMinutes: 120, status: 'attended' }
       ],
       urgentTasks: [{ title: 'Assignment 2: Graph Theory', deadline: '2026-10-25' }],
-      javaMasteryPercentage: 65
+      curriculumMasteryPercentage: 75
     }
 
     const aiBriefing = await generateAiBriefing(data)
@@ -195,7 +195,7 @@ app.post('/api/ai/send-briefing', async (req, res) => {
       pendingTasksCount: 2,
       urgentTasks: [{ title: 'Assignment 2: Graph Theory', deadline: '2026-10-25' }],
       completedTasksCount: 1,
-      javaMasteryPercentage: 65
+      curriculumMasteryPercentage: 75
     }
 
     // 1. Generate AI Briefing using Groq LPU

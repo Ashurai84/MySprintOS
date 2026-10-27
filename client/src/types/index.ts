@@ -2,7 +2,7 @@ export type Priority = 'low' | 'medium' | 'high' | 'critical'
 export type TaskStatus = 'not_started' | 'todo' | 'in_progress' | 'submitted' | 'completed'
 export type CertStatus = 'planned' | 'in_progress' | 'completed' | 'paused'
 export type ResourceType = 'Textbook' | 'Research Paper' | 'Documentation' | 'Guide' | 'Practice Platform' | 'Standard' | 'Whitepaper' | 'Open Textbook' | 'Other'
-export type AttendanceStatus = 'scheduled' | 'attended' | 'absent' | 'cancelled'
+export type AttendanceStatus = 'scheduled' | 'attended' | 'absent' | 'cancelled' | 'unmarked'
 export type LearningStatus = 'not_started' | 'learning' | 'understood' | 'needs_revision'
 export type AssessmentCategory = 'assignment' | 'mini_project' | 'lab' | 'quiz' | 'revision' | 'other'
 
@@ -214,11 +214,29 @@ export interface SubjectAttendanceStats {
   totalHeld: number
   scheduled: number
   cancelled: number
+  unmarked: number
   percentage: number | null // null if totalHeld === 0
   isWarning: boolean // < threshold (e.g. 75%)
   isApproaching: boolean // threshold <= percentage < threshold + 5
   consecutiveNeededToReachTarget: number // consecutive sessions to reach 75%
   possibleToReachTarget: boolean
+}
+
+export interface OverallAttendanceStats {
+  totalHeld: number
+  totalAttended: number
+  totalAbsent: number
+  totalUnmarked: number
+  totalScheduled: number
+  totalCancelled: number
+  attended: number
+  absent: number
+  unmarked: number
+  scheduled: number
+  cancelled: number
+  percentage: number | null
+  isWarning: boolean
+  warningCount: number
 }
 
 export interface AcademicSettings {
@@ -296,33 +314,6 @@ export interface TimetableConflict {
   message: string
 }
 
-// -------------------------------------------------------------
-// SPRINTOS 2.1 JAVA FUNDAMENTALS RECOVERY INTERFACES
-// -------------------------------------------------------------
-
-export interface JavaDiagnosticQuestion {
-  id: string
-  topic: string
-  question: string
-  options: string[]
-  correctIndex: number
-  explanation: string
-}
-
-export interface JavaTopicRecovery {
-  id: string
-  title: string
-  category: 'Syntax & Flow' | 'OOP Core' | 'Data Structures & I/O'
-  description: string
-  keyConcepts: string[]
-  codeSnippet: string
-  practicePrompt: string
-  status: LearningStatus
-  confidenceRating: number // 1 to 5
-  needsRevision: boolean
-  lastRevisedAt?: string
-  mistakesLogged: string[]
-}
 
 // -------------------------------------------------------------
 // SPRINTOS 2.1 ENHANCED COURSE & EMAIL REPORTING INTERFACES

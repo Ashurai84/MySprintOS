@@ -22,7 +22,6 @@ const tabTitles: Record<string, { title: string; subtitle: string }> = {
   documents: { title: 'Documents', subtitle: 'In-App Document Reader (PDF, XLSX, DOCX)' },
   revision: { title: 'Revision & Progress', subtitle: 'Topic Review Queue & Daily Self-Recall Checklist' },
   settings: { title: 'Settings', subtitle: 'Academic Configuration, Student Profile & Data Backup' },
-  'java-recovery': { title: 'Java Recovery', subtitle: 'Diagnostic Recovery & Topic Re-evaluation' },
   certifications: { title: 'Courses & Certs', subtitle: 'Professional Credentials & Verified Certificates' },
   dashboard: { title: 'Home', subtitle: 'Daily Academic Overview & Attendance Status' },
   tasks: { title: 'Assignments', subtitle: 'Coursework & Deliverables' }

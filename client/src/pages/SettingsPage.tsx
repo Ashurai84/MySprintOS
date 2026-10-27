@@ -52,7 +52,6 @@ export const SettingsPage: React.FC = () => {
     resetAllData, 
     importBackupData,
     timetableEntries,
-    javaTopics,
     enhancedCourses,
     emailSettings,
     updateEmailSettings,
@@ -209,7 +208,6 @@ export const SettingsPage: React.FC = () => {
       attendance,
       completedTopics,
       timetable: timetableEntries,
-      javaTopics,
       enhancedCourses,
       emailSettings
     }

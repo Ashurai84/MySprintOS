@@ -16,8 +16,6 @@ import type {
   AppDocument,
   RevisionSession,
   TimetableEntry,
-  JavaDiagnosticQuestion,
-  JavaTopicRecovery,
   EmailReportSettings,
   EnhancedCourse
 } from '../types'
@@ -388,59 +386,99 @@ export const initialResources: ResourceItem[] = [
 // -------------------------------------------------------------
 
 export const initialTimetableEntries: TimetableEntry[] = [
-  // Wednesday, 21 October 2026 (Verified from timetable screenshot)
+  // Wednesday, 21 October 2026 (Verified from official timetable screenshot)
   {
     id: 'tt-wed-1',
+    dayOfWeek: 3,
+    specificDate: '2026-10-21',
+    startTime: '10:00',
+    endTime: '11:00',
+    durationMinutes: 60,
+    slotType: 'lecture',
+    notes: 'Interactive Session',
+    faculty: 'Dr. Aarti & Apeksha',
+    classroom: 'Classroom No. - 37'
+  },
+  {
+    id: 'tt-wed-2',
     dayOfWeek: 3,
     specificDate: '2026-10-21',
     startTime: '11:10',
     endTime: '12:10',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'llm-rag-agentic-ai',
-    faculty: 'prof . Sanjay Sahu (VF)',
-    classroom: 'Classroom 37',
-    notes: 'Foundations of Agentic Systems'
+    subjectId: 'S5-CS01',
+    faculty: 'Sanjay Sahu (VF)',
+    classroom: 'Classroom No. - 37'
   },
   {
-    id: 'tt-wed-2',
+    id: 'tt-wed-3',
+    dayOfWeek: 3,
+    specificDate: '2026-10-21',
+    startTime: '12:20',
+    endTime: '13:00',
+    durationMinutes: 40,
+    slotType: 'short_break',
+    notes: 'Transition Break'
+  },
+  {
+    id: 'tt-wed-4',
     dayOfWeek: 3,
     specificDate: '2026-10-21',
     startTime: '13:00',
     endTime: '14:00',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'llm-rag-agentic-ai',
-    faculty: 'prof . Sanjay sahu',
-    classroom: 'Classroom 37',
-    notes: 'Prompt Engineering & Reasoning Models'
+    subjectId: 'S5-CS01',
+    faculty: 'Sanjay Sahu (VF)',
+    classroom: 'Classroom No. - 37'
   },
   {
-    id: 'tt-wed-3',
+    id: 'tt-wed-5',
     dayOfWeek: 3,
     specificDate: '2026-10-21',
-    startTime: '13:10',
-    endTime: '14:10',
+    startTime: '14:10',
+    endTime: '15:10',
     durationMinutes: 60,
     slotType: 'lunch_break',
-    classroom: 'Classroom 37',
-    notes: 'Lunch Break (24h: 13:10 to 14:10)'
+    notes: 'LUNCH BREAK'
   },
   {
-    id: 'tt-wed-4',
+    id: 'tt-wed-6',
     dayOfWeek: 3,
     specificDate: '2026-10-21',
     startTime: '15:20',
-    endTime: '16:20',
-    durationMinutes: 60,
+    endTime: '16:00',
+    durationMinutes: 40,
     slotType: 'lecture',
-    subjectId: 'llm-rag-agentic-ai',
-    faculty: 'Dr. Dipanjan Biswas',
-    classroom: 'Classroom 37',
-    notes: 'Vector Databases & Similarity Search'
+    subjectId: 'S5-AI01',
+    faculty: 'Dr. Dipanjan',
+    classroom: 'Classroom No. - 37'
+  },
+  {
+    id: 'tt-wed-7',
+    dayOfWeek: 3,
+    specificDate: '2026-10-21',
+    startTime: '16:00',
+    endTime: '17:20',
+    durationMinutes: 80,
+    slotType: 'lecture',
+    subjectId: 'S5-AI01',
+    faculty: 'Dr. Dipanjan',
+    classroom: 'Classroom No. - 37'
   },
 
-  // Thursday, 22 October 2026 (Verified from timetable screenshot)
+  // Thursday, 22 October 2026 (Verified from official timetable screenshot)
+  {
+    id: 'tt-thu-0',
+    dayOfWeek: 4,
+    specificDate: '2026-10-22',
+    startTime: '09:00',
+    endTime: '10:00',
+    durationMinutes: 60,
+    slotType: 'unassigned',
+    notes: 'Unscheduled Period'
+  },
   {
     id: 'tt-thu-1',
     dayOfWeek: 4,
@@ -449,10 +487,9 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '11:00',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'dsa-3',
+    subjectId: 'S5-CS01',
     faculty: 'Sanjay Sahu (VF)',
-    classroom: 'Classroom 37',
-    notes: 'Unit 2: Graph Algorithms & Strongly Connected Components'
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-thu-2',
@@ -462,10 +499,9 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '12:10',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'dsa-3',
+    subjectId: 'S5-CS01',
     faculty: 'Sanjay Sahu (VF)',
-    classroom: 'Classroom 37',
-    notes: "Kosaraju's Algorithm & Tarjan Low-Link"
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-thu-3',
@@ -475,7 +511,7 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '13:00',
     durationMinutes: 40,
     slotType: 'lunch_break',
-    classroom: 'Cafeteria'
+    notes: 'LUNCH BREAK'
   },
   {
     id: 'tt-thu-4',
@@ -485,10 +521,9 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '14:00',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'llm-rag-agentic-ai',
+    subjectId: 'S5-AI01',
     faculty: 'Dr. Dipanjan',
-    classroom: 'Classroom 37',
-    notes: 'RAG Architecture & Chunking Strategies'
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-thu-5',
@@ -498,39 +533,36 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '15:00',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'career-readiness-leadership',
+    subjectId: 'S5-SS01',
     faculty: 'Prof. Amaan',
-    classroom: 'Classroom 37',
-    notes: 'Technical Interviewing & Leadership Frameworks'
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-thu-6',
     dayOfWeek: 4,
     specificDate: '2026-10-22',
-    startTime: '15:00',
-    endTime: '16:00',
+    startTime: '15:10',
+    endTime: '16:10',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'venture-product-strategy',
+    subjectId: 'S5-MG01',
     faculty: 'Mr. Vivekanand Jha',
-    classroom: 'Classroom 37',
-    notes: 'Unit 2: Venture Capital Math & Dilution'
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-thu-7',
     dayOfWeek: 4,
     specificDate: '2026-10-22',
-    startTime: '16:00',
-    endTime: '17:00',
+    startTime: '16:10',
+    endTime: '17:10',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'venture-product-strategy',
+    subjectId: 'S5-MG01',
     faculty: 'Mr. Vivekanand Jha',
-    classroom: 'Classroom 37',
-    notes: 'Cap Table Modeling & Convertible Notes'
+    classroom: 'Classroom No. - 37'
   },
 
-  // Friday, 23 October 2026 (Verified from timetable screenshot)
+  // Friday, 23 October 2026 (Verified from official timetable screenshot)
   {
     id: 'tt-fri-0',
     dayOfWeek: 5,
@@ -539,8 +571,7 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '10:00',
     durationMinutes: 60,
     slotType: 'unassigned',
-    classroom: 'Classroom 37',
-    notes: 'Independent Study / Unassigned Slot'
+    notes: 'Unscheduled Period'
   },
   {
     id: 'tt-fri-1',
@@ -550,10 +581,9 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '11:00',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'dsa-3',
+    subjectId: 'S5-CS01',
     faculty: 'Sanjay Sahu (VF)',
-    classroom: 'Classroom 37',
-    notes: 'B-Trees & Multiway Search Trees'
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-fri-2',
@@ -563,10 +593,9 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '12:10',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'dsa-3',
+    subjectId: 'S5-CS01',
     faculty: 'Sanjay Sahu (VF)',
-    classroom: 'Classroom 37',
-    notes: 'Red-Black Trees Insertion Balancing'
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-fri-3',
@@ -575,8 +604,10 @@ export const initialTimetableEntries: TimetableEntry[] = [
     startTime: '12:20',
     endTime: '13:00',
     durationMinutes: 40,
-    slotType: 'lunch_break',
-    classroom: 'Cafeteria'
+    slotType: 'lecture',
+    subjectId: 'S5-CS01',
+    faculty: 'Sanjay Sahu (VF)',
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-fri-4',
@@ -585,11 +616,8 @@ export const initialTimetableEntries: TimetableEntry[] = [
     startTime: '13:00',
     endTime: '14:00',
     durationMinutes: 60,
-    slotType: 'lecture',
-    subjectId: 'llm-rag-agentic-ai',
-    faculty: 'Dr. Dipanjan',
-    classroom: 'Classroom 37',
-    notes: 'Agentic Tool Calling & LangGraph Flow'
+    slotType: 'lunch_break',
+    notes: 'LUNCH BREAK'
   },
   {
     id: 'tt-fri-5',
@@ -599,10 +627,9 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '15:10',
     durationMinutes: 60,
     slotType: 'lecture',
-    subjectId: 'llm-rag-agentic-ai',
+    subjectId: 'S5-AI01',
     faculty: 'Dr. Dipanjan',
-    classroom: 'Classroom 37',
-    notes: 'Multi-Agent Consensus & Memory Management'
+    classroom: 'Classroom No. - 37'
   },
   {
     id: 'tt-fri-6',
@@ -612,292 +639,79 @@ export const initialTimetableEntries: TimetableEntry[] = [
     endTime: '16:20',
     durationMinutes: 60,
     slotType: 'unassigned',
-    classroom: 'Classroom 37',
-    notes: 'Lab Practice / Unassigned Slot'
+    notes: 'Unscheduled Period'
+  },
+
+  // Saturday, 24 October 2026 (Verified from official timetable screenshot)
+  {
+    id: 'tt-sat-1',
+    dayOfWeek: 6,
+    specificDate: '2026-10-24',
+    startTime: '09:00',
+    endTime: '10:00',
+    durationMinutes: 60,
+    slotType: 'lecture',
+    subjectId: 'S5-CS01',
+    faculty: 'Sanjay Sahu (VF)',
+    classroom: 'Classroom No. - 37'
+  },
+  {
+    id: 'tt-sat-2',
+    dayOfWeek: 6,
+    specificDate: '2026-10-24',
+    startTime: '10:00',
+    endTime: '11:00',
+    durationMinutes: 60,
+    slotType: 'lecture',
+    subjectId: 'S5-CS01',
+    faculty: 'Sanjay Sahu (VF)',
+    classroom: 'Classroom No. - 37'
+  },
+  {
+    id: 'tt-sat-3',
+    dayOfWeek: 6,
+    specificDate: '2026-10-24',
+    startTime: '11:10',
+    endTime: '12:10',
+    durationMinutes: 60,
+    slotType: 'lecture',
+    subjectId: 'S5-CS01',
+    faculty: 'Sanjay Sahu (VF)',
+    classroom: 'Classroom No. - 37'
+  },
+  {
+    id: 'tt-sat-4',
+    dayOfWeek: 6,
+    specificDate: '2026-10-24',
+    startTime: '12:20',
+    endTime: '13:00',
+    durationMinutes: 40,
+    slotType: 'short_break',
+    notes: 'Transition Break'
+  },
+  {
+    id: 'tt-sat-5',
+    dayOfWeek: 6,
+    specificDate: '2026-10-24',
+    startTime: '13:00',
+    endTime: '14:00',
+    durationMinutes: 60,
+    slotType: 'unassigned',
+    notes: 'Unscheduled for Elon Musk cohort'
+  },
+  {
+    id: 'tt-sat-6',
+    dayOfWeek: 6,
+    specificDate: '2026-10-24',
+    startTime: '14:10',
+    endTime: '15:10',
+    durationMinutes: 60,
+    slotType: 'unassigned',
+    notes: 'Unscheduled for Elon Musk cohort'
   }
 ]
 
-// -------------------------------------------------------------
-// SPRINTOS 2.1 JAVA RECOVERY SEED DATA
-// -------------------------------------------------------------
 
-export const initialJavaTopics: JavaTopicRecovery[] = [
-  {
-    id: 'java-vars',
-    title: 'Variables & Data Types',
-    category: 'Syntax & Flow',
-    description: 'Primitive types (int, double, char, boolean), wrapper classes, type casting, and variable scope rules.',
-    keyConcepts: ['Primitive vs Reference types', 'Widening vs Narrowing casting', 'Variable shadowing'],
-    codeSnippet: 'int count = 10;\ndouble price = 19.99;\nchar grade = \'A\';\n// Explicit narrowing cast\nint roundedPrice = (int) price;',
-    practicePrompt: 'Declare variables for a student management system: studentId (int), gpa (double), isEnrolled (boolean), and print formatted string.',
-    status: 'learning',
-    confidenceRating: 4,
-    needsRevision: false,
-    mistakesLogged: ['Confusing float literal (requires f suffix) with double.']
-  },
-  {
-    id: 'java-operators',
-    title: 'Operators & Expressions',
-    category: 'Syntax & Flow',
-    description: 'Arithmetic, relational, logical (short-circuiting && vs &), bitwise operators and operator precedence.',
-    keyConcepts: ['Short-circuit evaluation', 'Ternary operator', 'Unary increment prefix vs postfix'],
-    codeSnippet: 'int a = 5;\nint b = ++a; // a=6, b=6\nboolean valid = (a > 0) && (b < 10);',
-    practicePrompt: 'Implement leap year check using logical operators: divisible by 4, not by 100 unless divisible by 400.',
-    status: 'understood',
-    confidenceRating: 5,
-    needsRevision: false,
-    mistakesLogged: []
-  },
-  {
-    id: 'java-conditionals',
-    title: 'Conditional Statements',
-    category: 'Syntax & Flow',
-    description: 'if-else chains, nested conditionals, and switch statements with pattern matching / enhanced switch.',
-    keyConcepts: ['Switch fallthrough without break', 'String matching in switch', 'Ternary conditions'],
-    codeSnippet: 'String result = switch (grade) {\n  case \'A\' -> "Excellent";\n  case \'B\' -> "Good";\n  default -> "Needs improvement";\n};',
-    practicePrompt: 'Write a program to calculate electricity bill slabs using if-else if conditions.',
-    status: 'understood',
-    confidenceRating: 4,
-    needsRevision: false,
-    mistakesLogged: []
-  },
-  {
-    id: 'java-loops',
-    title: 'Loops & Iteration',
-    category: 'Syntax & Flow',
-    description: 'for, enhanced for-each, while, do-while, and break/continue control statements.',
-    keyConcepts: ['Off-by-one errors in loop boundaries', 'do-while executes at least once', 'Concurrent modification in for-each'],
-    codeSnippet: 'int[] nums = {2, 4, 6, 8};\nfor (int n : nums) {\n  System.out.println(n * 2);\n}',
-    practicePrompt: 'Print Floyd\'s triangle or reverse the digits of an integer using a while loop.',
-    status: 'understood',
-    confidenceRating: 4,
-    needsRevision: false,
-    mistakesLogged: []
-  },
-  {
-    id: 'java-methods',
-    title: 'Methods & Recursion',
-    category: 'Syntax & Flow',
-    description: 'Method signatures, parameters, pass-by-value semantics, method overloading, and base cases in recursion.',
-    keyConcepts: ['Java is strictly pass-by-value', 'Method overloading vs overriding', 'StackOverflowError prevention'],
-    codeSnippet: 'public static int factorial(int n) {\n  if (n <= 1) return 1; // base case\n  return n * factorial(n - 1);\n}',
-    practicePrompt: 'Write an overloaded search method: search(int[] arr, int target) and search(String[] arr, String target).',
-    status: 'learning',
-    confidenceRating: 3,
-    needsRevision: true,
-    mistakesLogged: ['Forgot base case in recursive tree traversal causing stack overflow.']
-  },
-  {
-    id: 'java-arrays',
-    title: 'Arrays (1D & 2D)',
-    category: 'Syntax & Flow',
-    description: 'Array allocation in memory, indexing, multidimensional / jagged arrays, and java.util.Arrays utility.',
-    keyConcepts: ['Fixed length after creation', 'Arrays.sort() and binarySearch()', 'ArrayIndexOutOfBoundsException'],
-    codeSnippet: 'int[][] matrix = new int[3][3];\nmatrix[0][0] = 1;\nArrays.sort(matrix[0]);',
-    practicePrompt: 'Rotate an N x N 2D matrix 90 degrees clockwise in-place.',
-    status: 'learning',
-    confidenceRating: 3,
-    needsRevision: false,
-    mistakesLogged: []
-  },
-  {
-    id: 'java-strings',
-    title: 'Strings & StringBuilder',
-    category: 'Syntax & Flow',
-    description: 'String immutability, String pool memory, StringBuilder vs StringBuffer for mutable concatenations.',
-    keyConcepts: ['== compares references, .equals() compares value', 'String pool optimization', 'StringBuilder for O(N) loops'],
-    codeSnippet: 'StringBuilder sb = new StringBuilder();\nfor (int i = 0; i < 5; i++) {\n  sb.append(i).append(" ");\n}\nString result = sb.toString();',
-    practicePrompt: 'Check if a string is a palindrome ignoring cases and non-alphanumeric characters.',
-    status: 'understood',
-    confidenceRating: 5,
-    needsRevision: false,
-    mistakesLogged: ['Used == to compare String objects instead of .equals().']
-  },
-  {
-    id: 'java-classes-objects',
-    title: 'Classes & Objects',
-    category: 'OOP Core',
-    description: 'Class anatomy, constructors, this keyword, static fields and methods vs instance members.',
-    keyConcepts: ['Constructor overloading', 'static memory allocation in Metaspace', 'Encapsulation with getters/setters'],
-    codeSnippet: 'public class Student {\n  private String name;\n  private int id;\n  public Student(String name, int id) {\n    this.name = name;\n    this.id = id;\n  }\n}',
-    practicePrompt: 'Design a BankAccount class with deposit, withdraw, balance inquiry, and transaction logging.',
-    status: 'learning',
-    confidenceRating: 4,
-    needsRevision: false,
-    mistakesLogged: []
-  },
-  {
-    id: 'java-oop-inheritance',
-    title: 'Inheritance & Polymorphism',
-    category: 'OOP Core',
-    description: 'super keyword, single inheritance with extends, method overriding, and runtime dynamic method dispatch.',
-    keyConcepts: ['@Override annotation benefits', 'Dynamic method dispatch', 'super() constructor chaining'],
-    codeSnippet: 'class Dog extends Animal {\n  @Override\n  public void makeSound() {\n    System.out.println("Bark");\n  }\n}',
-    practicePrompt: 'Create an Employee hierarchy (Developer, Manager, Intern) with calculateBonus() overridden per role.',
-    status: 'learning',
-    confidenceRating: 3,
-    needsRevision: true,
-    mistakesLogged: ['Invoked child method on a parent reference without downcasting.']
-  },
-  {
-    id: 'java-oop-abstraction',
-    title: 'Abstraction & Interfaces',
-    category: 'OOP Core',
-    description: 'abstract classes vs interfaces, default and static methods in interfaces, multiple interface implementation.',
-    keyConcepts: ['Interfaces support multiple inheritance of type', 'Cannot instantiate abstract class', 'default methods'],
-    codeSnippet: 'public interface PaymentGateway {\n  void processPayment(double amount);\n  default void logAudit() { System.out.println("Audited"); }\n}',
-    practicePrompt: 'Implement Shape interface with Circle and Rectangle classes computing getArea() and getPerimeter().',
-    status: 'learning',
-    confidenceRating: 3,
-    needsRevision: true,
-    mistakesLogged: []
-  },
-  {
-    id: 'java-exceptions',
-    title: 'Exception Handling',
-    category: 'Data Structures & I/O',
-    description: 'Checked vs unchecked exceptions, try-catch-finally, try-with-resources, and custom exception classes.',
-    keyConcepts: ['Checked exceptions must be caught or declared', 'try-with-resources closes AutoCloseable', 'Custom exceptions'],
-    codeSnippet: 'try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {\n  String line = br.readLine();\n} catch (IOException e) {\n  System.err.println("Read failed: " + e.getMessage());\n}',
-    practicePrompt: 'Create an InsufficientBalanceException and throw it when withdrawal exceeds balance.',
-    status: 'learning',
-    confidenceRating: 3,
-    needsRevision: true,
-    mistakesLogged: ['Catching generic Exception instead of specific IOException/SQLException.']
-  },
-  {
-    id: 'java-collections',
-    title: 'Collections Framework',
-    category: 'Data Structures & I/O',
-    description: 'ArrayList, LinkedList, HashSet, TreeSet, HashMap, TreeMap, and PriorityQueue operations.',
-    keyConcepts: ['HashMap O(1) average lookup vs TreeMap O(log N)', 'equals() and hashCode() contract in HashSet/HashMap', 'Iterator usage'],
-    codeSnippet: 'Map<String, Integer> map = new HashMap<>();\nmap.put("DSA3", 45);\nmap.put("AI", 30);\nfor (Map.Entry<String, Integer> e : map.entrySet()) {\n  System.out.println(e.getKey() + ": " + e.getValue());\n}',
-    practicePrompt: 'Find the frequency of words in a sentence using HashMap<String, Integer>.',
-    status: 'learning',
-    confidenceRating: 4,
-    needsRevision: false,
-    mistakesLogged: ['Forgot to implement hashCode() after overriding equals() in a custom key object.']
-  },
-  {
-    id: 'java-file-io',
-    title: 'File Handling & Streams',
-    category: 'Data Structures & I/O',
-    description: 'File reading and writing using java.nio.file.Files, Path, BufferedReader, and modern Streams API.',
-    keyConcepts: ['NIO Files.readAllLines() for small files', 'Buffering for performance', 'Character vs Byte streams'],
-    codeSnippet: 'Path path = Paths.get("notes.txt");\nFiles.writeString(path, "SprintOS Study Log", StandardOpenOption.CREATE);',
-    practicePrompt: 'Read a CSV file of student grades, parse each line, and print the top 3 scoring students.',
-    status: 'not_started',
-    confidenceRating: 2,
-    needsRevision: true,
-    mistakesLogged: []
-  },
-  {
-    id: 'java-generics',
-    title: 'Generics & Type Safety',
-    category: 'Data Structures & I/O',
-    description: 'Generic classes, methods, bounded type parameters (<T extends Comparable<T>>), wildcards (? super, ? extends), and type erasure.',
-    keyConcepts: ['Compile-time type safety', 'PECS rule: Producer Extends, Consumer Super', 'Type erasure at runtime'],
-    codeSnippet: 'public class Box<T> {\n  private T value;\n  public void set(T val) { this.value = val; }\n  public T get() { return value; }\n}',
-    practicePrompt: 'Implement a generic Pair<K, V> class and write a generic method to swap elements in an array.',
-    status: 'learning',
-    confidenceRating: 3,
-    needsRevision: true,
-    mistakesLogged: ['Attempted to create generic array new T[10] which violates type erasure.']
-  }
-]
-
-export const initialJavaDiagnosticQuestions: JavaDiagnosticQuestion[] = [
-  {
-    id: 'diag-1',
-    topic: 'Variables & Data Types',
-    question: 'What is the output of: int a = 5; double b = 2; System.out.println(a / b);?',
-    options: ['2', '2.5', '2.0', 'Compilation error'],
-    correctIndex: 1,
-    explanation: 'Because b is a double, integer a is promoted to double before division, yielding 2.5.'
-  },
-  {
-    id: 'diag-2',
-    topic: 'Strings & Immutability',
-    question: 'What does String s1 = "hello"; String s2 = new String("hello"); System.out.println(s1 == s2); output?',
-    options: ['true', 'false', 'Compilation Error', 'NullPointerException'],
-    correctIndex: 1,
-    explanation: '== compares memory references. s1 points to the string pool, whereas s2 is explicitly created on the heap.'
-  },
-  {
-    id: 'diag-3',
-    topic: 'Loops & Flow',
-    question: 'How many times will a do-while loop execute if its condition is false from the beginning?',
-    options: ['0 times', '1 time', 'Infinite times', 'Throws Exception'],
-    correctIndex: 1,
-    explanation: 'A do-while loop evaluates its boolean condition after the body executes, guaranteeing at least one run.'
-  },
-  {
-    id: 'diag-4',
-    topic: 'OOP & Methods',
-    question: 'Which of the following describes method overloading in Java?',
-    options: [
-      'Same method name and parameters, different return type only',
-      'Same method name, different parameter count or types in the same class',
-      'Child class providing specific implementation of a parent class method',
-      'Marking a method with the static keyword'
-    ],
-    correctIndex: 1,
-    explanation: 'Overloading happens within the same class when methods share a name but differ in parameter count or types.'
-  },
-  {
-    id: 'diag-5',
-    topic: 'OOP Core',
-    question: 'Can you instantiate an abstract class using the new keyword directly?',
-    options: ['Yes, always', 'No, abstract classes cannot be directly instantiated', 'Yes, if it has no abstract methods', 'Only inside the same package'],
-    correctIndex: 1,
-    explanation: 'Abstract classes are incomplete blueprints and cannot be directly instantiated with new.'
-  },
-  {
-    id: 'diag-6',
-    topic: 'Exceptions',
-    question: 'Which block in Java exception handling ALWAYS executes regardless of whether an exception was caught or thrown?',
-    options: ['catch', 'finally', 'try', 'throws'],
-    correctIndex: 1,
-    explanation: 'The finally block executes unconditionally (unless System.exit() is called) to release critical resources.'
-  },
-  {
-    id: 'diag-7',
-    topic: 'Collections Framework',
-    question: 'Which Map implementation guarantees that keys are ordered in their natural ascending sort order?',
-    options: ['HashMap', 'LinkedHashMap', 'TreeMap', 'Hashtable'],
-    correctIndex: 2,
-    explanation: 'TreeMap uses a Red-Black Tree to store keys in sorted natural order or custom Comparator order.'
-  },
-  {
-    id: 'diag-8',
-    topic: 'Collections & Set',
-    question: 'What happens when you add a duplicate element into a HashSet in Java?',
-    options: [
-      'Throws DuplicateKeyException',
-      'The add() method returns false and the set remains unchanged',
-      'Overwrites the entire set',
-      'Appends it as a linked list node'
-    ],
-    correctIndex: 1,
-    explanation: 'HashSet rejects duplicates by returning false from add() while keeping the existing element.'
-  },
-  {
-    id: 'diag-9',
-    topic: 'Pass-by-value Semantics',
-    question: 'In Java, how are object references passed to methods?',
-    options: ['Pass by reference', 'Pass by value (the reference copy is passed by value)', 'Pass by pointer', 'Pass by name'],
-    correctIndex: 1,
-    explanation: 'Java is strictly pass-by-value. For objects, a copy of the memory address reference is passed by value.'
-  },
-  {
-    id: 'diag-10',
-    topic: 'File I/O',
-    question: 'Which modern Java feature automatically closes files, database connections and sockets when exiting a block?',
-    options: ['finally block only', 'try-with-resources statement', 'Garbage collection finalizer', 'synchronized block'],
-    correctIndex: 1,
-    explanation: 'try-with-resources automatically invokes close() on any object implementing java.lang.AutoCloseable.'
-  }
-]
 
 // -------------------------------------------------------------
 // SPRINTOS 2.1 ENHANCED COURSES & EMAIL REPORTING SEED DATA
