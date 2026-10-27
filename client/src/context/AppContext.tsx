@@ -264,8 +264,12 @@ function harmonizeLectureRecords(rawLectures: Lecture[]): Lecture[] {
 
   let cleaned: Lecture[] = migrated.filter(l => {
     if (isSameSubject(l.subjectId, 'S5-CS01')) {
-      // Retain strictly the 3 authentic covered lectures up to Kosaraju
-      return isAuthenticDsaLecture(l.title)
+      // For baseline history (on or before Oct 22), retain strictly the 3 authentic covered lectures up to Kosaraju
+      if (l.date <= '2026-10-22') {
+        return isAuthenticDsaLecture(l.title)
+      }
+      // Any live lecture on or after Oct 23 (e.g. Oct 26, Oct 27) is authentic and preserved
+      return true
     }
     return true
   })
@@ -274,17 +278,22 @@ function harmonizeLectureRecords(rawLectures: Lecture[]): Lecture[] {
   for (const initLec of initialLectures) {
     const exists = cleaned.some(l => 
       l.id === initLec.id || 
-      (isSameSubject(l.subjectId, initLec.subjectId) && l.date === initLec.date && (l.startTime === initLec.startTime || l.title === initLec.title))
+      (isSameSubject(l.subjectId, initLec.subjectId) && l.date === initLec.date && (
+        initLec.startTime && l.startTime 
+          ? normalizeTimeTo24H(l.startTime) === normalizeTimeTo24H(initLec.startTime) 
+          : l.title === initLec.title
+      ))
     )
     if (!exists) {
       cleaned.push(initLec)
     }
   }
 
-  // Deduplicate exact same (subjectId + title + date + startTime), preserving multiple sessions on the same day
+  // Deduplicate exact same (subjectId + date + startTime), preserving multiple distinct sessions on the same day
   const seen = new Set<string>()
   cleaned = cleaned.filter(l => {
-    const key = `${canonicalSubjectId(l.subjectId)}_${l.title}_${l.date}_${l.startTime || l.id}`
+    const startKey = l.startTime ? normalizeTimeTo24H(l.startTime) : (l.title || l.id)
+    const key = `${canonicalSubjectId(l.subjectId)}_${l.date}_${startKey}`
     if (seen.has(key)) return false
     seen.add(key)
     return true
@@ -862,13 +871,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const getTimetableSlotLecture = (entry: TimetableEntry, targetDate?: string): Lecture | undefined => {
     const lectureDate = targetDate || entry.specificDate || getKolkataDateString()
     const canonSubId = canonicalSubjectId(entry.subjectId || entry.notes)
-    const sub = subjects.find(s => isSameSubject(s.id, canonSubId))
-    const expectedTitle = entry.notes || `${sub?.name || 'Class'} Session`
-    return lectures.find(l => 
-      l.date === lectureDate && 
-      isSameSubject(l.subjectId, canonSubId) && 
-      (l.startTime === entry.startTime || l.title === expectedTitle || (l.title && entry.notes && l.title === entry.notes))
-    )
+    const entryStart24 = entry.startTime ? normalizeTimeTo24H(entry.startTime) : undefined
+
+    return lectures.find(l => {
+      if (l.date !== lectureDate) return false
+      if (!isSameSubject(l.subjectId, canonSubId)) return false
+
+      // Strict matching by start time when timetable slot has a defined start time
+      if (entryStart24) {
+        if (l.startTime) {
+          return normalizeTimeTo24H(l.startTime) === entryStart24
+        }
+        return false
+      }
+
+      const sub = subjects.find(s => isSameSubject(s.id, canonSubId))
+      const expectedTitle = entry.notes || `${sub?.name || 'Class'} Session`
+      return l.title === expectedTitle || (l.title && entry.notes && l.title === entry.notes)
+    })
   }
 
   const removeTimetableLectureLog = (timetableId: string, targetDate?: string) => {
@@ -895,13 +915,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const canonSubId = canonicalSubjectId(entry.subjectId || entry.notes) || 'S5-CS01'
     const sub = subjects.find(s => isSameSubject(s.id, canonSubId))
     const expectedTitle = entry.notes || `${sub?.name || 'Class'} Session`
+    const entryStart24 = entry.startTime ? normalizeTimeTo24H(entry.startTime) : undefined
 
-    // Check if this timetable entry is ALREADY logged to avoid duplicate phantom lectures
-    const existing = lectures.find(l => 
-      l.date === lectureDate && 
-      isSameSubject(l.subjectId, canonSubId) && 
-      (l.startTime === entry.startTime || l.title === expectedTitle || (l.title && entry.notes && l.title === entry.notes))
-    )
+    // Check if this specific timetable entry slot is ALREADY logged to update its attendance status
+    const existing = lectures.find(l => {
+      if (l.date !== lectureDate) return false
+      if (!isSameSubject(l.subjectId, canonSubId)) return false
+
+      if (entryStart24) {
+        if (l.startTime) {
+          return normalizeTimeTo24H(l.startTime) === entryStart24
+        }
+        return false
+      }
+
+      return l.title === expectedTitle || (l.title && entry.notes && l.title === entry.notes)
+    })
 
     if (existing) {
       updateLecture(existing.id, { status, subjectId: canonSubId })
@@ -914,14 +943,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ? Math.max(15, timeToMinutes(entry.endTime) - timeToMinutes(entry.startTime))
       : (entry.durationMinutes || 60)
 
+    const entryEnd24 = entry.endTime 
+      ? normalizeTimeTo24H(entry.endTime, timeToMinutes(entryStart24 || '10:00') >= 720) 
+      : (entryStart24 ? minutesToTime(timeToMinutes(entryStart24) + dur) : undefined)
+
     return addLecture({
       date: lectureDate,
       subjectId: canonSubId,
       title: expectedTitle,
       faculty,
       facultyId,
-      startTime: entry.startTime,
-      endTime: entry.endTime,
+      startTime: entryStart24,
+      endTime: entryEnd24,
       durationMinutes: dur,
       classroom: entry.classroom,
       status,
