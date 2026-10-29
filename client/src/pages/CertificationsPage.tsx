@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react'
-import { 
-  Award, 
-  Plus, 
-  Search, 
-  Sparkles, 
-  CheckSquare, 
-  Square, 
-  ShieldCheck, 
+import {
+  Award,
+  Plus,
+  Search,
+  Sparkles,
+  CheckSquare,
+  Square,
+  ShieldCheck,
   ExternalLink,
   Upload
 } from 'lucide-react'
@@ -22,11 +22,11 @@ import { deleteCertificateFile } from '../services/certificateStorageService'
 import { extractFromPreParsedDocuments } from '../services/documentCertificateExtractor'
 
 export const CertificationsPage: React.FC = () => {
-  const { 
-    subjects, 
-    certifications, 
-    addCertification, 
-    updateCertification, 
+  const {
+    subjects,
+    certifications,
+    addCertification,
+    updateCertification,
     deleteCertification,
     enhancedCourses,
     updateEnhancedCourse
@@ -232,7 +232,7 @@ export const CertificationsPage: React.FC = () => {
     const course = enhancedCourses.find(c => c.id === courseId)
     if (!course) return
 
-    const updatedModules = course.modules.map((m, idx) => 
+    const updatedModules = course.modules.map((m, idx) =>
       idx === moduleIndex ? { ...m, completed: !m.completed } : m
     )
 
@@ -282,22 +282,20 @@ export const CertificationsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveTab('hub')}
-              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
-                activeTab === 'hub' 
-                  ? 'bg-secondary text-foreground font-semibold shadow-xs' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${activeTab === 'hub'
+                ? 'bg-secondary text-foreground font-semibold shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+                }`}
             >
               Certificate Hub ({certifications.length})
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('specializations')}
-              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
-                activeTab === 'specializations' 
-                  ? 'bg-secondary text-foreground font-semibold shadow-xs' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${activeTab === 'specializations'
+                ? 'bg-secondary text-foreground font-semibold shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+                }`}
             >
               Curriculum Specializations ({enhancedCourses.length})
             </button>
@@ -425,11 +423,10 @@ export const CertificationsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setFilterUploadedOnly(!filterUploadedOnly)}
-              className={`px-3 py-2 rounded-lg text-xs font-medium border flex items-center gap-1.5 transition-colors shrink-0 ${
-                filterUploadedOnly 
-                  ? 'bg-primary/10 border-primary text-primary' 
-                  : 'bg-[#111319] border-border text-muted-foreground hover:text-foreground'
-              }`}
+              className={`px-3 py-2 rounded-lg text-xs font-medium border flex items-center gap-1.5 transition-colors shrink-0 ${filterUploadedOnly
+                ? 'bg-primary/10 border-primary text-primary'
+                : 'bg-[#111319] border-border text-muted-foreground hover:text-foreground'
+                }`}
             >
               <Upload className="w-3.5 h-3.5" />
               <span>With Proof</span>
@@ -442,12 +439,12 @@ export const CertificationsPage: React.FC = () => {
               <Award className="w-10 h-10 text-muted-foreground mx-auto" />
               <div className="space-y-1">
                 <h3 className="text-sm font-semibold text-foreground">
-                  {certifications.length === 0 
-                    ? 'Your Certificate Hub is ready to be populated' 
+                  {certifications.length === 0
+                    ? 'Your Certificate Hub is ready to be populated'
                     : 'No certificates match the selected filters'}
                 </h3>
                 <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  {certifications.length === 0 
+                  {certifications.length === 0
                     ? `17 official certificate opportunities are already discovered in your college syllabus spreadsheets (Foundations of AI/ML, STQA, LLMs & RAG). Review and add them with one click.`
                     : 'Try clearing your search term or selecting "All Statuses" to view your records.'}
                 </p>
@@ -497,7 +494,7 @@ export const CertificationsPage: React.FC = () => {
               const isCourseDone = course.status === 'completed' || completedModules === course.modules.length
 
               return (
-                <div 
+                <div
                   key={course.id}
                   className="p-5 rounded-xl bg-[#111319] border border-border hover:border-border/80 transition-all flex flex-col justify-between space-y-4"
                 >
@@ -540,10 +537,9 @@ export const CertificationsPage: React.FC = () => {
                         <span className="font-bold text-foreground">{completedModules} / {course.modules.length} ({course.progressPercentage}%)</span>
                       </div>
                       <div className="w-full bg-[#161a24] h-1.5 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full transition-all duration-300 ${
-                            isCourseDone ? 'bg-emerald-500' : 'bg-primary'
-                          }`}
+                        <div
+                          className={`h-full rounded-full transition-all duration-300 ${isCourseDone ? 'bg-emerald-500' : 'bg-primary'
+                            }`}
                           style={{ width: `${course.progressPercentage}%` }}
                         />
                       </div>
@@ -556,7 +552,7 @@ export const CertificationsPage: React.FC = () => {
                       </span>
                       <div className="space-y-1">
                         {course.modules.map((mod, idx) => (
-                          <div 
+                          <div
                             key={idx}
                             onClick={() => handleToggleModule(course.id, idx)}
                             className="flex items-start gap-2 p-2 rounded-lg bg-[#090a0f] border border-border hover:bg-secondary cursor-pointer transition-colors text-xs text-slate-300"
@@ -588,11 +584,10 @@ export const CertificationsPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleToggleSpecializationCertificate(course.id)}
-                        className={`text-xs px-2.5 py-1 rounded-lg border font-semibold flex items-center gap-1.5 transition-colors ${
-                          course.certificateEarned
-                            ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                            : 'bg-secondary text-muted-foreground border-border hover:text-foreground'
-                        }`}
+                        className={`text-xs px-2.5 py-1 rounded-lg border font-semibold flex items-center gap-1.5 transition-colors ${course.certificateEarned
+                          ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                          : 'bg-secondary text-muted-foreground border-border hover:text-foreground'
+                          }`}
                       >
                         <Award className="w-3.5 h-3.5" />
                         <span>{course.certificateEarned ? 'Certificate Issued ✓' : 'Mark Certificate Earned'}</span>
