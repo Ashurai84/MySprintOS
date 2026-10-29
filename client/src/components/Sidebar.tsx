@@ -87,7 +87,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'certifications',
-      label: 'Certificate Hub',
+      label: 'Courses & Certs',
       icon: Award,
       badge: undefined
     },

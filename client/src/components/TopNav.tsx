@@ -22,7 +22,7 @@ const tabTitles: Record<string, { title: string; subtitle: string }> = {
   documents: { title: 'Documents', subtitle: 'In-App Document Reader (PDF, XLSX, DOCX)' },
   revision: { title: 'Revision & Progress', subtitle: 'Topic Review Queue & Daily Self-Recall Checklist' },
   settings: { title: 'Settings', subtitle: 'Academic Configuration, Student Profile & Data Backup' },
-  certifications: { title: 'Certificate Hub', subtitle: 'Document-Extracted Credentials, Progress Tracking & Secure Uploads' },
+  certifications: { title: 'Courses & Certificate Hub', subtitle: 'Curriculum Specializations, Document Credentials & Progress' },
   tutor: { title: 'AI Tutor', subtitle: 'Personalized B.Tech Learning Assistant & Exam Preparation' },
   dashboard: { title: 'Home', subtitle: 'Daily Academic Overview & Attendance Status' },
   tasks: { title: 'Assignments', subtitle: 'Coursework & Deliverables' }

@@ -32,8 +32,10 @@ export const CertificationsPage: React.FC = () => {
     updateEnhancedCourse
   } = useApp()
 
-  // Top level views: Certificate Hub (default) or Curriculum Specializations
-  const [activeTab, setActiveTab] = useState<'hub' | 'specializations'>('hub')
+  // Top level views: If user already has custom certificates in the hub, show Hub; otherwise show Curriculum Specializations first so existing courses are always visible
+  const [activeTab, setActiveTab] = useState<'hub' | 'specializations'>(() => {
+    return certifications.length > 0 ? 'hub' : 'specializations'
+  })
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('')
