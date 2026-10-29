@@ -423,3 +423,36 @@ CREATE INDEX IF NOT EXISTS idx_timetable_entries_date ON user_timetable_entries 
 CREATE INDEX IF NOT EXISTS idx_timetable_templates_day ON official_timetable_templates (cohort_id, day_of_week);
 CREATE INDEX IF NOT EXISTS idx_tasks_user_deadline ON tasks (user_id, deadline, status);
 CREATE INDEX IF NOT EXISTS idx_chunks_doc_page ON document_chunks (document_id, page_number);
+
+-- ============================================================================
+-- 6. CERTIFICATE HUB & VERIFIED CREDENTIALS
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS student_certificates (
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(50) REFERENCES student_users(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    provider VARCHAR(150) NOT NULL,
+    course_url TEXT NOT NULL,
+    related_subject_id VARCHAR(50) REFERENCES curriculum_subjects(id) ON DELETE SET NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'not_started' CHECK (status IN ('not_started', 'in_progress', 'completed', 'needs_review', 'planned', 'paused')),
+    progress_percentage INTEGER DEFAULT 0 CHECK (progress_percentage BETWEEN 0 AND 100),
+    target_date DATE,
+    completion_date DATE,
+    certificate_url TEXT,
+    credential_id VARCHAR(100),
+    notes TEXT,
+    source_document_name VARCHAR(255),
+    source_location TEXT,
+    verification_status VARCHAR(30) DEFAULT 'verified' CHECK (verification_status IN ('verified', 'unverified', 'login_required')),
+    uploaded_file_name VARCHAR(255),
+    uploaded_file_type VARCHAR(100),
+    uploaded_file_size VARCHAR(50),
+    uploaded_file_data TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_certificates_user_status ON student_certificates (user_id, status);
+CREATE INDEX IF NOT EXISTS idx_certificates_subject ON student_certificates (related_subject_id);
+

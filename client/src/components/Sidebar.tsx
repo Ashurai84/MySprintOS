@@ -1,18 +1,19 @@
 import React from 'react'
-import { 
-  LayoutDashboard, 
-  UserCheck, 
-  GraduationCap, 
-  CheckSquare, 
-  BookOpen, 
-  FileText, 
-  RotateCcw, 
+import {
+  LayoutDashboard,
+  UserCheck,
+  GraduationCap,
+  CheckSquare,
+  BookOpen,
+  FileText,
+  RotateCcw,
   Settings,
   AlertTriangle,
   Zap,
   ChevronRight,
   Clock,
-  Award
+  Award,
+  Sparkles
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { getKolkataDateString, getEntriesForDate } from '../utils/timetableUtils'
@@ -44,68 +45,75 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const pendingAssignmentsCount = tasks.filter(t => t.status !== 'completed').length
 
   const navItems = [
-    { 
-      id: 'home', 
-      label: 'Home', 
+    {
+      id: 'home',
+      label: 'Home',
       icon: LayoutDashboard,
-      badge: undefined 
+      badge: undefined
     },
-    { 
-      id: 'timetable', 
-      label: 'Timetable', 
+    {
+      id: 'timetable',
+      label: 'Timetable',
       icon: Clock,
       badge: todayTimetableCount > 0 ? `${todayTimetableCount} Today` : undefined,
       badgeVariant: 'secondary' as const
     },
-    { 
-      id: 'attendance', 
-      label: 'Attendance', 
+    {
+      id: 'attendance',
+      label: 'Attendance',
       icon: UserCheck,
       badge: attendanceWarningCount > 0 ? `${attendanceWarningCount} Alert` : undefined,
       badgeVariant: 'destructive' as const
     },
-    { 
-      id: 'learning', 
-      label: 'My Learning', 
+    {
+      id: 'learning',
+      label: 'My Learning',
       icon: GraduationCap,
-      badge: undefined 
+      badge: undefined
     },
-    { 
-      id: 'assignments', 
-      label: 'Assignments', 
+    {
+      id: 'tutor',
+      label: 'AI Tutor',
+      icon: Sparkles,
+      badge: 'B.Tech',
+      badgeVariant: 'secondary' as const
+    },
+    {
+      id: 'assignments',
+      label: 'Assignments',
       icon: CheckSquare,
       badge: pendingAssignmentsCount > 0 ? `${pendingAssignmentsCount}` : undefined,
       badgeVariant: 'outline' as const
     },
-    { 
-      id: 'certifications', 
-      label: 'Courses & Certs', 
+    {
+      id: 'certifications',
+      label: 'Certificate Hub',
       icon: Award,
-      badge: undefined 
+      badge: undefined
     },
-    { 
-      id: 'subjects', 
-      label: 'Subjects & Syllabus', 
+    {
+      id: 'subjects',
+      label: 'Subjects & Syllabus',
       icon: BookOpen,
-      badge: undefined 
+      badge: undefined
     },
-    { 
-      id: 'documents', 
-      label: 'Documents', 
+    {
+      id: 'documents',
+      label: 'Documents',
       icon: FileText,
-      badge: undefined 
+      badge: undefined
     },
-    { 
-      id: 'revision', 
-      label: 'Revision & Progress', 
+    {
+      id: 'revision',
+      label: 'Revision & Progress',
       icon: RotateCcw,
-      badge: undefined 
+      badge: undefined
     },
-    { 
-      id: 'settings', 
-      label: 'Settings', 
+    {
+      id: 'settings',
+      label: 'Settings',
       icon: Settings,
-      badge: undefined 
+      badge: undefined
     }
   ]
 
@@ -118,28 +126,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       {/* Mobile backdrop */}
       {isMobileOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-background/80 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
 
       {/* Sidebar container */}
-      <aside 
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-200 ease-in-out md:translate-x-0 ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+      <aside
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-200 ease-in-out md:translate-x-0 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         {/* Brand header */}
         <div className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-xs">
-              <Zap className="w-4 h-4 fill-primary" />
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-xs ${currentTab === 'tutor'
+              ? 'bg-white/10 border border-white/20 text-white'
+              : 'bg-primary/10 border border-primary/20 text-primary'
+              }`}>
+              <Zap className={`w-4 h-4 ${currentTab === 'tutor' ? 'fill-white/30 text-white' : 'fill-primary'}`} />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-semibold tracking-tight text-foreground text-sm">SprintOS</span>
-                <Badge variant="outline" className="text-[10px] uppercase font-mono px-1 py-0 border-primary/30 text-primary">
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] uppercase font-mono px-1 py-0 ${currentTab === 'tutor'
+                    ? 'border-white/30 text-white'
+                    : 'border-primary/30 text-primary'
+                    }`}
+                >
                   2.0
                 </Badge>
               </div>
@@ -157,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-muted-foreground">Cohort</span>
-              <span className="font-medium text-primary text-[11px]">
+              <span className={`font-medium text-[11px] ${currentTab === 'tutor' ? 'text-white' : 'text-primary'}`}>
                 {profile.cohort}
               </span>
             </div>
@@ -169,25 +185,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {navItems.map(item => {
             const Icon = item.icon
             const isActive = currentTab === item.id
+            const isTutor = item.id === 'tutor'
+
+            // Sleek monochrome styling when AI tutor is active
+            let activeClass = 'bg-primary/10 text-primary border border-primary/20 font-semibold'
+            let iconClass = 'text-primary'
+            if (isTutor && isActive) {
+              activeClass = 'bg-black text-white border border-zinc-700 font-semibold shadow-xs'
+              iconClass = 'text-white'
+            }
+
             return (
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors text-left focus-ring ${
-                  isActive
-                    ? 'bg-primary/10 text-primary border border-primary/20 font-semibold'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'
-                }`}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors text-left focus-ring ${isActive
+                  ? activeClass
+                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary/40'
+                  }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? iconClass : 'text-muted-foreground'}`} />
                   <span className="truncate">{item.label}</span>
                 </div>
 
                 {item.badge && (
-                  <Badge 
+                  <Badge
                     variant={item.badgeVariant || 'outline'}
-                    className="text-[10px] font-mono h-4 px-1.5 py-0 shrink-0"
+                    className={`text-[10px] font-mono h-4 px-1.5 py-0 shrink-0 ${isTutor && isActive
+                      ? 'bg-zinc-800 text-white border-zinc-600'
+                      : ''
+                      }`}
                   >
                     {item.badge}
                   </Badge>

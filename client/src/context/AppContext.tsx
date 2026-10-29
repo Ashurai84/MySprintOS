@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react'
-import type { 
-  Subject, 
-  Task, 
-  Certification, 
-  ResourceItem, 
-  StudySession, 
-  SubjectAttendance, 
-  StudentProfile, 
+import type {
+  Subject,
+  Task,
+  Certification,
+  ResourceItem,
+  StudySession,
+  SubjectAttendance,
+  StudentProfile,
   SubjectNote,
   Lecture,
   AttendanceStatus,
@@ -19,15 +19,18 @@ import type {
   TimetableEntry,
   TimetableConflict,
   EnhancedCourse,
-  EmailReportSettings
+  EmailReportSettings,
+  TutorSession,
+  TutorMessage,
+  TutorMode
 } from '../types'
-import { 
-  initialSubjects, 
-  initialTasks, 
-  initialCertifications, 
-  initialResources, 
-  initialStudySessions, 
-  initialNotes, 
+import {
+  initialSubjects,
+  initialTasks,
+  initialCertifications,
+  initialResources,
+  initialStudySessions,
+  initialNotes,
   initialProfile,
   initialAcademicSettings,
   initialLectures,
@@ -40,19 +43,19 @@ import {
 } from '../data/defaultData'
 import { loadFromStorage, saveToStorage } from '../utils/storage'
 import { calculateSubjectAttendance, calculateOverallAttendance } from '../utils/attendanceCalculator'
-import { 
-  detectTimetableConflicts, 
-  sanitizeTimetableEntries, 
+import {
+  detectTimetableConflicts,
+  sanitizeTimetableEntries,
   normalizeTimeTo24H,
   timeToMinutes,
   minutesToTime,
   validateTimes,
   getKolkataDateString
 } from '../utils/timetableUtils'
-import { 
-  canonicalSubjectId, 
-  isSameSubject, 
-  getDefaultFacultyForSubject 
+import {
+  canonicalSubjectId,
+  isSameSubject,
+  getDefaultFacultyForSubject
 } from '../utils/subjectUtils'
 import { resolveFacultyName, resolveFacultyId } from '../data/facultyData'
 
@@ -136,6 +139,15 @@ interface AppContextType {
   deleteCertification: (id: string) => void
   importSyllabusCertifications: () => void
 
+  // AI Tutor actions
+  tutorSessions: TutorSession[]
+  activeTutorSessionId: string | null
+  setActiveTutorSessionId: (id: string | null) => void
+  createTutorSession: (subjectId?: string, topicId?: string, topicTitle?: string, mode?: TutorMode) => string
+  addMessageToTutorSession: (sessionId: string, message: Omit<TutorMessage, 'id' | 'timestamp'>) => void
+  deleteTutorSession: (sessionId: string) => void
+  updateTutorSessionContext: (sessionId: string, updates: { subjectId?: string; topicId?: string; topicTitle?: string; mode?: TutorMode }) => void
+
   // Resource actions
   addResource: (res: Omit<ResourceItem, 'id' | 'createdAt'>) => void
   updateResource: (id: string, updates: Partial<ResourceItem>) => void
@@ -199,7 +211,7 @@ function harmonizeLectureRecords(rawLectures: Lecture[]): Lecture[] {
   // 2. Canonicalize subject IDs, sanitize faculty from single source of truth, and fix time bug
   const migrated: Lecture[] = nonMisleading.map(l => {
     const canonId = canonicalSubjectId(l.subjectId || l.title || l.notes)
-    
+
     // Resolve faculty from single source of truth
     let faculty = l.faculty
     let facultyId = l.facultyId
@@ -276,11 +288,11 @@ function harmonizeLectureRecords(rawLectures: Lecture[]): Lecture[] {
 
   // Ensure all 7 verified initial lectures exist if not already present
   for (const initLec of initialLectures) {
-    const exists = cleaned.some(l => 
-      l.id === initLec.id || 
+    const exists = cleaned.some(l =>
+      l.id === initLec.id ||
       (isSameSubject(l.subjectId, initLec.subjectId) && l.date === initLec.date && (
-        initLec.startTime && l.startTime 
-          ? normalizeTimeTo24H(l.startTime) === normalizeTimeTo24H(initLec.startTime) 
+        initLec.startTime && l.startTime
+          ? normalizeTimeTo24H(l.startTime) === normalizeTimeTo24H(initLec.startTime)
           : l.title === initLec.title
       ))
     )
@@ -311,7 +323,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }
 
   // Color Theme: default to Warm Sunset Amber & Gold
-  const [theme, setTheme] = useState<AppTheme>(() => 
+  const [theme, setTheme] = useState<AppTheme>(() =>
     loadFromStorage<AppTheme>('sprintos_theme', 'warm-sunset')
   )
 
@@ -326,27 +338,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [subjects] = useState<Subject[]>(initialSubjects)
 
   // 2. SprintOS 2.0 Daily Lectures - verified & harmonized
-  const [lectures, setLectures] = useState<Lecture[]>(() => 
+  const [lectures, setLectures] = useState<Lecture[]>(() =>
     harmonizeLectureRecords(loadFromStorage<Lecture[]>('lectures_v2', initialLectures))
   )
 
   // 3. Learning topic progress records
-  const [topicProgress, setTopicProgress] = useState<Record<string, TopicLearningRecord>>(() => 
+  const [topicProgress, setTopicProgress] = useState<Record<string, TopicLearningRecord>>(() =>
     loadFromStorage<Record<string, TopicLearningRecord>>('topicProgress_v2', initialTopicProgress)
   )
 
   // 4. Academic Settings (attendance threshold, marks breakdown)
-  const [settings, setSettings] = useState<AcademicSettings>(() => 
+  const [settings, setSettings] = useState<AcademicSettings>(() =>
     loadFromStorage<AcademicSettings>('settings_v2', initialAcademicSettings)
   )
 
   // 5. Document Library (indexed + user uploaded)
-  const [appDocuments, setAppDocuments] = useState<AppDocument[]>(() => 
+  const [appDocuments, setAppDocuments] = useState<AppDocument[]>(() =>
     loadFromStorage<AppDocument[]>('documents_v2', initialAppDocuments)
   )
 
   // 6. Revision Sessions
-  const [revisionSessions, setRevisionSessions] = useState<RevisionSession[]>(() => 
+  const [revisionSessions, setRevisionSessions] = useState<RevisionSession[]>(() =>
     loadFromStorage<RevisionSession[]>('revisionSessions_v2', initialRevisionSessions)
   )
 
@@ -378,6 +390,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     loadFromStorage<EmailReportSettings>('emailSettings_v2', initialEmailSettings)
   )
 
+  // 13. SprintOS AI Tutor Sessions
+  const [tutorSessions, setTutorSessions] = useState<TutorSession[]>(() =>
+    loadFromStorage<TutorSession[]>('tutor_sessions_v1', [])
+  )
+  const [activeTutorSessionId, setActiveTutorSessionId] = useState<string | null>(() => {
+    const saved = loadFromStorage<TutorSession[]>('tutor_sessions_v1', [])
+    return saved.length > 0 ? saved[0].id : null
+  })
+
   // Timetable conflicts calculated dynamically
   const timetableConflicts = useMemo(() => {
     return detectTimetableConflicts(timetableEntries)
@@ -396,6 +417,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => { saveToStorage('notes', notes) }, [notes])
   useEffect(() => { saveToStorage('profile', profile) }, [profile])
   useEffect(() => { saveToStorage('completedTopics', completedTopics) }, [completedTopics])
+  useEffect(() => { saveToStorage('tutor_sessions_v1', tutorSessions) }, [tutorSessions])
   useEffect(() => { saveToStorage('timetable_v2', timetableEntries) }, [timetableEntries])
   // Clean obsolete Java recovery keys
   useEffect(() => {
@@ -581,8 +603,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // TOPIC LEARNING PROGRESS ACTIONS
   // --------------------------------------------------------------------------
   const updateTopicProgress = (
-    topicId: string, 
-    subjectId: string, 
+    topicId: string,
+    subjectId: string,
     updates: Partial<TopicLearningRecord>
   ) => {
     const now = new Date().toISOString()
@@ -738,7 +760,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const addCertification = (certData: Omit<Certification, 'id'>) => {
     const newCert: Certification = {
       ...certData,
-      id: `cert-${Date.now()}`,
+      id: `cert-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       isSample: false
     }
     setCertifications(prev => [newCert, ...prev])
@@ -778,6 +800,90 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (newItems.length > 0) {
       setCertifications(prev => [...prev, ...newItems])
     }
+  }
+
+  // --------------------------------------------------------------------------
+  // AI TUTOR ACTIONS
+  // --------------------------------------------------------------------------
+  const createTutorSession = (
+    subjectId?: string,
+    topicId?: string,
+    topicTitle?: string,
+    mode: TutorMode = 'explain_simply'
+  ): string => {
+    const sub = subjects.find(s => s.id === subjectId)
+    const newSession: TutorSession = {
+      id: `session-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      title: topicTitle ? `${topicTitle.slice(0, 32)}` : sub ? `${sub.name} Tutoring` : 'New Tutoring Session',
+      subjectId: subjectId || undefined,
+      subjectName: sub?.name,
+      topicId: topicId || undefined,
+      topicTitle: topicTitle || undefined,
+      mode,
+      messages: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    setTutorSessions(prev => [newSession, ...prev])
+    setActiveTutorSessionId(newSession.id)
+    return newSession.id
+  }
+
+  const addMessageToTutorSession = (
+    sessionId: string,
+    messageData: Omit<TutorMessage, 'id' | 'timestamp'>
+  ) => {
+    const newMsg: TutorMessage = {
+      ...messageData,
+      id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      timestamp: new Date().toISOString()
+    }
+    setTutorSessions(prev => prev.map(s => {
+      if (s.id !== sessionId) return s
+      const updatedMessages = [...s.messages, newMsg]
+      let newTitle = s.title
+      if (s.messages.length === 0 && messageData.role === 'user') {
+        const text = messageData.content.trim()
+        const isShortGreeting = /^(h|hi|hy|hey|hello|test|yo)$/i.test(text)
+        if (isShortGreeting) {
+          newTitle = s.topicTitle || s.subjectName || 'Academic Tutoring Session'
+        } else {
+          newTitle = text.length > 36 ? text.slice(0, 33) + '...' : text
+        }
+      }
+      return {
+        ...s,
+        title: newTitle,
+        messages: updatedMessages,
+        updatedAt: new Date().toISOString()
+      }
+    }))
+  }
+
+  const deleteTutorSession = (sessionId: string) => {
+    setTutorSessions(prev => {
+      const filtered = prev.filter(s => s.id !== sessionId)
+      if (activeTutorSessionId === sessionId) {
+        setActiveTutorSessionId(filtered.length > 0 ? filtered[0].id : null)
+      }
+      return filtered
+    })
+  }
+
+  const updateTutorSessionContext = (
+    sessionId: string,
+    updates: { subjectId?: string; topicId?: string; topicTitle?: string; mode?: TutorMode }
+  ) => {
+    const sub = updates.subjectId ? subjects.find(s => s.id === updates.subjectId) : undefined
+    setTutorSessions(prev => prev.map(s => {
+      if (s.id !== sessionId) return s
+      return {
+        ...s,
+        ...updates,
+        subjectName: sub ? sub.name : s.subjectName,
+        updatedAt: new Date().toISOString()
+      }
+    }))
   }
 
   // --------------------------------------------------------------------------
@@ -834,8 +940,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const current = [...timetableEntries]
     for (const newEntry of entries) {
-      const matchIdx = current.findIndex(e => 
-        e.id === newEntry.id || 
+      const matchIdx = current.findIndex(e =>
+        e.id === newEntry.id ||
         (
           (e.specificDate && newEntry.specificDate ? e.specificDate === newEntry.specificDate : e.dayOfWeek === newEntry.dayOfWeek) &&
           e.startTime === newEntry.startTime &&
@@ -846,7 +952,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       if (matchIdx >= 0) {
         const cur = current[matchIdx]
-        const isIdentical = 
+        const isIdentical =
           cur.faculty === newEntry.faculty &&
           cur.classroom === newEntry.classroom &&
           cur.notes === newEntry.notes &&
@@ -901,7 +1007,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }
 
   const logTimetableAsLecture = (
-    timetableId: string, 
+    timetableId: string,
     status: AttendanceStatus = 'attended',
     targetDate?: string
   ): string => {
@@ -939,12 +1045,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const faculty = resolveFacultyName(entry.facultyId, canonSubId, entry.faculty)
     const facultyId = entry.facultyId || resolveFacultyId(canonSubId, faculty)
-    const dur = entry.startTime && entry.endTime 
+    const dur = entry.startTime && entry.endTime
       ? Math.max(15, timeToMinutes(entry.endTime) - timeToMinutes(entry.startTime))
       : (entry.durationMinutes || 60)
 
-    const entryEnd24 = entry.endTime 
-      ? normalizeTimeTo24H(entry.endTime, timeToMinutes(entryStart24 || '10:00') >= 720) 
+    const entryEnd24 = entry.endTime
+      ? normalizeTimeTo24H(entry.endTime, timeToMinutes(entryStart24 || '10:00') >= 720)
       : (entryStart24 ? minutesToTime(timeToMinutes(entryStart24) + dur) : undefined)
 
     return addLecture({
@@ -1087,13 +1193,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const diffAttended = attended
     const diffAbsent = Math.max(0, total - attended)
-    
+
     // Replace subject's held lectures with these verified counts while preserving existing details
     const otherLectures = lectures.filter(l => !isSameSubject(l.subjectId, canonicalId))
     const existingSubjectLectures = lectures.filter(l => isSameSubject(l.subjectId, canonicalId))
     const newLecs: Lecture[] = []
     const today = new Date().toISOString().split('T')[0]
-    
+
     const existingAttended = existingSubjectLectures.filter(l => l.status === 'attended')
     for (let i = 0; i < diffAttended; i++) {
       if (existingAttended[i]) {
@@ -1245,7 +1351,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const getSubjectProgress = (subjectId: string) => {
     const sub = subjects.find(s => isSameSubject(s.id, subjectId) || isSameSubject(s.code, subjectId))
     if (!sub) return { completed: 0, total: 0, percentage: 0 }
-    
+
     const allTopics = sub.modules.flatMap(m => m.topics)
     const total = allTopics.length
     if (total === 0) return { completed: 0, total: 0, percentage: 0 }
@@ -1340,6 +1446,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateCertification,
     deleteCertification,
     importSyllabusCertifications,
+    tutorSessions,
+    activeTutorSessionId,
+    setActiveTutorSessionId,
+    createTutorSession,
+    addMessageToTutorSession,
+    deleteTutorSession,
+    updateTutorSessionContext,
     addResource,
     updateResource,
     deleteResource,

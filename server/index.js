@@ -1,12 +1,12 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const { 
-  emailSettings, 
-  deliveryLogs, 
-  sendEmailWithRetry, 
-  initScheduler, 
-  updateSchedulerSettings 
+const {
+  emailSettings,
+  deliveryLogs,
+  sendEmailWithRetry,
+  initScheduler,
+  updateSchedulerSettings
 } = require('./scheduler')
 const { generateDailyReportHtml, generateWeeklyReportHtml } = require('./reportGenerator')
 const { generateAiBriefing } = require('./aiService')
@@ -104,8 +104,8 @@ app.post('/api/email/test', async (req, res) => {
   }
 
   const isWeekly = reportType === 'weekly'
-  const html = isWeekly 
-    ? generateWeeklyReportHtml(sampleData || {}) 
+  const html = isWeekly
+    ? generateWeeklyReportHtml(sampleData || {})
     : generateDailyReportHtml(sampleData || { date: new Date().toISOString().split('T')[0] })
 
   const result = await sendEmailWithRetry({
@@ -137,8 +137,8 @@ app.post('/api/reports/send-test', async (req, res) => {
   }
 
   const isWeekly = reportType === 'weekly'
-  const html = isWeekly 
-    ? generateWeeklyReportHtml(latestAcademicState?.weekly || {}) 
+  const html = isWeekly
+    ? generateWeeklyReportHtml(latestAcademicState?.weekly || {})
     : generateDailyReportHtml(latestAcademicState?.daily || { date: new Date().toISOString().split('T')[0] })
 
   const result = await sendEmailWithRetry({
@@ -216,6 +216,102 @@ app.post('/api/ai/send-briefing', async (req, res) => {
     res.json({ success: result.success, log: result.log, aiBriefing })
   } catch (err) {
     res.status(500).json({ success: false, error: err.message })
+  }
+})
+
+// ============================================================================
+// CERTIFICATE HUB BACKEND ENDPOINTS
+// ============================================================================
+let serverCertificates = []
+
+// Get all certificates
+app.get('/api/certificates', (req, res) => {
+  res.json({ success: true, certificates: serverCertificates })
+})
+
+// Create a certificate
+app.post('/api/certificates', (req, res) => {
+  const cert = req.body
+  if (!cert.title || !cert.courseUrl) {
+    return res.status(400).json({ success: false, message: 'Title and courseUrl are required.' })
+  }
+  const newCert = {
+    ...cert,
+    id: cert.id || `cert-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    createdAt: new Date().toISOString()
+  }
+  serverCertificates.unshift(newCert)
+  res.status(201).json({ success: true, certificate: newCert })
+})
+
+// Update a certificate
+app.put('/api/certificates/:id', (req, res) => {
+  const { id } = req.params
+  const updates = req.body
+  const idx = serverCertificates.findIndex(c => c.id === id)
+  if (idx === -1) {
+    // If not found, add it
+    const created = { ...updates, id }
+    serverCertificates.push(created)
+    return res.json({ success: true, certificate: created })
+  }
+  serverCertificates[idx] = { ...serverCertificates[idx], ...updates, updatedAt: new Date().toISOString() }
+  res.json({ success: true, certificate: serverCertificates[idx] })
+})
+
+// Delete a certificate
+app.delete('/api/certificates/:id', (req, res) => {
+  const { id } = req.params
+  serverCertificates = serverCertificates.filter(c => c.id !== id)
+  res.json({ success: true, message: 'Certificate deleted' })
+})
+
+// Bulk sync from client
+app.post('/api/certificates/sync', (req, res) => {
+  const { certificates } = req.body
+  if (Array.isArray(certificates)) {
+    serverCertificates = certificates
+  }
+  res.json({ success: true, count: serverCertificates.length })
+})
+
+// ============================================================================
+// AI TUTOR BACKEND ENDPOINTS (SECURE SERVER-SIDE GROQ INTEGRATION)
+// ============================================================================
+const { generateTutorResponse } = require('./tutorService')
+
+app.post('/api/ai/tutor/chat', async (req, res) => {
+  try {
+    const { messages, mode, subjectId, subjectName, topicTitle, retrievedContext } = req.body
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'A valid messages array is required.'
+      })
+    }
+
+    const result = await generateTutorResponse({
+      messages,
+      mode: mode || 'explain_simply',
+      subjectId: subjectId || '',
+      subjectName: subjectName || '',
+      topicTitle: topicTitle || '',
+      retrievedContext: retrievedContext || ''
+    })
+
+    if (!result.success) {
+      return res.status(result.errorType === 'MISSING_CREDENTIALS' ? 503 : 502).json(result)
+    }
+
+    res.json(result)
+  } catch (err) {
+    console.error('[SprintOS AI Tutor] Unhandled route error:', err)
+    res.status(500).json({
+      success: false,
+      errorType: 'SERVER_ERROR',
+      message: err.message || 'Internal server error processing tutor response.'
+    })
   }
 })
 

@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react'
-import { 
-  RotateCcw, 
-  CheckCircle2, 
-  Star, 
-  Clock, 
-  Plus, 
-  CheckSquare, 
+import {
+  RotateCcw,
+  CheckCircle2,
+  Star,
+  Clock,
+  Plus,
+  CheckSquare,
   BrainCircuit,
+  Sparkles,
   X
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -18,10 +19,12 @@ import { cn } from 'cn'
 
 interface RevisionPageProps {
   onNavigateToLearning?: () => void
+  onNavigateToTutor?: (subjectId: string, topicTitle: string) => void
 }
 
 export const RevisionPage: React.FC<RevisionPageProps> = ({
-  onNavigateToLearning: _onNavigateToLearning
+  onNavigateToLearning: _onNavigateToLearning,
+  onNavigateToTutor
 }) => {
   const { subjects, lectures, topicProgress, revisionSessions, addRevisionSession } = useApp()
 
@@ -253,6 +256,18 @@ export const RevisionPage: React.FC<RevisionPageProps> = ({
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
+                      {onNavigateToTutor && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => onNavigateToTutor(item.subjectId, item.title)}
+                          className="h-7 text-[11px] px-2.5 gap-1 text-primary border-primary/20 bg-primary/10 hover:bg-primary/20 font-medium"
+                          title="Start active recall revision for this topic with SprintOS AI Tutor"
+                        >
+                          <Sparkles className="w-3 h-3 text-primary" />
+                          <span>AI Tutor</span>
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         variant="outline"
@@ -297,7 +312,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = ({
                 { id: 'q3', text: 'Explain the edge cases or failure modes (e.g. cycles, disconnectivity, null inputs)' },
                 { id: 'q4', text: 'Sketch or code the core algorithm/pattern implementation on blank paper' }
               ].map(q => (
-                <label 
+                <label
                   key={q.id}
                   className="flex items-start gap-2.5 p-2 rounded-lg bg-muted/20 border border-border cursor-pointer hover:border-foreground/20 transition-colors"
                 >
@@ -396,7 +411,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = ({
       {/* Log Revision Session Modal */}
       {isLogModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <Card 
+          <Card
             className="w-full max-w-md bg-card border-border p-6 shadow-2xl space-y-4"
             onClick={e => e.stopPropagation()}
           >

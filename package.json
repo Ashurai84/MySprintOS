@@ -5,8 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "npm --prefix client run dev",
+    "dev:all": "node server/index.js & npm --prefix client run dev",
     "server": "node server/index.js",
     "server:dev": "node --watch server/index.js",
+    "start": "node server/index.js",
     "build": "npm --prefix client run build",
     "test": "npm --prefix client test",
     "lint": "npm --prefix client run lint",

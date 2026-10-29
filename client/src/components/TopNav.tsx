@@ -22,7 +22,8 @@ const tabTitles: Record<string, { title: string; subtitle: string }> = {
   documents: { title: 'Documents', subtitle: 'In-App Document Reader (PDF, XLSX, DOCX)' },
   revision: { title: 'Revision & Progress', subtitle: 'Topic Review Queue & Daily Self-Recall Checklist' },
   settings: { title: 'Settings', subtitle: 'Academic Configuration, Student Profile & Data Backup' },
-  certifications: { title: 'Courses & Certs', subtitle: 'Professional Credentials & Verified Certificates' },
+  certifications: { title: 'Certificate Hub', subtitle: 'Document-Extracted Credentials, Progress Tracking & Secure Uploads' },
+  tutor: { title: 'AI Tutor', subtitle: 'Personalized B.Tech Learning Assistant & Exam Preparation' },
   dashboard: { title: 'Home', subtitle: 'Daily Academic Overview & Attendance Status' },
   tasks: { title: 'Assignments', subtitle: 'Coursework & Deliverables' }
 }
@@ -79,11 +80,13 @@ export const TopNav: React.FC<TopNavProps> = ({
       {/* Right side: 12-Hour Clock, Date, Essential Actions & Avatar */}
       <div className="flex items-center gap-2 sm:gap-2.5">
         {/* 12-Hour Live Clock */}
-        <div 
-          className="hidden md:flex items-center gap-1.5 text-xs text-primary bg-secondary/50 border border-border px-2.5 py-1 rounded-md font-mono"
+        <div
+          className={`hidden md:flex items-center gap-1.5 text-xs bg-secondary/50 border border-border px-2.5 py-1 rounded-md font-mono ${
+            currentTab === 'tutor' ? 'text-slate-200' : 'text-primary'
+          }`}
           title="Current IST (12-Hour)"
         >
-          <Clock className="w-3.5 h-3.5 text-primary" />
+          <Clock className={`w-3.5 h-3.5 ${currentTab === 'tutor' ? 'text-white' : 'text-primary'}`} />
           <span>{time12H}</span>
         </div>
 
@@ -98,7 +101,7 @@ export const TopNav: React.FC<TopNavProps> = ({
           variant="outline"
           size="sm"
           onPress={onOpenQuickTask}
-          className="hidden sm:inline-flex text-xs h-8 px-2.5 cursor-pointer"
+          className="hidden sm:inline-flex text-xs h-8 px-2.5 cursor-pointer text-slate-200 hover:text-white"
         >
           <Plus className="w-3.5 h-3.5 mr-1" />
           Assignment
@@ -109,14 +112,18 @@ export const TopNav: React.FC<TopNavProps> = ({
           variant="default"
           size="sm"
           onPress={onOpenQuickLecture}
-          className="text-xs h-8 px-3 font-medium cursor-pointer"
+          className={`text-xs h-8 px-3 font-semibold cursor-pointer ${
+            currentTab === 'tutor'
+              ? 'bg-black text-white hover:bg-zinc-800 border border-zinc-700 shadow-xs'
+              : ''
+          }`}
         >
-          <CalendarClock className="w-3.5 h-3.5 mr-1" />
+          <CalendarClock className={`w-3.5 h-3.5 mr-1 ${currentTab === 'tutor' ? 'text-white' : ''}`} />
           Log Lecture
         </Button>
 
         {/* Student Avatar */}
-        <div 
+        <div
           className="w-7 h-7 rounded-full bg-secondary text-foreground border border-border flex items-center justify-center text-xs font-semibold ml-1 shrink-0"
           title={`${profile.name} (${profile.cohort})`}
         >

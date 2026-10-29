@@ -1,6 +1,6 @@
 export type Priority = 'low' | 'medium' | 'high' | 'critical'
 export type TaskStatus = 'not_started' | 'todo' | 'in_progress' | 'submitted' | 'completed'
-export type CertStatus = 'planned' | 'in_progress' | 'completed' | 'paused'
+export type CertStatus = 'not_started' | 'in_progress' | 'completed' | 'needs_review' | 'planned' | 'paused'
 export type ResourceType = 'Textbook' | 'Research Paper' | 'Documentation' | 'Guide' | 'Practice Platform' | 'Standard' | 'Whitepaper' | 'Open Textbook' | 'Other'
 export type AttendanceStatus = 'scheduled' | 'attended' | 'absent' | 'cancelled' | 'unmarked'
 export type LearningStatus = 'not_started' | 'learning' | 'understood' | 'needs_revision'
@@ -100,12 +100,31 @@ export interface Task {
   isSample?: boolean
 }
 
+export interface SourceDocReference {
+  documentName: string
+  location?: string
+  sheet?: string
+  cell?: string
+  page?: number
+  section?: string
+}
+
+export interface UploadedCertificateFile {
+  filename: string
+  fileType: string
+  fileSize: string
+  uploadedAt: string
+  fileData?: string // base64 or blob preview
+  storageKey?: string
+}
+
 export interface Certification {
   id: string
   title: string
   platform: string
+  provider?: string
   courseUrl: string
-  relatedSubjectId: string
+  relatedSubjectId?: string
   status: CertStatus
   progressPercentage: number
   targetDate: string
@@ -113,6 +132,33 @@ export interface Certification {
   certificateUrl?: string
   notes?: string
   isSample?: boolean
+  sourceDocReference?: SourceDocReference
+  uploadedCertificate?: UploadedCertificateFile
+  verificationStatus?: 'verified' | 'unverified' | 'login_required'
+  hours?: string
+  description?: string
+  credentialId?: string
+}
+
+export interface ExtractedOpportunity {
+  id: string
+  title: string
+  provider: string
+  url: string
+  sourceDocument: string
+  sourceLocation: string
+  sheet?: string
+  cell?: string
+  page?: number
+  section?: string
+  hours?: string
+  description?: string
+  kind: 'direct_certificate' | 'course_resource' | 'general_reference'
+  confidence: 'high' | 'medium' | 'low'
+  verificationStatus: 'verified' | 'unverified' | 'login_required'
+  suggestedSubjectId?: string
+  rawExtractedAt: string
+  sourceReferences?: Array<{ documentName: string; location: string }>
 }
 
 export interface ResourceItem {
@@ -363,4 +409,53 @@ export interface EnhancedCourse {
   notes?: string
   learningOutcomes?: string[]
 }
+
+// -------------------------------------------------------------
+// SPRINTOS PERSONALIZED AI TUTOR INTERFACES
+// -------------------------------------------------------------
+
+export type TutorMode = 
+  | 'explain_simply' 
+  | 'btech_student' 
+  | 'step_by_step' 
+  | 'exam_prep' 
+  | 'revision' 
+  | 'coding_practice'
+
+export interface TutorCitation {
+  id?: string
+  documentName: string
+  sourceType?: 'xlsx' | 'docx' | 'pdf' | 'curriculum'
+  location?: string
+  excerpt?: string
+  url?: string
+  verified?: boolean
+  groundingType?: 'university_document' | 'general_educational'
+}
+
+export interface TutorMessage {
+  id: string
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  timestamp: string
+  mode?: TutorMode
+  citations?: TutorCitation[]
+  hasGrounding?: boolean
+  groundingNote?: string
+  isError?: boolean
+}
+
+export interface TutorSession {
+  id: string
+  title: string
+  subjectId?: string
+  subjectName?: string
+  topicId?: string
+  topicTitle?: string
+  mode: TutorMode
+  messages: TutorMessage[]
+  createdAt: string
+  updatedAt: string
+}
+
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { AppProvider } from './context/AppContext'
+import { AppProvider, useApp } from './context/AppContext'
 import { Sidebar } from './components/Sidebar'
 import { TopNav } from './components/TopNav'
 import { QuickAddTaskModal } from './components/QuickAddTaskModal'
@@ -13,12 +13,14 @@ import { SubjectsPage } from './pages/SubjectsPage'
 import { DocumentsVaultPage } from './pages/DocumentsVaultPage'
 import { RevisionPage } from './pages/RevisionPage'
 import { CertificationsPage } from './pages/CertificationsPage'
+import { TutorPage } from './pages/TutorPage'
 import { ResourcesPage } from './pages/ResourcesPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { TimetablePage } from './pages/TimetablePage'
 import type { Lecture } from './types'
 
 const AppMain: React.FC = () => {
+  const { createTutorSession } = useApp()
   const [currentTab, setCurrentTab] = useState<string>('home')
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false)
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | undefined>(undefined)
@@ -139,12 +141,21 @@ const AppMain: React.FC = () => {
           {currentTab === 'revision' && (
             <RevisionPage
               onNavigateToLearning={() => handleNavigateToTab('learning')}
+              onNavigateToTutor={(subjectId, topicTitle) => {
+                createTutorSession(subjectId, undefined, topicTitle, 'revision')
+                handleNavigateToTab('tutor', subjectId)
+              }}
             />
           )}
 
           {/* 9. Settings */}
           {currentTab === 'settings' && (
             <SettingsPage />
+          )}
+
+          {/* AI Tutor */}
+          {currentTab === 'tutor' && (
+            <TutorPage />
           )}
 
           {/* Legacy secondary views */}
