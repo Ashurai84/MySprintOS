@@ -1,15 +1,19 @@
 import type { Lecture, SubjectAttendanceStats, OverallAttendanceStats } from '../types'
-import { isSameSubject } from './subjectUtils'
+import { isSameSubject, canonicalSubjectId } from './subjectUtils'
+import { normalizeTimeTo24H } from './timetableUtils'
 
 /**
  * Calculates official university attendance statistics for a given subject.
  * 
  * Rules:
- * - Eligible Held sessions = Attended + Absent
+ * - Eligible Held sessions = Attended + Absent (unique held lectures)
  * - Breaks, free periods, independent study and unassigned slots never count toward attendance
  * - Scheduled future sessions are excluded from held
  * - Cancelled sessions are excluded from numerator and denominator
  * - Unmarked sessions do not silently count as attended or absent
+ * - Status aliases ('present', 'Present', 'attended') are safely normalized to Attended
+ * - Status aliases ('absent', 'Absent') are safely normalized to Absent
+ * - Duplicate lecture IDs or duplicate slot entries contribute only once (non-destructive)
  * - Attendance Percentage = (Attended / Held) * 100
  * - If Held == 0: percentage is null ("No attendance data yet")
  * - Warning triggered if percentage < minAttendancePercent (default 75%)
@@ -20,7 +24,8 @@ export function calculateSubjectAttendance(
   subjectId: string,
   lectures: Lecture[],
   totalCourseHours: number = 30,
-  minAttendancePercent: number = 75
+  minAttendancePercent: number = 75,
+  precision: number = 1
 ): SubjectAttendanceStats {
   const subjectLectures = lectures.filter(l => {
     // Strictly exclude any breaks, free periods, independent study or unassigned slots from attendance
@@ -43,33 +48,47 @@ export function calculateSubjectAttendance(
     return isSameSubject(l.subjectId, subjectId)
   })
 
+  // Deduplicate records non-destructively: guarantee one lecture contributes only once
+  const seenIds = new Set<string>()
+  const seenSlots = new Set<string>()
+  const uniqueLectures: Lecture[] = []
+
+  for (const lecture of subjectLectures) {
+    // Deduplicate by unique lecture ID if present
+    if (lecture.id) {
+      if (seenIds.has(lecture.id)) continue
+      seenIds.add(lecture.id)
+    }
+
+    // Deduplicate identical slot sessions if date and startTime are present
+    if (lecture.date && lecture.startTime) {
+      const normTime = normalizeTimeTo24H(lecture.startTime)
+      const slotKey = `${canonicalSubjectId(lecture.subjectId)}_${lecture.date}_${normTime}`
+      if (seenSlots.has(slotKey)) continue
+      seenSlots.add(slotKey)
+    }
+
+    uniqueLectures.push(lecture)
+  }
+
   let attended = 0
   let absent = 0
   let scheduled = 0
   let cancelled = 0
   let unmarked = 0
 
-  for (const lecture of subjectLectures) {
-    switch (lecture.status) {
-      case 'attended':
-        attended++
-        break
-      case 'absent':
-        absent++
-        break
-      case 'scheduled':
-        scheduled++
-        break
-      case 'cancelled':
-        cancelled++
-        break
-      case 'unmarked':
-        unmarked++
-        break
-      default:
-        // Any unrecognized or omitted status is safely counted as unmarked
-        unmarked++
-        break
+  for (const lecture of uniqueLectures) {
+    const rawStatus = (lecture.status || '').toString().trim().toLowerCase()
+    if (rawStatus === 'attended' || rawStatus === 'present') {
+      attended++
+    } else if (rawStatus === 'absent') {
+      absent++
+    } else if (rawStatus === 'scheduled') {
+      scheduled++
+    } else if (rawStatus === 'cancelled' || rawStatus === 'canceled') {
+      cancelled++
+    } else {
+      unmarked++
     }
   }
 
@@ -87,6 +106,7 @@ export function calculateSubjectAttendance(
       cancelled,
       unmarked,
       percentage: null,
+      rawPercentage: null,
       isWarning: false,
       isApproaching: false,
       consecutiveNeededToReachTarget: 0,
@@ -95,7 +115,8 @@ export function calculateSubjectAttendance(
   }
 
   const rawPercent = (attended / totalHeld) * 100
-  const percentage = Math.round(rawPercent * 10) / 10
+  const factor = Math.pow(10, precision)
+  const percentage = Math.round(rawPercent * factor) / factor
 
   const isWarning = percentage < minAttendancePercent
   const isApproaching = percentage >= minAttendancePercent && percentage < (minAttendancePercent + 5)
@@ -126,6 +147,7 @@ export function calculateSubjectAttendance(
     cancelled,
     unmarked,
     percentage,
+    rawPercentage: rawPercent,
     isWarning,
     isApproaching,
     consecutiveNeededToReachTarget,
@@ -149,7 +171,8 @@ export function calculateSubjectAttendance(
  */
 export function calculateOverallAttendance(
   subjectStats: SubjectAttendanceStats[],
-  minAttendancePercent: number = 75
+  minAttendancePercent: number = 75,
+  precision: number = 1
 ): OverallAttendanceStats {
   const totalAttended = subjectStats.reduce((sum, s) => sum + s.attended, 0)
   const totalAbsent = subjectStats.reduce((sum, s) => sum + s.absent, 0)
@@ -159,9 +182,9 @@ export function calculateOverallAttendance(
   const totalCancelled = subjectStats.reduce((sum, s) => sum + s.cancelled, 0)
   const warningCount = subjectStats.filter(s => s.isWarning).length
 
-  const percentage = totalHeld > 0
-    ? Math.round((totalAttended / totalHeld) * 1000) / 10
-    : null
+  const rawPercent = totalHeld > 0 ? (totalAttended / totalHeld) * 100 : null
+  const factor = Math.pow(10, precision)
+  const percentage = rawPercent !== null ? Math.round(rawPercent * factor) / factor : null
 
   const isWarning = percentage !== null && percentage < minAttendancePercent
 
@@ -178,9 +201,15 @@ export function calculateOverallAttendance(
     scheduled: totalScheduled,
     cancelled: totalCancelled,
     percentage,
+    rawPercentage: rawPercent,
     isWarning,
     warningCount
   }
+}
+
+export function formatAttendancePercentage(percentage: number | null | undefined, decimals: number = 2): string {
+  if (percentage === null || percentage === undefined) return '—'
+  return `${percentage.toFixed(decimals)}%`
 }
 
 export interface AttendanceStatusVisualConfig {

@@ -33,6 +33,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     tasks, 
     topicProgress, 
     getAllSubjectAttendanceStats, 
+    getOverallAttendanceStats,
     getSubject,
     timetableEntries
   } = useApp()
@@ -55,10 +56,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
   // Attendance overview
   const allAttendanceStats = getAllSubjectAttendanceStats()
+  const overall = getOverallAttendanceStats()
   const warningSubjects = allAttendanceStats.filter(s => s.isWarning)
-  const totalAttended = allAttendanceStats.reduce((sum, s) => sum + s.attended, 0)
-  const totalHeld = allAttendanceStats.reduce((sum, s) => sum + s.totalHeld, 0)
-  const overallPercentage = totalHeld > 0 ? Math.round((totalAttended / totalHeld) * 100) : 100
+  const totalAttended = overall.totalAttended
+  const totalHeld = overall.totalHeld
+  const overallPercentage = overall.percentage
 
   // Subject needing most attention
   const subjectNeedingAttention = useMemo(() => {
@@ -182,10 +184,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="text-2xl font-semibold font-mono tracking-tight text-foreground">
-              {overallPercentage}%
+              {overallPercentage !== null ? `${overallPercentage}%` : '—'}
             </div>
             <p className="text-[11px] text-muted-foreground font-mono">
-              {totalAttended} of {totalHeld} sessions held
+              {totalHeld > 0 ? `${totalAttended} of ${totalHeld} sessions held` : 'No sessions held'}
             </p>
           </CardContent>
         </Card>

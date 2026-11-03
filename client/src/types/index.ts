@@ -262,6 +262,7 @@ export interface SubjectAttendanceStats {
   cancelled: number
   unmarked: number
   percentage: number | null // null if totalHeld === 0
+  rawPercentage?: number | null
   isWarning: boolean // < threshold (e.g. 75%)
   isApproaching: boolean // threshold <= percentage < threshold + 5
   consecutiveNeededToReachTarget: number // consecutive sessions to reach 75%
@@ -281,6 +282,7 @@ export interface OverallAttendanceStats {
   scheduled: number
   cancelled: number
   percentage: number | null
+  rawPercentage?: number | null
   isWarning: boolean
   warningCount: number
 }

@@ -1,16 +1,16 @@
 import React, { useState, useMemo } from 'react'
-import { 
-  CalendarClock, 
-  Plus, 
-  Calendar, 
-  CheckCircle2, 
-  XCircle, 
-  Clock, 
-  Search, 
-  ChevronLeft, 
-  ChevronRight, 
-  Edit3, 
-  Trash2, 
+import {
+  CalendarClock,
+  Plus,
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Edit3,
+  Trash2,
   RotateCcw,
   Star,
   ChevronDown,
@@ -20,13 +20,13 @@ import {
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import type { AttendanceStatus, Lecture } from '../types'
-import { 
-  formatDuration, 
-  calculateDurationFromTimes, 
+import {
+  formatDuration,
+  calculateDurationFromTimes,
   normalizeTimeTo24H,
   formatTimeRangeTo12H
 } from '../utils/timetableUtils'
-import { isSameSubject } from '../utils/subjectUtils'
+import { isSameSubject, canonicalSubjectId } from '../utils/subjectUtils'
 import { QuickAddLectureModal } from '../components/QuickAddLectureModal'
 
 interface LecturesPageProps {
@@ -75,7 +75,7 @@ export const LecturesPage: React.FC<LecturesPageProps> = ({
     const day = curr.getDay()
     const diff = curr.getDate() - day + (day === 0 ? -6 : 1) // adjust when day is sunday
     const monday = new Date(curr.setDate(diff))
-    
+
     const dates: string[] = []
     for (let i = 0; i < 7; i++) {
       const d = new Date(monday)
@@ -120,20 +120,60 @@ export const LecturesPage: React.FC<LecturesPageProps> = ({
 
   // Summary counts for current view
   const viewCounts = useMemo(() => {
-    const list = activeView === 'day' 
+    let list = activeView === 'day'
       ? lectures.filter(l => l.date === selectedDate)
       : activeView === 'week'
-      ? lectures.filter(l => weekDates.includes(l.date))
-      : lectures
+        ? lectures.filter(l => weekDates.includes(l.date))
+        : lectures
+
+    if (selectedSubjectId !== 'all') {
+      list = list.filter(l => isSameSubject(l.subjectId, selectedSubjectId))
+    }
+
+    // Non-destructive deduplication of unique sessions
+    const seen = new Set<string>()
+    const deduplicated = list.filter(l => {
+      const startKey = l.startTime ? normalizeTimeTo24H(l.startTime) : (l.title || l.id)
+      const key = `${canonicalSubjectId(l.subjectId)}_${l.date}_${startKey}`
+      if (seen.has(l.id) || seen.has(key)) return false
+      seen.add(l.id)
+      seen.add(key)
+      return true
+    })
+
+    const attended = deduplicated.filter(l => {
+      const s = (l.status || '').toLowerCase().trim()
+      return s === 'attended' || s === 'present'
+    }).length
+
+    const absent = deduplicated.filter(l => {
+      const s = (l.status || '').toLowerCase().trim()
+      return s === 'absent'
+    }).length
+
+    const scheduled = deduplicated.filter(l => {
+      const s = (l.status || '').toLowerCase().trim()
+      return s === 'scheduled'
+    }).length
+
+    const cancelled = deduplicated.filter(l => {
+      const s = (l.status || '').toLowerCase().trim()
+      return s === 'cancelled' || s === 'canceled'
+    }).length
+
+    const held = attended + absent
+    const percentage = held > 0 ? Math.round((attended / held) * 1000) / 10 : null
 
     return {
-      total: list.length,
-      attended: list.filter(l => l.status === 'attended').length,
-      absent: list.filter(l => l.status === 'absent').length,
-      scheduled: list.filter(l => l.status === 'scheduled').length,
-      cancelled: list.filter(l => l.status === 'cancelled').length
+      total: deduplicated.length,
+      held,
+      attended,
+      absent,
+      scheduled,
+      cancelled,
+      percentage
     }
-  }, [lectures, activeView, selectedDate, weekDates])
+  }, [lectures, activeView, selectedDate, weekDates, selectedSubjectId])
 
   const openAddLecture = () => {
     if (onOpenAddLecture) {
@@ -225,31 +265,28 @@ export const LecturesPage: React.FC<LecturesPageProps> = ({
         <div className="flex items-center gap-1 bg-[#0b0f19] p-1 rounded-lg border border-[#1e293d] self-start">
           <button
             onClick={() => setActiveView('day')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              activeView === 'day' 
-                ? 'bg-blue-600 text-white font-semibold shadow-xs' 
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${activeView === 'day'
+                ? 'bg-blue-600 text-white font-semibold shadow-xs'
                 : 'text-slate-400 hover:text-white'
-            }`}
+              }`}
           >
             Day View
           </button>
           <button
             onClick={() => setActiveView('week')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              activeView === 'week' 
-                ? 'bg-blue-600 text-white font-semibold shadow-xs' 
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${activeView === 'week'
+                ? 'bg-blue-600 text-white font-semibold shadow-xs'
                 : 'text-slate-400 hover:text-white'
-            }`}
+              }`}
           >
             Week View
           </button>
           <button
             onClick={() => setActiveView('all')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              activeView === 'all' 
-                ? 'bg-blue-600 text-white font-semibold shadow-xs' 
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${activeView === 'all'
+                ? 'bg-blue-600 text-white font-semibold shadow-xs'
                 : 'text-slate-400 hover:text-white'
-            }`}
+              }`}
           >
             All History
           </button>
@@ -296,7 +333,8 @@ export const LecturesPage: React.FC<LecturesPageProps> = ({
         {/* Summary Mini-Pills */}
         <div className="flex items-center gap-2 text-xs font-mono">
           <span className="px-2.5 py-1 rounded bg-[#0b0f19] border border-[#1e293d] text-slate-300">
-            {viewCounts.total} sessions
+            {viewCounts.held > 0 ? `${viewCounts.attended}/${viewCounts.held} held` : `${viewCounts.total} sessions`}
+            {viewCounts.percentage !== null && ` (${viewCounts.percentage}%)`}
           </span>
           <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/25 text-emerald-300">
             {viewCounts.attended} attended
@@ -410,11 +448,10 @@ export const LecturesPage: React.FC<LecturesPageProps> = ({
                     <button
                       onClick={() => setLectureStatus(lec.id, 'attended')}
                       title="Mark Attended"
-                      className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-colors ${
-                        lec.status === 'attended'
+                      className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-colors ${lec.status === 'attended'
                           ? 'bg-emerald-600 text-white border-emerald-500'
                           : 'bg-[#152033] hover:bg-emerald-950/40 text-slate-400 hover:text-emerald-300 border-[#223352]'
-                      }`}
+                        }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       <span className="text-[11px] font-medium hidden sm:inline">Attended</span>
@@ -423,11 +460,10 @@ export const LecturesPage: React.FC<LecturesPageProps> = ({
                     <button
                       onClick={() => setLectureStatus(lec.id, 'absent')}
                       title="Mark Absent"
-                      className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-colors ${
-                        lec.status === 'absent'
+                      className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-colors ${lec.status === 'absent'
                           ? 'bg-rose-600 text-white border-rose-500'
                           : 'bg-[#152033] hover:bg-rose-950/40 text-slate-400 hover:text-rose-300 border-[#223352]'
-                      }`}
+                        }`}
                     >
                       <XCircle className="w-3.5 h-3.5" />
                       <span className="text-[11px] font-medium hidden sm:inline">Absent</span>

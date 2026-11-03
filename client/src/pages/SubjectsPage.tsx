@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { 
-  BookOpen, 
-  CheckCircle2, 
-  Circle, 
-  FileText, 
-  ExternalLink, 
-  Plus, 
-  Trash2, 
-  Search, 
-  ShieldCheck, 
+import {
+  BookOpen,
+  CheckCircle2,
+  Circle,
+  FileText,
+  ExternalLink,
+  Plus,
+  Trash2,
+  Search,
+  ShieldCheck,
   AlertCircle,
   Layers,
   ChevronDown,
@@ -36,12 +36,12 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({
   initialSubjectId,
   onOpenQuickTask
 }) => {
-  const { 
-    subjects, 
-    completedTopics, 
-    toggleTopic, 
-    notes, 
-    addNote, 
+  const {
+    subjects,
+    completedTopics,
+    toggleTopic,
+    notes,
+    addNote,
     deleteNote,
     addTask,
     getSubjectProgress,
@@ -103,14 +103,14 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({
   }
 
   // Filter subjects by search
-  const filteredSubjects = subjects.filter(s => 
+  const filteredSubjects = subjects.filter(s =>
     s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.faculty.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const subjectProgress = selectedSubject ? getSubjectProgress(selectedSubject.id) : { completed: 0, total: 0, percentage: 0 }
-  const subjectAttendance = selectedSubject ? getSubjectAttendance(selectedSubject.id) : { attended: 0, total: 0, percentage: 100, isWarning: false }
+  const subjectAttendance = selectedSubject ? getSubjectAttendance(selectedSubject.id) : { attended: 0, total: 0, percentage: null, isWarning: false }
   const subjectNotes = notes.filter(n => n.subjectId === selectedSubject?.id)
 
   const handleSaveNote = (e: React.FormEvent) => {
@@ -166,9 +166,8 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({
                 size="sm"
                 variant={isSelected ? 'default' : 'outline'}
                 onClick={() => setSelectedSubjectId(sub.id)}
-                className={`font-mono text-xs px-3 py-1 h-8 ${
-                  isSelected ? 'font-semibold' : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`font-mono text-xs px-3 py-1 h-8 ${isSelected ? 'font-semibold' : 'text-muted-foreground hover:text-foreground'
+                  }`}
               >
                 {sub.code}
               </Button>
@@ -223,7 +222,7 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({
                     </span>
                   </div>
                   <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-primary rounded-full transition-all duration-300"
                       style={{ width: `${subjectProgress.percentage}%` }}
                     />
@@ -234,7 +233,7 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({
                   <div>
                     <span className="text-muted-foreground block text-[11px]">Attendance</span>
                     <span className={`font-mono font-bold text-sm ${subjectAttendance.isWarning ? 'text-amber-400' : 'text-emerald-400'}`}>
-                      {subjectAttendance.percentage}%
+                      {subjectAttendance.percentage !== null ? `${subjectAttendance.percentage}%` : '—'}
                     </span>
                     <span className="text-[10px] text-muted-foreground block font-mono">
                       {subjectAttendance.attended}/{subjectAttendance.total} held
@@ -384,7 +383,7 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({
                   const modCompletedCount = mod.topics.filter(t => completedTopics[t.id]).length
 
                   return (
-                    <Card 
+                    <Card
                       key={modKey}
                       className="border-border bg-card overflow-hidden"
                     >
@@ -426,11 +425,10 @@ export const SubjectsPage: React.FC<SubjectsPageProps> = ({
                               <div
                                 key={topic.id}
                                 onClick={() => toggleTopic(topic.id)}
-                                className={`p-2.5 rounded-lg border transition-all cursor-pointer flex items-center gap-3 ${
-                                  isDone
+                                className={`p-2.5 rounded-lg border transition-all cursor-pointer flex items-center gap-3 ${isDone
                                     ? 'bg-primary/5 border-primary/20 text-foreground'
                                     : 'bg-card border-border text-foreground hover:border-foreground/20'
-                                }`}
+                                  }`}
                               >
                                 <button
                                   type="button"

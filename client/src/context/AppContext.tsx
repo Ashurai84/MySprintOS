@@ -172,7 +172,7 @@ interface AppContextType {
   // Helpers
   getSubject: (id: string) => Subject | undefined
   getSubjectProgress: (subjectId: string) => { completed: number; total: number; percentage: number }
-  getSubjectAttendance: (subjectId: string) => { attended: number; total: number; percentage: number; isWarning: boolean }
+  getSubjectAttendance: (subjectId: string) => { attended: number; total: number; percentage: number | null; isWarning: boolean }
   getSubjectAttendanceStats: (subjectId: string) => SubjectAttendanceStats
   getAllSubjectAttendanceStats: () => SubjectAttendanceStats[]
   getOverallAttendanceStats: () => OverallAttendanceStats
@@ -460,7 +460,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // LECTURE ACTIONS
   // --------------------------------------------------------------------------
   const addLecture = (data: Omit<Lecture, 'id' | 'createdAt' | 'updatedAt'>): string => {
-    const id = `lec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
     const now = new Date().toISOString()
     const canonSubId = canonicalSubjectId(data.subjectId)
     const faculty = resolveFacultyName(data.facultyId, canonSubId, data.faculty)
@@ -482,21 +481,60 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       endTime = minutesToTime(timeToMinutes(startTime) + durationMinutes)
     }
 
-    const newLec: Lecture = {
-      ...data,
-      subjectId: canonSubId,
-      faculty,
-      facultyId,
-      startTime,
-      endTime,
-      durationMinutes,
-      id,
-      createdAt: now,
-      updatedAt: now,
-      isEdited: false
-    }
-    setLectures(prev => [newLec, ...prev])
-    return id
+    let resultingId = `lec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+
+    setLectures(prev => {
+      // Check if a lecture for the exact same subject slot already exists
+      const existing = prev.find(l => {
+        if (!isSameSubject(l.subjectId, canonSubId)) return false
+        if (l.date !== data.date) return false
+        if (startTime && l.startTime) {
+          return normalizeTimeTo24H(l.startTime) === startTime
+        }
+        if (!startTime && !l.startTime) {
+          return (l.title || '').trim().toLowerCase() === (data.title || '').trim().toLowerCase()
+        }
+        return false
+      })
+
+      if (existing) {
+        resultingId = existing.id
+        return prev.map(l => {
+          if (l.id === existing.id) {
+            return {
+              ...l,
+              ...data,
+              subjectId: canonSubId,
+              faculty,
+              facultyId,
+              startTime,
+              endTime,
+              durationMinutes,
+              updatedAt: now,
+              isEdited: true
+            }
+          }
+          return l
+        })
+      }
+
+      const newLec: Lecture = {
+        ...data,
+        subjectId: canonSubId,
+        faculty,
+        facultyId,
+        startTime,
+        endTime,
+        durationMinutes,
+        id: resultingId,
+        createdAt: now,
+        updatedAt: now,
+        isEdited: false
+      }
+      return [newLec, ...prev]
+    })
+
+    return resultingId
   }
 
   const addMultipleLectures = (lecturesData: Array<Omit<Lecture, 'id' | 'createdAt' | 'updatedAt'>>) => {
@@ -1387,7 +1425,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return {
       attended: stats.attended,
       total: stats.totalHeld,
-      percentage: stats.percentage !== null ? stats.percentage : 0,
+      percentage: stats.percentage,
       isWarning: stats.isWarning
     }
   }
